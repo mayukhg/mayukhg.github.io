@@ -1,0 +1,560 @@
+{
+  "date": "2026-09-24T07:02:02.750Z",
+  "pass": 48,
+  "fail": 0,
+  "results": [
+    {
+      "group": "A. Static integrity",
+      "id": "A1",
+      "name": "All required files exist",
+      "status": "PASS",
+      "ms": 0,
+      "notes": [
+        "15 files checked"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "A. Static integrity",
+      "id": "A2",
+      "name": "Content JSON is valid and internally consistent",
+      "status": "PASS",
+      "ms": 0,
+      "notes": [
+        "7 products, 3 arenas, 7 roles"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "A. Static integrity",
+      "id": "A3",
+      "name": "Phone number is not published in any site text file",
+      "status": "PASS",
+      "ms": 2,
+      "notes": [
+        "12 text files scanned; résumé PDF text layer additionally verified with pdfminer (see report)"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "A. Static integrity",
+      "id": "A4",
+      "name": "Every local URL referenced by pages and content resolves (HTTP 200)",
+      "status": "PASS",
+      "ms": 50,
+      "notes": [
+        "9 local references checked"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "A. Static integrity",
+      "id": "A5",
+      "name": "SEO & social metadata (title, description, canonical, Open Graph, JSON-LD)",
+      "status": "PASS",
+      "ms": 1,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "A. Static integrity",
+      "id": "A6",
+      "name": "Crawl rules: robots.txt blocks /admin, admin + 404 are noindex, sitemap valid",
+      "status": "PASS",
+      "ms": 0,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "B. Rendering",
+      "id": "B1",
+      "name": "Home page loads with zero console errors, page errors or failed requests",
+      "status": "PASS",
+      "ms": 1742,
+      "notes": [
+        "DOMContentLoaded 25 ms (local server); web fonts loaded"
+      ],
+      "shots": [
+        "01-desktop-1440-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "B. Rendering",
+      "id": "B2",
+      "name": "Hero renders name, title, badge, intro (with bold), CTAs, photo and 4 stats",
+      "status": "PASS",
+      "ms": 1018,
+      "notes": [],
+      "shots": [
+        "02-hero-desktop.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "B. Rendering",
+      "id": "B3",
+      "name": "Every section renders the expected number of items from content JSON",
+      "status": "PASS",
+      "ms": 711,
+      "notes": [
+        "facts=6, steps=6, principles=3, products=7, pillars=3, metrics=4, roles=7, panels=7, skills=4, edu=3, contact=4"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "B. Rendering",
+      "id": "B4",
+      "name": "Content fidelity: every product, role, skill and education entry appears on the page",
+      "status": "PASS",
+      "ms": 719,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C1",
+      "name": "Product card accordion expands and collapses (aria-expanded + height)",
+      "status": "PASS",
+      "ms": 1965,
+      "notes": [],
+      "shots": [
+        "03-product-card-expanded.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C2",
+      "name": "Arena filter chips show the right products and counts",
+      "status": "PASS",
+      "ms": 1217,
+      "notes": [],
+      "shots": [
+        "04-filter-agentic.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C3",
+      "name": "Experience tabs: clicking each tab shows exactly its panel",
+      "status": "PASS",
+      "ms": 3811,
+      "notes": [
+        "7 tabs exercised"
+      ],
+      "shots": [
+        "05-experience-bp-tab.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C4",
+      "name": "Experience tabs support keyboard (Arrow keys, Home, End) with roving tabindex",
+      "status": "PASS",
+      "ms": 746,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C5",
+      "name": "Deep links open products (URL hash, filtered state, experience “related product” links)",
+      "status": "PASS",
+      "ms": 4429,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C6",
+      "name": "Nav links scroll to sections; active link and scrolled state update",
+      "status": "PASS",
+      "ms": 6466,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C7",
+      "name": "Links: external open safely in new tab, mailto correct, résumé PDF served",
+      "status": "PASS",
+      "ms": 728,
+      "notes": [
+        "12 external links, 7 product GitHub links"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-1440",
+      "name": "No horizontal overflow and correct layout at 1440px (desktop)",
+      "status": "PASS",
+      "ms": 1906,
+      "notes": [],
+      "shots": [
+        "06-desktop-1440-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-1024",
+      "name": "No horizontal overflow and correct layout at 1024px (laptop)",
+      "status": "PASS",
+      "ms": 1841,
+      "notes": [],
+      "shots": [
+        "07-laptop-1024-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-768",
+      "name": "No horizontal overflow and correct layout at 768px (tablet)",
+      "status": "PASS",
+      "ms": 2030,
+      "notes": [],
+      "shots": [
+        "08-tablet-768-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-390",
+      "name": "No horizontal overflow and correct layout at 390px (mobile)",
+      "status": "PASS",
+      "ms": 1719,
+      "notes": [],
+      "shots": [
+        "09-mobile-390-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-320",
+      "name": "No horizontal overflow and correct layout at 320px (small-mobile)",
+      "status": "PASS",
+      "ms": 1648,
+      "notes": [],
+      "shots": [
+        "10-small-mobile-320-full-page.jpg"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-menu",
+      "name": "Mobile menu opens/closes (button, link tap, Escape) with correct ARIA",
+      "status": "PASS",
+      "ms": 969,
+      "notes": [],
+      "shots": [
+        "11-mobile-menu-open.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "D. Responsive",
+      "id": "D-touch",
+      "name": "Touch targets are at least 44×44px on mobile",
+      "status": "PASS",
+      "ms": 728,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E1",
+      "name": "axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card)",
+      "status": "PASS",
+      "ms": 2053,
+      "notes": [
+        "Desktop: 45 axe rules passed, 0 violations"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E2",
+      "name": "axe-core WCAG 2.1 AA audit — home page (mobile, menu open)",
+      "status": "PASS",
+      "ms": 1578,
+      "notes": [
+        "Mobile: 45 axe rules passed, 0 violations"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E3",
+      "name": "Semantics: one H1, no skipped heading levels, landmarks, named controls, image alts",
+      "status": "PASS",
+      "ms": 712,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E4",
+      "name": "Keyboard: skip link is first tab stop and moves focus to main content; focus is visible",
+      "status": "PASS",
+      "ms": 771,
+      "notes": [],
+      "shots": [
+        "12-keyboard-skip-link.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E5",
+      "name": "Reduced motion: content is visible immediately without animations",
+      "status": "PASS",
+      "ms": 687,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "E. Accessibility",
+      "id": "E6",
+      "name": "No-JavaScript fallback shows a message with résumé + email links",
+      "status": "PASS",
+      "ms": 649,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "F. Resilience & security",
+      "id": "F1",
+      "name": "If content JSON fails to load, a friendly error is shown (no crash, no blank page)",
+      "status": "PASS",
+      "ms": 726,
+      "notes": [],
+      "shots": [
+        "13-content-load-error.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "F. Resilience & security",
+      "id": "F2",
+      "name": "Preview mode renders the local draft only when ?preview=1 is present",
+      "status": "PASS",
+      "ms": 1919,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "F. Resilience & security",
+      "id": "F3",
+      "name": "XSS-safe rendering: HTML/script and javascript: links in content are neutralised",
+      "status": "PASS",
+      "ms": 1377,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "F. Resilience & security",
+      "id": "F4",
+      "name": "404 page renders on unknown URLs with a way back",
+      "status": "PASS",
+      "ms": 670,
+      "notes": [],
+      "shots": [
+        "14-404-page.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "F. Resilience & security",
+      "id": "F5",
+      "name": "Admin page ships a strict Content-Security-Policy and never leaks the token in URLs",
+      "status": "PASS",
+      "ms": 0,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G1",
+      "name": "Editor loads with no errors, populates every form from content, all tabs work",
+      "status": "PASS",
+      "ms": 1067,
+      "notes": [],
+      "shots": [
+        "15-admin-profile-tab.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G2",
+      "name": "Editing a field marks the draft dirty, autosaves, and “Preview draft” shows it on the real site",
+      "status": "PASS",
+      "ms": 2268,
+      "notes": [],
+      "shots": [
+        "16-admin-preview-draft.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G3",
+      "name": "Add a new product through the form; it appears on the site with correct arena filter counts",
+      "status": "PASS",
+      "ms": 2096,
+      "notes": [],
+      "shots": [
+        "17-admin-new-product-form.png",
+        "18-preview-new-product.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G4",
+      "name": "Reorder, duplicate and delete list items (with confirmation)",
+      "status": "PASS",
+      "ms": 1444,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G5",
+      "name": "Validation blocks publishing and points to each problem (required, email, URL, duplicate ID, unknown link)",
+      "status": "PASS",
+      "ms": 1238,
+      "notes": [],
+      "shots": [
+        "19-admin-validation-errors.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G6",
+      "name": "Connect flow: bad token shows a friendly error; valid token connects",
+      "status": "PASS",
+      "ms": 1178,
+      "notes": [],
+      "shots": [
+        "20-admin-connected.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G7",
+      "name": "Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state",
+      "status": "PASS",
+      "ms": 1105,
+      "notes": [],
+      "shots": [
+        "21-admin-published.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G8",
+      "name": "Publish detects a remote change and asks before overwriting (cancel = no commit)",
+      "status": "PASS",
+      "ms": 1478,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G9",
+      "name": "File uploads: résumé PDF committed; wrong type and fake PDF rejected; portfolio + photo wire into content",
+      "status": "PASS",
+      "ms": 1688,
+      "notes": [],
+      "shots": [
+        "22-admin-files-uploaded.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G10",
+      "name": "Backup download + restore, and “Discard draft” reverts to live content",
+      "status": "PASS",
+      "ms": 1255,
+      "notes": [],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G11",
+      "name": "“Remember on this device” stores token in localStorage; Disconnect removes it everywhere",
+      "status": "PASS",
+      "ms": 1745,
+      "notes": [
+        "Reopening the editor reconnects automatically"
+      ],
+      "shots": [],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G12",
+      "name": "Editor is usable on mobile (390px): no horizontal overflow, axe audit clean",
+      "status": "PASS",
+      "ms": 1546,
+      "notes": [
+        "Admin axe: 0 violations"
+      ],
+      "shots": [
+        "23-admin-mobile-390.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "G. Admin editor",
+      "id": "G13",
+      "name": "Products tab and Files tab render correctly (visual check)",
+      "status": "PASS",
+      "ms": 1167,
+      "notes": [],
+      "shots": [
+        "24-admin-products-tab.png",
+        "25-admin-files-tab.png",
+        "26-admin-connect-tab.png"
+      ],
+      "error": ""
+    }
+  ]
+}
