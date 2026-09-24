@@ -114,7 +114,6 @@ section{padding:100px 0;position:relative;}
 }
 .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.2);flex:none;}
 .hero h1{color:#fff;font-size:clamp(2.9rem,7.4vw,5.2rem);line-height:1.02;margin-bottom:18px;letter-spacing:-.035em;}
-.hero h1 em{font-style:normal;background:linear-gradient(90deg,#a5b4fc,var(--glow));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .hero-role{font-size:clamp(1rem,2vw,1.18rem);color:#9fb0c6;font-weight:500;margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;}
 .hero-role b{color:#eef2f8;font-weight:600;}
 .hero-role .grp{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;}

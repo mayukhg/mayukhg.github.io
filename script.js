@@ -58,10 +58,9 @@
   function renderHero(p, prodCount) {
     var person = p.person || {}, links = p.links || {};
     var name = String(person.name || '').trim();
-    var parts = name.split(/\s+/), last = parts.length > 1 ? parts.pop() : '';
     set('badge', esc(person.badge));
     slot('badge').closest('.badge').hidden = !person.badge;
-    set('name', esc(parts.join(' ')) + (last ? ' <em>' + esc(last) + '</em>' : ''));
+    set('name', esc(name));
     set('role', '<b>' + esc(person.headline) + '</b>' + (arr(person.tags).length
       ? ' <span class="grp">' + arr(person.tags).map(function (t) { return '<span class="sep" aria-hidden="true"></span>' + esc(t); }).join('') + '</span>' : ''));
     set('lede', md(person.lede));
