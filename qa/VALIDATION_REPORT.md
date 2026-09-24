@@ -1,14 +1,14 @@
 # Validation Report — Portfolio Site & Editor
 
-**Run:** 2026-09-24 07:25 UTC · **Browser:** Chromium (Playwright 1.56.1) · **Accessibility engine:** axe-core 4.11.0
+**Run:** 2026-09-24 07:32 UTC · **Mode:** full · **Browser:** Chromium (Playwright 1.56.1) · **Accessibility engine:** axe-core 4.11.0
 
 ## Summary
 
 | Result | Count |
 |---|---|
-| ✅ Passed | **49** |
+| ✅ Passed | **87** |
 | ❌ Failed | **0** |
-| Total test cases | 49 |
+| Total test cases | 87 |
 | Screenshots captured | 28 |
 
 **Overall status: PASS** — every test case passed.
@@ -22,6 +22,18 @@
 | E. Accessibility | 6 | 0 |
 | F. Resilience & security | 5 | 0 |
 | G. Admin editor | 13 | 0 |
+| R. Auto-discovered regression | 38 | 0 |
+
+## Regression coverage (self-updating)
+
+The suite discovers features from the code on every run (`qa/lib/discover.mjs`) and generates the **R.** test cases from them. The checked-in `qa/coverage-manifest.json` records the last baseline.
+
+| | Count |
+|---|---|
+| Features tracked | 173 |
+| Added since last baseline | 0 |
+| Removed since last baseline | 0 |
+| Auto-generated test cases this run | 38 |
 
 ## Test cases
 
@@ -40,7 +52,7 @@
 
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
-| B1 | Home page loads with zero console errors, page errors or failed requests | ✅ Pass | 2.0s | DOMContentLoaded 35 ms (local server); web fonts loaded<br>[01-desktop-1440-full-page.jpg](screenshots/01-desktop-1440-full-page.jpg) |
+| B1 | Home page loads with zero console errors, page errors or failed requests | ✅ Pass | 1.9s | DOMContentLoaded 29 ms (local server); web fonts loaded<br>[01-desktop-1440-full-page.jpg](screenshots/01-desktop-1440-full-page.jpg) |
 | B2 | Hero renders name, title, badge, intro (with bold), CTAs, photo and 4 stats | ✅ Pass | 1.0s | [02-hero-desktop.png](screenshots/02-hero-desktop.png) |
 | B3 | Every section renders the expected number of items from content JSON | ✅ Pass | 0.7s | facts=6, steps=6, principles=3, products=7, glance=7, pillars=3, metrics=4, roles=7, panels=7, skills=4, edu=3, contact=4 |
 | B4 | Content fidelity: every product, role, skill and education entry appears on the page | ✅ Pass | 0.7s |  |
@@ -50,11 +62,11 @@
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
 | C1 | Product card accordion expands and collapses (aria-expanded + height) | ✅ Pass | 2.0s | [03-product-card-expanded.png](screenshots/03-product-card-expanded.png) |
-| C2 | Arena filter chips show the right products and counts | ✅ Pass | 1.5s | [04-filter-agentic.png](screenshots/04-filter-agentic.png) |
-| C3 | Experience tabs: clicking each tab shows exactly its panel | ✅ Pass | 4.1s | 7 tabs exercised<br>[05-experience-bp-tab.png](screenshots/05-experience-bp-tab.png) |
+| C2 | Arena filter chips show the right products and counts | ✅ Pass | 1.4s | [04-filter-agentic.png](screenshots/04-filter-agentic.png) |
+| C3 | Experience tabs: clicking each tab shows exactly its panel | ✅ Pass | 4.0s | 7 tabs exercised<br>[05-experience-bp-tab.png](screenshots/05-experience-bp-tab.png) |
 | C4 | Experience tabs support keyboard (Arrow keys, Home, End) with roving tabindex | ✅ Pass | 0.7s |  |
 | C5 | Deep links open products (URL hash, filtered state, experience “related product” links) | ✅ Pass | 4.4s |  |
-| C8 | Summary (“at a glance”) cards: one per product, in order, each opens its product case | ✅ Pass | 9.2s | [06-summary-cards-desktop.png](screenshots/06-summary-cards-desktop.png) |
+| C8 | Summary (“at a glance”) cards: one per product, in order, each opens its product case | ✅ Pass | 9.3s | [06-summary-cards-desktop.png](screenshots/06-summary-cards-desktop.png) |
 | C6 | Nav links scroll to sections; active link and scrolled state update | ✅ Pass | 6.4s |  |
 | C7 | Links: external open safely in new tab, mailto correct, résumé PDF served | ✅ Pass | 0.7s | 12 external links, 7 product GitHub links |
 
@@ -64,10 +76,10 @@
 |---|---|---|---|---|
 | D-1440 | No horizontal overflow and correct layout at 1440px (desktop) | ✅ Pass | 2.1s | [07-desktop-1440-full-page.jpg](screenshots/07-desktop-1440-full-page.jpg) |
 | D-1024 | No horizontal overflow and correct layout at 1024px (laptop) | ✅ Pass | 1.8s | [08-laptop-1024-full-page.jpg](screenshots/08-laptop-1024-full-page.jpg) |
-| D-768 | No horizontal overflow and correct layout at 768px (tablet) | ✅ Pass | 2.0s | [09-tablet-768-full-page.jpg](screenshots/09-tablet-768-full-page.jpg) |
+| D-768 | No horizontal overflow and correct layout at 768px (tablet) | ✅ Pass | 1.8s | [09-tablet-768-full-page.jpg](screenshots/09-tablet-768-full-page.jpg) |
 | D-390 | No horizontal overflow and correct layout at 390px (mobile) | ✅ Pass | 1.7s | [10-mobile-390-full-page.jpg](screenshots/10-mobile-390-full-page.jpg) |
 | D-320 | No horizontal overflow and correct layout at 320px (small-mobile) | ✅ Pass | 1.7s | [11-small-mobile-320-full-page.jpg](screenshots/11-small-mobile-320-full-page.jpg) |
-| D-menu | Mobile menu opens/closes (button, link tap, Escape) with correct ARIA | ✅ Pass | 1.0s | [12-mobile-menu-open.png](screenshots/12-mobile-menu-open.png) |
+| D-menu | Mobile menu opens/closes (button, link tap, Escape) with correct ARIA | ✅ Pass | 0.9s | [12-mobile-menu-open.png](screenshots/12-mobile-menu-open.png) |
 | D-touch | Touch targets are at least 44×44px on mobile | ✅ Pass | 0.7s |  |
 
 ### E. Accessibility
@@ -75,7 +87,7 @@
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
 | E1 | axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card) | ✅ Pass | 2.0s | Desktop: 45 axe rules passed, 0 violations |
-| E2 | axe-core WCAG 2.1 AA audit — home page (mobile, menu open) | ✅ Pass | 1.6s | Mobile: 45 axe rules passed, 0 violations |
+| E2 | axe-core WCAG 2.1 AA audit — home page (mobile, menu open) | ✅ Pass | 1.5s | Mobile: 45 axe rules passed, 0 violations |
 | E3 | Semantics: one H1, no skipped heading levels, landmarks, named controls, image alts | ✅ Pass | 0.7s |  |
 | E4 | Keyboard: skip link is first tab stop and moves focus to main content; focus is visible | ✅ Pass | 0.8s | [13-keyboard-skip-link.png](screenshots/13-keyboard-skip-link.png) |
 | E5 | Reduced motion: content is visible immediately without animations | ✅ Pass | 0.7s |  |
@@ -96,8 +108,8 @@
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
 | G1 | Editor loads with no errors, populates every form from content, all tabs work | ✅ Pass | 1.1s | [16-admin-profile-tab.png](screenshots/16-admin-profile-tab.png) |
-| G2 | Editing a field marks the draft dirty, autosaves, and “Preview draft” shows it on the real site | ✅ Pass | 2.4s | [17-admin-preview-draft.png](screenshots/17-admin-preview-draft.png) |
-| G3 | Add a new product through the form; it appears on the site with correct arena filter counts | ✅ Pass | 2.6s | [18-admin-new-product-form.png](screenshots/18-admin-new-product-form.png)<br>[19-preview-new-summary-card.png](screenshots/19-preview-new-summary-card.png)<br>[20-preview-new-product.png](screenshots/20-preview-new-product.png) |
+| G2 | Editing a field marks the draft dirty, autosaves, and “Preview draft” shows it on the real site | ✅ Pass | 2.3s | [17-admin-preview-draft.png](screenshots/17-admin-preview-draft.png) |
+| G3 | Add a new product through the form; it appears on the site with correct arena filter counts | ✅ Pass | 2.5s | [18-admin-new-product-form.png](screenshots/18-admin-new-product-form.png)<br>[19-preview-new-summary-card.png](screenshots/19-preview-new-summary-card.png)<br>[20-preview-new-product.png](screenshots/20-preview-new-product.png) |
 | G4 | Reorder, duplicate and delete list items (with confirmation) | ✅ Pass | 1.4s |  |
 | G5 | Validation blocks publishing and points to each problem (required, email, URL, duplicate ID, unknown link) | ✅ Pass | 1.1s | [21-admin-validation-errors.png](screenshots/21-admin-validation-errors.png) |
 | G6 | Connect flow: bad token shows a friendly error; valid token connects | ✅ Pass | 1.1s | [22-admin-connected.png](screenshots/22-admin-connected.png) |
@@ -108,6 +120,49 @@
 | G11 | “Remember on this device” stores token in localStorage; Disconnect removes it everywhere | ✅ Pass | 1.7s | Reopening the editor reconnects automatically |
 | G12 | Editor is usable on mobile (390px): no horizontal overflow, axe audit clean | ✅ Pass | 1.5s | Admin axe: 0 violations<br>[25-admin-mobile-390.png](screenshots/25-admin-mobile-390.png) |
 | G13 | Products tab and Files tab render correctly (visual check) | ✅ Pass | 1.2s | [26-admin-products-tab.png](screenshots/26-admin-products-tab.png)<br>[27-admin-files-tab.png](screenshots/27-admin-files-tab.png)<br>[28-admin-connect-tab.png](screenshots/28-admin-connect-tab.png) |
+
+### R. Auto-discovered regression
+
+| ID | Test case | Result | Time | Details / evidence |
+|---|---|---|---|---|
+| R-code | Code consistency: every slot rendered by script.js exists in index.html (and vice versa); icons match editor options | ✅ Pass | 0.0s | 33 slots, 12 icons, 12 editor icon options |
+| R-section-top | Section #top renders with content | ✅ Pass | 0.0s |  |
+| R-section-about | Section #about renders with content | ✅ Pass | 0.0s |  |
+| R-section-approach | Section #approach renders with content | ✅ Pass | 0.0s |  |
+| R-section-products | Section #products renders with content | ✅ Pass | 0.0s |  |
+| R-section-ecosystem | Section #ecosystem renders with content | ✅ Pass | 0.0s |  |
+| R-section-experience | Section #experience renders with content | ✅ Pass | 0.0s |  |
+| R-section-skills | Section #skills renders with content | ✅ Pass | 0.0s |  |
+| R-section-education | Section #education renders with content | ✅ Pass | 0.0s |  |
+| R-section-contact | Section #contact renders with content | ✅ Pass | 0.0s |  |
+| R-slots | All 33 content slots are populated (or intentionally hidden) | ✅ Pass | 0.0s |  |
+| R-product-policy-foundry | Product “AI Policy Foundry”: summary card opens its full case with the right content and links | ✅ Pass | 2.2s |  |
+| R-product-soc-portal | Product “AI SOC Portal”: summary card opens its full case with the right content and links | ✅ Pass | 2.7s |  |
+| R-product-ai-spm | Product “AI Security Posture Management (AI-SPM)”: summary card opens its full case with the right content and links | ✅ Pass | 2.8s |  |
+| R-product-mcp | Product “Exploit Validation & Remediation MCP Server”: summary card opens its full case with the right content and links | ✅ Pass | 2.8s |  |
+| R-product-copilot | Product “Unified Risk Copilot”: summary card opens its full case with the right content and links | ✅ Pass | 2.8s |  |
+| R-product-hscode | Product “HS Code Prediction API”: summary card opens its full case with the right content and links | ✅ Pass | 2.7s |  |
+| R-product-kyc | Product “KYC-as-a-Service”: summary card opens its full case with the right content and links | ✅ Pass | 2.7s |  |
+| R-arena-defence | Arena “AI Defence Ecosystem” filter shows exactly its 3 product(s) | ✅ Pass | 0.8s |  |
+| R-arena-agentic | Arena “Agentic Platform” filter shows exactly its 2 product(s) | ✅ Pass | 0.8s |  |
+| R-arena-applied | Arena “Applied AI” filter shows exactly its 2 product(s) | ✅ Pass | 0.8s |  |
+| R-role-1 | Experience “Qualys”: tab shows title, dates, metrics and all 6 achievements | ✅ Pass | 3.1s |  |
+| R-role-2 | Experience “Fractional CPO”: tab shows title, dates, metrics and all 5 achievements | ✅ Pass | 0.4s |  |
+| R-role-3 | Experience “BP”: tab shows title, dates, metrics and all 6 achievements | ✅ Pass | 4.2s |  |
+| R-role-4 | Experience “Amdocs”: tab shows title, dates, metrics and all 4 achievements | ✅ Pass | 0.4s |  |
+| R-role-5 | Experience “Western Union”: tab shows title, dates, metrics and all 3 achievements | ✅ Pass | 2.6s |  |
+| R-role-6 | Experience “Pitney Bowes”: tab shows title, dates, metrics and all 2 achievements | ✅ Pass | 3.9s |  |
+| R-role-7 | Experience “Early career”: tab shows title, dates, metrics and all 2 achievements | ✅ Pass | 0.9s |  |
+| R-admin-tab-profile | Editor tab “profile” opens its panel | ✅ Pass | 0.1s |  |
+| R-admin-tab-products | Editor tab “products” opens its panel | ✅ Pass | 0.1s |  |
+| R-admin-tab-files | Editor tab “files” opens its panel | ✅ Pass | 0.0s |  |
+| R-admin-tab-connect | Editor tab “connect” opens its panel | ✅ Pass | 0.1s |  |
+| R-admin-tab-help | Editor tab “help” opens its panel | ✅ Pass | 0.0s |  |
+| R-admin-upload-resume | Editor upload “resume” has a file picker restricted to the right file types | ✅ Pass | 0.0s |  |
+| R-admin-upload-portfolio | Editor upload “portfolio” has a file picker restricted to the right file types | ✅ Pass | 0.1s |  |
+| R-admin-upload-photo | Editor upload “photo” has a file picker restricted to the right file types | ✅ Pass | 0.0s |  |
+| R-admin-fields | Every editor form field (83 kinds, discovered from the schema) round-trips into the draft, and the edited draft renders | ✅ Pass | 4.6s | 92 distinct fields edited through the UI — string: 47, lines: 5, md: 17, path: 3, email: 1, url: 4, paras: 1, text: 5, mdlines: 4, bool: 2, color: 1, select: 2 |
+| R-manifest | Regression suite is in sync with the code (coverage manifest updated) | ✅ Pass | 0.0s | 173 features tracked · 0 added, 0 removed since the last baseline |
 
 ## Screenshots
 

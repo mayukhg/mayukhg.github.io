@@ -1,0 +1,796 @@
+{
+  "site": {
+    "sections": [
+      "top",
+      "about",
+      "approach",
+      "products",
+      "ecosystem",
+      "experience",
+      "skills",
+      "education",
+      "contact"
+    ],
+    "slots": [
+      "badge",
+      "name",
+      "role",
+      "lede",
+      "hero-cta",
+      "portrait",
+      "stats",
+      "about-title",
+      "about-body",
+      "facts",
+      "approach-title",
+      "approach-sub",
+      "steps",
+      "throughline",
+      "principles",
+      "products-title",
+      "products-sub",
+      "glance",
+      "filters",
+      "products",
+      "ecosystem",
+      "exp-title",
+      "exp-sub",
+      "exp-tabs",
+      "exp-panels",
+      "skills-title",
+      "skills",
+      "writing",
+      "education",
+      "contact-title",
+      "contact-text",
+      "contact-links",
+      "foot-name"
+    ],
+    "navLinks": [
+      "about",
+      "approach",
+      "products",
+      "experience",
+      "skills",
+      "contact",
+      "top"
+    ],
+    "jsSlots": [
+      "badge",
+      "name",
+      "role",
+      "lede",
+      "hero-cta",
+      "portrait",
+      "stats",
+      "about-title",
+      "about-body",
+      "facts",
+      "approach-title",
+      "approach-sub",
+      "steps",
+      "throughline",
+      "principles",
+      "products-title",
+      "products-sub",
+      "filters",
+      "products",
+      "glance",
+      "ecosystem",
+      "exp-title",
+      "exp-sub",
+      "exp-tabs",
+      "exp-panels",
+      "skills-title",
+      "skills",
+      "writing",
+      "education",
+      "contact-title",
+      "contact-text",
+      "contact-links",
+      "foot-name"
+    ],
+    "icons": [
+      "shield",
+      "target",
+      "chip",
+      "wrench",
+      "grid",
+      "trend",
+      "alert",
+      "globe",
+      "bank",
+      "bolt",
+      "search",
+      "layers"
+    ]
+  },
+  "admin": {
+    "tabs": [
+      {
+        "tab": "tab-profile",
+        "panel": "panel-profile"
+      },
+      {
+        "tab": "tab-products",
+        "panel": "panel-products"
+      },
+      {
+        "tab": "tab-files",
+        "panel": "panel-files"
+      },
+      {
+        "tab": "tab-connect",
+        "panel": "panel-connect"
+      },
+      {
+        "tab": "tab-help",
+        "panel": "panel-help"
+      }
+    ],
+    "fields": [
+      {
+        "key": "person",
+        "label": "Basics",
+        "type": "object"
+      },
+      {
+        "key": "name",
+        "label": "Full name",
+        "type": "string"
+      },
+      {
+        "key": "headline",
+        "label": "Current title",
+        "type": "string"
+      },
+      {
+        "key": "tags",
+        "label": "Title tags",
+        "type": "lines"
+      },
+      {
+        "key": "badge",
+        "label": "Availability badge",
+        "type": "string"
+      },
+      {
+        "key": "lede",
+        "label": "Intro paragraph",
+        "type": "md"
+      },
+      {
+        "key": "location",
+        "label": "Location",
+        "type": "string"
+      },
+      {
+        "key": "portraitCaption",
+        "label": "Photo caption",
+        "type": "string"
+      },
+      {
+        "key": "photo",
+        "label": "Photo file",
+        "type": "path"
+      },
+      {
+        "key": "photoAlt",
+        "label": "Photo description (for screen readers)",
+        "type": "string"
+      },
+      {
+        "key": "links",
+        "label": "Contact links & files",
+        "type": "object"
+      },
+      {
+        "key": "email",
+        "label": "Email",
+        "type": "email"
+      },
+      {
+        "key": "linkedin",
+        "label": "LinkedIn URL",
+        "type": "url"
+      },
+      {
+        "key": "github",
+        "label": "GitHub URL",
+        "type": "url"
+      },
+      {
+        "key": "resume",
+        "label": "Résumé PDF",
+        "type": "path"
+      },
+      {
+        "key": "portfolio",
+        "label": "Portfolio PDF",
+        "type": "path"
+      },
+      {
+        "key": "stats",
+        "label": "Headline numbers",
+        "type": "array"
+      },
+      {
+        "key": "value",
+        "label": "Number",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "about",
+        "label": "About",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "paragraphs",
+        "label": "Paragraphs",
+        "type": "paras"
+      },
+      {
+        "key": "facts",
+        "label": "Quick facts",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "type": "string"
+      },
+      {
+        "key": "approach",
+        "label": "How I build (approach)",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "subtitle",
+        "label": "Sub-heading",
+        "type": "text"
+      },
+      {
+        "key": "steps",
+        "label": "Process steps",
+        "type": "array"
+      },
+      {
+        "key": "title",
+        "label": "Step",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Description",
+        "type": "string"
+      },
+      {
+        "key": "throughline",
+        "label": "Through-line callout",
+        "type": "md"
+      },
+      {
+        "key": "principles",
+        "label": "Principles",
+        "type": "array"
+      },
+      {
+        "key": "title",
+        "label": "Title",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Text",
+        "type": "md"
+      },
+      {
+        "key": "experience",
+        "label": "Experience",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "subtitle",
+        "label": "Sub-heading",
+        "type": "text"
+      },
+      {
+        "key": "roles",
+        "label": "Roles (first = shown first)",
+        "type": "array"
+      },
+      {
+        "key": "tab",
+        "label": "Tab label",
+        "type": "string"
+      },
+      {
+        "key": "period",
+        "label": "Tab years",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Job title",
+        "type": "string"
+      },
+      {
+        "key": "company",
+        "label": "Company",
+        "type": "string"
+      },
+      {
+        "key": "org",
+        "label": "Team / location line",
+        "type": "string"
+      },
+      {
+        "key": "dates",
+        "label": "Dates",
+        "type": "string"
+      },
+      {
+        "key": "summary",
+        "label": "One-line summary",
+        "type": "md"
+      },
+      {
+        "key": "metrics",
+        "label": "Metric chips",
+        "type": "lines"
+      },
+      {
+        "key": "bullets",
+        "label": "Achievements",
+        "type": "mdlines"
+      },
+      {
+        "key": "related",
+        "label": "Related product IDs",
+        "type": "lines"
+      },
+      {
+        "key": "skills",
+        "label": "Skills",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "groups",
+        "label": "Skill groups",
+        "type": "array"
+      },
+      {
+        "key": "name",
+        "label": "Group name",
+        "type": "string"
+      },
+      {
+        "key": "items",
+        "label": "Skills",
+        "type": "lines"
+      },
+      {
+        "key": "writing",
+        "label": "Writing & builds",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Text",
+        "type": "md"
+      },
+      {
+        "key": "education",
+        "label": "Education",
+        "type": "array"
+      },
+      {
+        "key": "mark",
+        "label": "Short badge",
+        "type": "string"
+      },
+      {
+        "key": "degree",
+        "label": "Qualification",
+        "type": "string"
+      },
+      {
+        "key": "school",
+        "label": "Institution · year",
+        "type": "string"
+      },
+      {
+        "key": "contact",
+        "label": "Contact section",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Text",
+        "type": "md"
+      },
+      {
+        "key": "meta",
+        "label": "Search & sharing",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Page title",
+        "type": "string"
+      },
+      {
+        "key": "description",
+        "label": "Description",
+        "type": "text"
+      },
+      {
+        "key": "_heading",
+        "label": "Section heading",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "subtitle",
+        "label": "Sub-heading",
+        "type": "text"
+      },
+      {
+        "key": "overview",
+        "label": "Summary panel (“at a glance” cards)",
+        "type": "object"
+      },
+      {
+        "key": "show",
+        "label": "Show the summary panel",
+        "type": "bool"
+      },
+      {
+        "key": "eyebrow",
+        "label": "Small label",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "arenas",
+        "label": "Arenas (filter groups)",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Arena ID",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "color",
+        "label": "Colour",
+        "type": "color"
+      },
+      {
+        "key": "products",
+        "label": "Products",
+        "type": "array"
+      },
+      {
+        "key": "name",
+        "label": "Product name",
+        "type": "string"
+      },
+      {
+        "key": "id",
+        "label": "Product ID",
+        "type": "string"
+      },
+      {
+        "key": "arena",
+        "label": "Arena",
+        "type": "select"
+      },
+      {
+        "key": "kicker",
+        "label": "Label above the name",
+        "type": "string"
+      },
+      {
+        "key": "icon",
+        "label": "Summary card icon",
+        "type": "select"
+      },
+      {
+        "key": "tagline",
+        "label": "Summary card tagline",
+        "type": "md"
+      },
+      {
+        "key": "summary",
+        "label": "One-line summary",
+        "type": "md"
+      },
+      {
+        "key": "client",
+        "label": "Implemented for",
+        "type": "string"
+      },
+      {
+        "key": "stack",
+        "label": "Built with",
+        "type": "lines"
+      },
+      {
+        "key": "github",
+        "label": "GitHub link",
+        "type": "url"
+      },
+      {
+        "key": "demo",
+        "label": "Live demo link",
+        "type": "url"
+      },
+      {
+        "key": "pain",
+        "label": "Customer pain",
+        "type": "md"
+      },
+      {
+        "key": "bet",
+        "label": "The product bet",
+        "type": "md"
+      },
+      {
+        "key": "whyLabel",
+        "label": "“Why AI” heading",
+        "type": "string"
+      },
+      {
+        "key": "why",
+        "label": "Why AI (or not)",
+        "type": "md"
+      },
+      {
+        "key": "tradeoff",
+        "label": "Key trade-off",
+        "type": "md"
+      },
+      {
+        "key": "validated",
+        "label": "Validated with",
+        "type": "md"
+      },
+      {
+        "key": "outcomes",
+        "label": "Value & outcomes",
+        "type": "mdlines"
+      },
+      {
+        "key": "note",
+        "label": "Footnote",
+        "type": "md"
+      },
+      {
+        "key": "ecosystem",
+        "label": "Spotlight section (AI Defence Ecosystem)",
+        "type": "object"
+      },
+      {
+        "key": "show",
+        "label": "Show this section on the site",
+        "type": "bool"
+      },
+      {
+        "key": "eyebrow",
+        "label": "Small label",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "subtitle",
+        "label": "Sub-heading",
+        "type": "text"
+      },
+      {
+        "key": "pillars",
+        "label": "Pillars",
+        "type": "array"
+      },
+      {
+        "key": "phase",
+        "label": "Phase",
+        "type": "string"
+      },
+      {
+        "key": "name",
+        "label": "Product",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Text",
+        "type": "md"
+      },
+      {
+        "key": "spine",
+        "label": "Callout",
+        "type": "md"
+      },
+      {
+        "key": "opportunity",
+        "label": "The opportunity",
+        "type": "mdlines"
+      },
+      {
+        "key": "differentiator",
+        "label": "The differentiator",
+        "type": "mdlines"
+      },
+      {
+        "key": "metrics",
+        "label": "Metrics",
+        "type": "array"
+      },
+      {
+        "key": "value",
+        "label": "Number",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "caption",
+        "label": "Caption",
+        "type": "string"
+      },
+      {
+        "key": "note",
+        "label": "Footnote",
+        "type": "md"
+      }
+    ],
+    "uploads": [
+      "resume",
+      "portfolio",
+      "photo"
+    ]
+  },
+  "content": {
+    "products": [
+      {
+        "id": "policy-foundry",
+        "name": "AI Policy Foundry",
+        "arena": "defence"
+      },
+      {
+        "id": "soc-portal",
+        "name": "AI SOC Portal",
+        "arena": "defence"
+      },
+      {
+        "id": "ai-spm",
+        "name": "AI Security Posture Management (AI-SPM)",
+        "arena": "defence"
+      },
+      {
+        "id": "mcp",
+        "name": "Exploit Validation & Remediation MCP Server",
+        "arena": "agentic"
+      },
+      {
+        "id": "copilot",
+        "name": "Unified Risk Copilot",
+        "arena": "agentic"
+      },
+      {
+        "id": "hscode",
+        "name": "HS Code Prediction API",
+        "arena": "applied"
+      },
+      {
+        "id": "kyc",
+        "name": "KYC-as-a-Service",
+        "arena": "applied"
+      }
+    ],
+    "arenas": [
+      "defence",
+      "agentic",
+      "applied"
+    ],
+    "roles": [
+      {
+        "tab": "Qualys",
+        "title": "Director of Product Management"
+      },
+      {
+        "tab": "Fractional CPO",
+        "title": "Fractional CPO"
+      },
+      {
+        "tab": "BP",
+        "title": "Head of Cloud Engineering"
+      },
+      {
+        "tab": "Amdocs",
+        "title": "Lead Principal Consultant"
+      },
+      {
+        "tab": "Western Union",
+        "title": "Technical Architect, Payments Products"
+      },
+      {
+        "tab": "Pitney Bowes",
+        "title": "Software Architect"
+      },
+      {
+        "tab": "Early career",
+        "title": "Quality & test foundation"
+      }
+    ],
+    "skillGroups": [
+      "AI & Product",
+      "Platform & Developer Experience",
+      "Cloud & Security",
+      "Certifications"
+    ],
+    "stats": 4,
+    "education": 3
+  }
+}

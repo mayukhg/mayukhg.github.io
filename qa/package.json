@@ -2,8 +2,13 @@
   "name": "portfolio-qa",
   "private": true,
   "type": "module",
-  "description": "End-to-end validation suite for the portfolio site and /admin editor",
-  "scripts": { "test": "node run-tests.mjs" },
+  "description": "Self-updating end-to-end regression suite for the portfolio site and /admin editor",
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
+    "test": "node run-tests.mjs",
+    "regression": "QA_MODE=full node run-tests.mjs",
+    "discover": "node -e \"import('./lib/discover.mjs').then(m=>console.log(JSON.stringify(m.discover('..'),null,2)))\""
+  },
   "devDependencies": {
     "axe-core": "4.11.0",
     "playwright": "1.56.1"

@@ -1,0 +1,51 @@
+name: Regression suite
+
+# Runs the full headless-browser regression suite on every push and pull request —
+# including commits published from the /admin editor, which bypass local git hooks.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: qa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: qa/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run regression suite
+        run: node run-tests.mjs
+        env:
+          QA_MODE: ci
+          QA_OUT: ${{ github.workspace }}/qa/.runs/ci
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f .runs/ci/VALIDATION_REPORT.md ]; then
+            sed -e 's#](screenshots/#](#g' .runs/ci/VALIDATION_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-report
+          path: qa/.runs/ci
+          retention-days: 30

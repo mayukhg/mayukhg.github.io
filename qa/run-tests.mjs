@@ -18,14 +18,24 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const QA = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(QA, '..');
-const SHOTS = path.join(QA, 'screenshots');
+const ROOT = path.resolve(QA, '..');                         // the code under test (a staged snapshot when run from the pre-commit hook)
+const OUT = path.resolve(process.env.QA_OUT || QA);          // where screenshots, results and the report are written
+const MANIFEST_OUT = path.resolve(process.env.QA_MANIFEST_OUT || path.join(QA, 'coverage-manifest.json'));
+const SHOTS = path.join(OUT, 'screenshots');
+const MODE = process.env.QA_MODE || 'full';                   // label shown in the report: full | pre-commit | ci
 
 const { chromium } = await import('playwright').catch(() => import(process.env.PW_MODULE || 'playwright'));
 const AXE_SRC = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 fs.rmSync(SHOTS, { recursive: true, force: true });
 fs.mkdirSync(SHOTS, { recursive: true });
+
+// Self-updating coverage: discover every testable feature in the current code and compare with the last baseline.
+const { discover, diffManifests } = await import('./lib/discover.mjs');
+const MANIFEST = discover(ROOT);
+let BASELINE = null;
+try { BASELINE = JSON.parse(fs.readFileSync(path.join(QA, 'coverage-manifest.json'), 'utf8')); } catch { /* first run */ }
+const CHANGES = diffManifests(BASELINE, MANIFEST);
 
 /* ------------------------------------------------------------------ server */
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json',
@@ -437,7 +447,7 @@ await test('C. Interactions', 'C6', 'Nav links scroll to sections; active link a
   const { context } = await ctx();
   const page = await open(context, '/');
   eq(await page.locator('#nav').evaluate((n) => n.classList.contains('scrolled')), false, 'not scrolled at top');
-  for (const id of ['about', 'approach', 'products', 'experience', 'skills', 'contact']) {
+  for (const id of MANIFEST.site.navLinks.filter((x) => x !== 'top')) {
     await page.locator(`.nav-links a[href="#${id}"]`).click();
     await page.waitForTimeout(900);
     const top = await page.locator('#' + id).evaluate((s) => s.getBoundingClientRect().top);
@@ -927,6 +937,191 @@ await test('G. Admin editor', 'G13', 'Products tab and Files tab render correctl
   await context.close();
 });
 
+/* =================================================================== R. Auto-discovered regression
+   Generated from the code on every run (qa/lib/discover.mjs): adding a section, slot, nav link, editor
+   tab/field, upload, product, arena or role automatically adds test cases below. */
+const R = 'R. Auto-discovered regression';
+
+await test(R, 'R-code', 'Code consistency: every slot rendered by script.js exists in index.html (and vice versa); icons match editor options', async () => {
+  const s = MANIFEST.site;
+  const missingInHtml = s.jsSlots.filter((x) => !s.slots.includes(x));
+  const unusedInJs = s.slots.filter((x) => !s.jsSlots.includes(x));
+  eq(missingInHtml.length, 0, `script.js renders slots missing from index.html: ${missingInHtml}`);
+  eq(unusedInJs.length, 0, `index.html slots never filled by script.js: ${unusedInJs}`);
+  const iconBlock = (fs.readFileSync(path.join(ROOT, 'admin/admin.js'), 'utf8').match(/var GLANCE_ICONS = \[([\s\S]*?)\];/) || ['', ''])[1];
+  const adminIcons = [...iconBlock.matchAll(/\['([a-z]+)', '[^']+'\]/g)].map((m) => m[1]);
+  assert(adminIcons.length, 'could not find the editor icon list (GLANCE_ICONS) in admin.js');
+  const jsIcons = (fs.readFileSync(path.join(ROOT, 'script.js'), 'utf8').match(/GLANCE_ICONS = \[([^\]]+)\]/) || ['', ''])[1].match(/[a-z]+/g) || [];
+  for (const i of adminIcons) assert(s.icons.includes(i), `editor offers icon "${i}" that has no SVG symbol`);
+  for (const i of jsIcons) assert(s.icons.includes(i), `script.js uses icon "${i}" that has no SVG symbol`);
+  productsJSON.products.forEach((p) => p.icon && assert(s.icons.includes(p.icon), `product ${p.id} uses unknown icon ${p.icon}`));
+  note(`${s.slots.length} slots, ${s.icons.length} icons, ${adminIcons.length} editor icon options`);
+});
+
+{
+  const { context, errors } = await ctx();
+  const page = await open(context, '/');
+  const ecoShown = productsJSON.ecosystem?.show !== false;
+  for (const id of MANIFEST.site.sections) {
+    await test(R, `R-section-${id}`, `Section #${id} renders with content`, async () => {
+      const info = await page.locator('#' + id).evaluate((el) => ({ hidden: el.hidden, text: el.innerText.trim().length, h: el.getBoundingClientRect().height }));
+      if (id === 'ecosystem' && !ecoShown) { eq(info.hidden, true, 'ecosystem hidden when show=false'); return; }
+      eq(info.hidden, false, 'section hidden'); assert(info.text > 20, `section has little/no text (${info.text} chars)`); assert(info.h > 100, 'section has no height');
+    });
+  }
+  await test(R, 'R-slots', `All ${MANIFEST.site.slots.length} content slots are populated (or intentionally hidden)`, async () => {
+    const empty = await page.evaluate((slots) => slots.filter((s) => {
+      const el = document.querySelector(`[data-slot="${s}"]`);
+      return el && !el.hidden && !el.closest('[hidden]') && !el.innerHTML.trim();
+    }), MANIFEST.site.slots);
+    eq(empty.length, 0, `Empty slots: ${empty.join(', ')}`);
+    eq(errors.length, 0, errors.join(' | '));
+  });
+  await context.close();
+}
+
+for (const p of productsJSON.products) {
+  await test(R, `R-product-${p.id}`, `Product “${p.name}”: summary card opens its full case with the right content and links`, async () => {
+    const { context } = await ctx();
+    const page = await open(context, '/');
+    const card = page.locator(`.glance-card[data-product="${p.id}"]`);
+    eq(await card.locator('h4').innerText(), p.name, 'summary card name');
+    await card.click();
+    await page.waitForFunction((id) => document.querySelector(`#${id} .acc-head`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
+    const acc = page.locator('#p-' + p.id);
+    const text = (await acc.innerText()).replace(/\s+/g, ' ');
+    const strip = (s) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    for (const k of ['summary', 'pain', 'bet', 'why', 'tradeoff', 'validated']) if (p[k]) assert(text.includes(strip(p[k]).slice(0, 60)), `${k} text missing`);
+    (p.outcomes || []).forEach((o) => assert(text.includes(strip(o)), `outcome missing: ${o}`));
+    if (p.github) eq(await acc.locator('.acc-link').first().getAttribute('href'), p.github, 'GitHub link');
+    if (p.demo) assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
+    const arena = productsJSON.arenas.find((a) => a.id === p.arena);
+    await page.locator(`.chipbtn[data-f="${p.arena}"]`).click();
+    assert(await acc.isVisible(), `visible under its arena filter (${arena?.label})`);
+    await context.close();
+  });
+}
+
+for (const a of productsJSON.arenas) {
+  const n = productsJSON.products.filter((p) => p.arena === a.id).length;
+  if (!n) continue;
+  await test(R, `R-arena-${a.id}`, `Arena “${a.label}” filter shows exactly its ${n} product(s)`, async () => {
+    const { context } = await ctx();
+    const page = await open(context, '/');
+    await page.locator(`.chipbtn[data-f="${a.id}"]`).click();
+    const shown = await page.locator('#product-list .acc:not([hidden])').evaluateAll((els) => els.map((e) => e.id.slice(2)));
+    eq(shown.join(','), productsJSON.products.filter((p) => p.arena === a.id).map((p) => p.id).join(','), 'filtered products');
+    await context.close();
+  });
+}
+
+{
+  const roles = profileJSON.experience.roles;
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  for (const [i, r] of roles.entries()) {
+    await test(R, `R-role-${i + 1}`, `Experience “${r.tab}”: tab shows title, dates, metrics and all ${r.bullets.length} achievements`, async () => {
+      await page.locator('.exp-tab').nth(i).click();
+      const panel = page.locator('.exp-panel:not([hidden])');
+      eq(await panel.count(), 1, 'one visible panel');
+      const txt = await panel.innerText();
+      assert(txt.includes(r.title), 'title'); if (r.dates) assert(txt.includes(r.dates), 'dates');
+      eq(await panel.locator('.exp-list li').count(), r.bullets.length, 'bullet count');
+      eq(await panel.locator('.exp-metrics li').count(), r.metrics.length, 'metric chips');
+      for (const id of r.related || []) {
+        await panel.locator(`a[href="#p-${id}"]`).click();
+        await page.waitForFunction((x) => document.querySelector(`#${x} .acc-head`).getAttribute('aria-expanded') === 'true', 'p-' + id);
+        await page.locator('.exp-tab').nth(i).click();
+      }
+    });
+  }
+  await context.close();
+}
+
+{
+  const { context, errors } = await ctx();
+  const page = await adminPage(context);
+  for (const t of MANIFEST.admin.tabs) {
+    await test(R, `R-admin-${t.tab}`, `Editor tab “${t.tab.replace('tab-', '')}” opens its panel`, async () => {
+      await page.click('#' + t.tab);
+      eq(await page.locator('#' + t.tab).getAttribute('aria-selected'), 'true', 'selected');
+      assert(await page.locator('#' + t.panel).isVisible(), 'panel visible');
+      eq(await page.locator('[role=tabpanel]:not([hidden])').count(), 1, 'exactly one panel');
+    });
+  }
+  for (const u of MANIFEST.admin.uploads) {
+    await test(R, `R-admin-upload-${u}`, `Editor upload “${u}” has a file picker restricted to the right file types`, async () => {
+      await page.click('#tab-files');
+      const accept = await page.locator(`.upload-card[data-upload="${u}"] input[type=file]`).getAttribute('accept');
+      assert(accept && (u === 'photo' ? /image\//.test(accept) : /pdf/.test(accept)), `accept="${accept}"`);
+    });
+  }
+  eq(errors.length, 0, errors.join(' | '));
+  await context.close();
+}
+
+await test(R, 'R-admin-fields', `Every editor form field (${new Set(MANIFEST.admin.fields.map((f) => f.key + f.type)).size} kinds, discovered from the schema) round-trips into the draft, and the edited draft renders`, async () => {
+  const { context, errors } = await ctx();
+  const page = await adminPage(context);
+  const byType = {};
+  let tested = 0;
+  for (const panel of ['profile', 'products']) {
+    await page.click('#tab-' + panel);
+    await page.evaluate((pn) => document.querySelectorAll(`#panel-${pn} details`).forEach((d) => { d.open = true; }), panel);
+    // One control per distinct schema field (the first instance, e.g. the first product's "Customer pain").
+    const count = await page.evaluate((pn) => {
+      const seen = new Set(); let n = 0;
+      document.querySelectorAll(`#panel-${pn} .field, #panel-${pn} label.check`).forEach((el) => {
+        if (!el._field || seen.has(el._field)) return;
+        seen.add(el._field); el.dataset.qa = pn + '-' + n++;
+      });
+      return n;
+    }, panel);
+    for (let i = 0; i < count; i++) {
+      const wrap = page.locator(`[data-qa="${panel}-${i}"]`);
+      const f = await wrap.evaluate((el) => ({ key: el._field.key, type: el._field.type, label: el._field.label, check: el._field.check || '' }));
+      const ctl = wrap.locator('input, textarea, select').first();
+      const tok = `qa${panel[0]}${i}`;
+      let expected;
+      switch (f.type) {
+        case 'email': expected = `${tok}@example.com`; await ctl.fill(expected); break;
+        case 'url': expected = `https://example.com/${tok}`; await ctl.fill(expected); break;
+        case 'path': expected = `assets/${tok}.pdf`; await ctl.fill(expected); break;
+        case 'color': expected = '#123456'; await ctl.fill(expected); break;
+        case 'lines': case 'mdlines': expected = [`${tok} one`, `${tok} two`]; await ctl.fill(expected.join('\n')); break;
+        case 'paras': expected = [`${tok} para one`, `${tok} para two`]; await ctl.fill(expected.join('\n\n')); break;
+        case 'bool': expected = !(await ctl.isChecked()); await ctl.click(); break;
+        case 'select': {
+          const opts = await ctl.locator('option').evaluateAll((os) => os.map((o) => o.value).filter(Boolean));
+          const cur = await ctl.inputValue();
+          expected = opts.find((o) => o !== cur) || cur; await ctl.selectOption(expected); break;
+        }
+        default: expected = f.check ? `${tok}-id` : `${tok} ${f.label}`; await ctl.fill(expected);
+      }
+      const actual = await wrap.evaluate((el) => el._parent[el._field.key]);
+      eq(JSON.stringify(actual), JSON.stringify(expected), `${panel} › ${f.label} (${f.type})`);
+      byType[f.type] = (byType[f.type] || 0) + 1; tested++;
+    }
+  }
+  await page.waitForTimeout(400);
+  const draft = await page.evaluate(() => localStorage.getItem('portfolio-admin-draft'));
+  assert(draft && draft.includes('qap0') && draft.includes('qap1'), 'draft autosaved with edits');
+  note(`${tested} distinct fields edited through the UI — ${Object.entries(byType).map(([k, v]) => `${k}: ${v}`).join(', ')}`);
+  const [preview] = await Promise.all([context.waitForEvent('page'), page.click('#btn-preview')]);
+  await preview.waitForSelector('html.ready', { timeout: 10000 });
+  const jsErrors = errors.filter((e) => e.startsWith('pageerror'));
+  eq(jsErrors.length, 0, `Preview of fully-edited draft threw: ${jsErrors.join(' | ')}`);
+  assert((await preview.locator('h1').innerText()).includes('qap'), 'edited name rendered');
+  await context.close();
+});
+
+await test(R, 'R-manifest', 'Regression suite is in sync with the code (coverage manifest updated)', async () => {
+  fs.writeFileSync(MANIFEST_OUT, JSON.stringify(MANIFEST, null, 2) + '\n');
+  note(`${CHANGES.total} features tracked · ${CHANGES.added.length} added, ${CHANGES.removed.length} removed since the last baseline`);
+  if (CHANGES.added.length) note(`Added (tests generated automatically): ${CHANGES.added.slice(0, 20).join(', ')}${CHANGES.added.length > 20 ? ' …' : ''}`);
+  if (CHANGES.removed.length) note(`Removed (their tests were retired): ${CHANGES.removed.slice(0, 20).join(', ')}`);
+});
+
 /* ------------------------------------------------------------------ report */
 await browser.close();
 server.close();
@@ -936,12 +1131,12 @@ const fail = results.length - pass;
 const groups = [...new Set(results.map((r) => r.group))];
 const pwVersion = JSON.parse(fs.readFileSync(require.resolve('playwright/package.json'), 'utf8')).version;
 const axeVersion = JSON.parse(fs.readFileSync(require.resolve('axe-core/package.json'), 'utf8')).version;
-fs.writeFileSync(path.join(QA, 'results.json'), JSON.stringify({ date: new Date().toISOString(), pass, fail, results }, null, 2));
+fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ date: new Date().toISOString(), mode: MODE, pass, fail, changes: CHANGES, results }, null, 2));
 
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 let md = `# Validation Report — Portfolio Site & Editor
 
-**Run:** ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC · **Browser:** Chromium (Playwright ${pwVersion}) · **Accessibility engine:** axe-core ${axeVersion}
+**Run:** ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC · **Mode:** ${MODE} · **Browser:** Chromium (Playwright ${pwVersion}) · **Accessibility engine:** axe-core ${axeVersion}
 
 ## Summary
 
@@ -957,6 +1152,17 @@ ${fail === 0 ? '**Overall status: PASS** — every test case passed.' : `**Overa
 | Area | Passed | Failed |
 |---|---|---|
 ${groups.map((g) => { const rs = results.filter((r) => r.group === g); const p = rs.filter((r) => r.status === 'PASS').length; return `| ${g} | ${p} | ${rs.length - p} |`; }).join('\n')}
+
+## Regression coverage (self-updating)
+
+The suite discovers features from the code on every run (\`qa/lib/discover.mjs\`) and generates the **R.** test cases from them. The checked-in \`qa/coverage-manifest.json\` records the last baseline.
+
+| | Count |
+|---|---|
+| Features tracked | ${CHANGES.total} |
+| Added since last baseline | ${CHANGES.added.length}${CHANGES.added.length ? ' — ' + CHANGES.added.slice(0, 12).map((x) => '`' + x + '`').join(', ') + (CHANGES.added.length > 12 ? ' …' : '') : ''} |
+| Removed since last baseline | ${CHANGES.removed.length}${CHANGES.removed.length ? ' — ' + CHANGES.removed.slice(0, 12).map((x) => '`' + x + '`').join(', ') : ''} |
+| Auto-generated test cases this run | ${results.filter((r) => r.group === R).length} |
 
 ## Test cases
 `;
@@ -1004,6 +1210,6 @@ npx playwright install chromium   # only if no Chromium is installed yet
 npm test           # rewrites screenshots/, results.json and VALIDATION_REPORT.md
 \`\`\`
 `;
-fs.writeFileSync(path.join(QA, 'VALIDATION_REPORT.md'), md);
-console.log(`\n${pass}/${results.length} passed · report: qa/VALIDATION_REPORT.md`);
+fs.writeFileSync(path.join(OUT, 'VALIDATION_REPORT.md'), md);
+console.log(`\n${pass}/${results.length} passed · report: ${path.relative(process.cwd(), path.join(OUT, 'VALIDATION_REPORT.md'))}`);
 process.exit(fail ? 1 : 0);

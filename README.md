@@ -47,7 +47,9 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 ├── assets/                 # Headshot, social share card, self-hosted fonts, uploaded PDFs
 ├── resume.pdf              # Downloadable résumé (phone number removed)
 ├── 404.html · robots.txt · sitemap.xml · .nojekyll
-└── qa/                     # End-to-end test suite, screenshots, validation report
+├── .githooks/pre-commit     # Runs the regression suite before every commit
+├── .github/workflows/       # Same suite in CI on every push / PR
+└── qa/                     # Regression suite, discovery, coverage manifest, report, screenshots
 ```
 
 ## 🛠️ Tech & design principles
@@ -66,15 +68,35 @@ python3 -m http.server 8000     # then open http://localhost:8000
 
 The page loads its content with `fetch`, so open it through a local server rather than as a `file://` URL.
 
-## ✅ Quality assurance
+## ✅ Regression suite (runs automatically)
 
-A full end-to-end suite (48 test cases) covers static integrity, rendering, interactions, five viewport sizes, accessibility, resilience and security, and the editor, using a mocked GitHub API.
+`qa/` contains a self-updating, end-to-end regression suite that runs in headless Chromium. It uses Playwright plus the axe-core accessibility checker. It covers:
 
-```bash
-cd qa && npm install && npm test
-```
+- static integrity and privacy (for example, no phone number published)
+- rendering and content accuracy
+- every interaction: summary cards, accordions, filters, tabs, deep links and nav
+- five viewport sizes
+- WCAG 2.1 AA accessibility
+- resilience and XSS safety
+- the whole `/admin` editor, against a mocked GitHub API
 
-Results: [`qa/VALIDATION_REPORT.md`](qa/VALIDATION_REPORT.md) · Screenshots: [`qa/screenshots/`](qa/screenshots/)
+**When it runs**
+
+| Trigger | How |
+|---|---|
+| Before every local `git commit` | `.githooks/pre-commit` tests the **staged snapshot**, and a failure blocks the commit. It's enabled automatically by `cd qa && npm install`, which sets `core.hooksPath`. Commits that only change docs or reports skip it. For an emergency bypass, use `SKIP_REGRESSION=1 git commit …`. |
+| Every push to `main` and every PR | `.github/workflows/regression.yml` runs the same suite, which also covers edits published from `/admin`. The report appears in the run summary, with screenshots as a downloadable artifact. |
+| Manually | `cd qa && npm test` refreshes the checked-in report and screenshots. |
+
+**How it updates itself when the code changes.** `qa/lib/discover.mjs` scans the code on every run and finds:
+
+- page sections, content slots, nav links and icons
+- editor tabs, form fields (read from the editor's form definitions) and uploads
+- every product, arena and role
+
+The suite then **generates test cases for each item** (group **R**). Adding a section, editor field or product therefore adds tests with no edits to the suite. Consistency checks fail when the code and the page disagree, for example when a slot is rendered but missing from `index.html`, or an icon is offered but not defined. The discovered list is saved to `qa/coverage-manifest.json`. The pre-commit hook re-stages it with each commit, so the diff shows exactly how coverage changed. The report lists the features added or removed since the last baseline.
+
+Report: [`qa/VALIDATION_REPORT.md`](qa/VALIDATION_REPORT.md) · Screenshots: [`qa/screenshots/`](qa/screenshots/)
 
 ## 🚢 Deployment
 

@@ -242,7 +242,9 @@
       input = h('input', { type: 'checkbox' });
       input.checked = !!v;
       input.addEventListener('change', function () { parent[f.key] = input.checked; changed(); });
-      return h('label', { class: 'check' }, [input, f.label]);
+      var chk = h('label', { class: 'check' }, [input, f.label]);
+      chk._field = f; chk._parent = parent; chk._input = input;
+      return chk;
     }
     if (f.type === 'select') {
       input = h('select', { required: !!f.required });

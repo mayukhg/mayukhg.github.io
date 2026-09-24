@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Regression gate: runs the full end-to-end suite (headless Chromium) against exactly
+# what is being committed. A failing test blocks the commit.
+#
+#   Enabled by:  cd qa && npm install        (runs "prepare" → git config core.hooksPath .githooks)
+#   Emergency:   SKIP_REGRESSION=1 git commit ...   (CI on GitHub still runs the suite)
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+staged="$(git diff --cached --name-only --diff-filter=ACMRD)"
+[ -z "$staged" ] && exit 0
+
+# Commits that only touch test artefacts / docs don't need a browser run.
+if ! grep -qvE '^(qa/(VALIDATION_REPORT\.md|results\.json|screenshots/.*|coverage-manifest\.json)|README\.md|\.gitignore)$' <<<"$staged"; then
+  echo "pre-commit: only reports/docs changed — regression suite skipped."
+  exit 0
+fi
+if [ "${SKIP_REGRESSION:-0}" = "1" ]; then
+  echo "pre-commit: SKIP_REGRESSION=1 — regression suite skipped (CI will still run it)." >&2
+  exit 0
+fi
+
+if [ ! -d "$root/qa/node_modules/playwright" ]; then
+  echo "pre-commit: installing QA dependencies (first run)…"
+  (cd "$root/qa" && npm install --silent --no-audit --no-fund)
+fi
+
+# Test the staged snapshot, not the working tree, so unstaged edits can't hide a failure.
+snap="$(mktemp -d)"
+trap 'rm -rf "$snap"' EXIT
+git checkout-index --all --prefix="$snap/"
+ln -s "$root/qa/node_modules" "$snap/qa/node_modules"
+
+out="$root/qa/.runs/pre-commit"
+rm -rf "$out"; mkdir -p "$out"
+echo "pre-commit: running regression suite on the staged changes (≈2 min)…"
+if QA_MODE=pre-commit QA_OUT="$out" QA_MANIFEST_OUT="$root/qa/coverage-manifest.json" node "$snap/qa/run-tests.mjs" > "$out/run.log" 2>&1; then
+  tail -n 1 "$out/run.log"
+  # Keep the suite's coverage baseline in step with the code in this same commit.
+  git -C "$root" add qa/coverage-manifest.json
+  exit 0
+else
+  echo "" >&2
+  echo "✘ Regression suite FAILED — commit blocked." >&2
+  grep -E '^✘' "$out/run.log" >&2 || tail -n 30 "$out/run.log" >&2
+  echo "" >&2
+  echo "Full report: qa/.runs/pre-commit/VALIDATION_REPORT.md  ·  log: qa/.runs/pre-commit/run.log" >&2
+  exit 1
+fi
