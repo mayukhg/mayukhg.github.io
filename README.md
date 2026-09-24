@@ -84,7 +84,7 @@ The page loads its content with `fetch`, so open it through a local server rathe
 
 | Trigger | How |
 |---|---|
-| Before every local `git commit` | `.githooks/pre-commit` tests the **staged snapshot**, and a failure blocks the commit. It's enabled automatically by `cd qa && npm install`, which sets `core.hooksPath`. Commits that only change docs or reports skip it. For an emergency bypass, use `SKIP_REGRESSION=1 git commit …`. |
+| Before every local `git commit` | `.githooks/pre-commit` tests the **staged snapshot**, and a failure blocks the commit. It's enabled automatically by `cd qa && npm install`, which sets `core.hooksPath`. Commits that only change docs or reports skip it. To run only the tests relevant to a change, use `QA_ONLY="A2,B4,R-section-*" git commit …` (test IDs, `*` as a prefix wildcard). CI still runs everything. For an emergency bypass, use `SKIP_REGRESSION=1 git commit …`. |
 | Every push to `main` and every PR | `.github/workflows/regression.yml` runs the same suite, which also covers edits published from `/admin`. The report appears in the run summary, with screenshots as a downloadable artifact. |
 | Manually | `cd qa && npm test` refreshes the checked-in report and screenshots. |
 

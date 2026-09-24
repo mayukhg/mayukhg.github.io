@@ -23,6 +23,10 @@ const OUT = path.resolve(process.env.QA_OUT || QA);          // where screenshot
 const MANIFEST_OUT = path.resolve(process.env.QA_MANIFEST_OUT || path.join(QA, 'coverage-manifest.json'));
 const SHOTS = path.join(OUT, 'screenshots');
 const MODE = process.env.QA_MODE || 'full';                   // label shown in the report: full | pre-commit | ci
+// Selective run: QA_ONLY="A2,B4,R-section-products" (comma list of test IDs or ID prefixes ending in *) runs only matching tests.
+const ONLY = (process.env.QA_ONLY || '').split(',').map((s) => s.trim()).filter(Boolean);
+const selected = (id) => !ONLY.length || ONLY.some((p) => (p.endsWith('*') ? id.startsWith(p.slice(0, -1)) : id === p));
+let skipped = 0;
 
 const { chromium } = await import('playwright').catch(() => import(process.env.PW_MODULE || 'playwright'));
 const AXE_SRC = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -106,6 +110,7 @@ async function shot(target, name, opts = {}) {
 }
 let current = null;
 async function test(group, id, name, fn) {
+  if (!selected(id)) { skipped++; return; }
   current = { group, id, name, status: 'PASS', ms: 0, notes: [], shots: [], error: '' };
   const t0 = Date.now();
   try { await fn(current); }
@@ -312,6 +317,21 @@ await test('B. Rendering', 'B4', 'Content fidelity: every product, role, skill a
   eq(missing.length, 0, `Missing text: ${missing.slice(0, 5).join(' | ')}`);
   assert(!PHONE_RE.test(text), 'Phone number rendered');
   assert(text.includes(profileJSON.links.email), 'email rendered');
+  await context.close();
+});
+
+await test('B. Rendering', 'B5', 'Section headings and sub-headings render exactly as written in the content files', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const expect = {
+    'about-title': profileJSON.about.title, 'approach-title': profileJSON.approach.title, 'approach-sub': profileJSON.approach.subtitle,
+    'products-title': productsJSON.title, 'products-sub': productsJSON.subtitle, 'exp-title': profileJSON.experience.title,
+    'exp-sub': profileJSON.experience.subtitle, 'skills-title': profileJSON.skills.title, 'contact-title': profileJSON.contact.title,
+  };
+  for (const [s, v] of Object.entries(expect)) eq((await page.locator(`[data-slot="${s}"]`).innerText()).trim(), v, `${s}`);
+  if (productsJSON.overview?.show !== false) eq(await page.locator('.glance-title').innerText(), productsJSON.overview.title, 'summary panel title');
+  await revealAll(page);
+  await shot(page.locator('#products .s-title'), 'products-heading');
   await context.close();
 });
 
@@ -1136,7 +1156,7 @@ fs.writeFileSync(path.join(OUT, 'results.json'), JSON.stringify({ date: new Date
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 let md = `# Validation Report — Portfolio Site & Editor
 
-**Run:** ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC · **Mode:** ${MODE} · **Browser:** Chromium (Playwright ${pwVersion}) · **Accessibility engine:** axe-core ${axeVersion}
+**Run:** ${new Date().toISOString().replace('T', ' ').slice(0, 16)} UTC · **Mode:** ${MODE}${ONLY.length ? ` (selective: ${ONLY.join(', ')} — ${skipped} other tests not run)` : ''} · **Browser:** Chromium (Playwright ${pwVersion}) · **Accessibility engine:** axe-core ${axeVersion}
 
 ## Summary
 
@@ -1211,5 +1231,5 @@ npm test           # rewrites screenshots/, results.json and VALIDATION_REPORT.m
 \`\`\`
 `;
 fs.writeFileSync(path.join(OUT, 'VALIDATION_REPORT.md'), md);
-console.log(`\n${pass}/${results.length} passed · report: ${path.relative(process.cwd(), path.join(OUT, 'VALIDATION_REPORT.md'))}`);
+console.log(`\n${pass}/${results.length} passed${ONLY.length ? ` (selective run, ${skipped} tests skipped)` : ''} · report: ${path.relative(process.cwd(), path.join(OUT, 'VALIDATION_REPORT.md'))}`);
 process.exit(fail ? 1 : 0);

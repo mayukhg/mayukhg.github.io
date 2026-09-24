@@ -3,6 +3,7 @@
 # what is being committed. A failing test blocks the commit.
 #
 #   Enabled by:  cd qa && npm install        (runs "prepare" → git config core.hooksPath .githooks)
+#   Selective:   QA_ONLY="A2,B4,R-section-*" git commit ...   (only matching test IDs; CI still runs everything)
 #   Emergency:   SKIP_REGRESSION=1 git commit ...   (CI on GitHub still runs the suite)
 set -euo pipefail
 
@@ -33,8 +34,8 @@ ln -s "$root/qa/node_modules" "$snap/qa/node_modules"
 
 out="$root/qa/.runs/pre-commit"
 rm -rf "$out"; mkdir -p "$out"
-echo "pre-commit: running regression suite on the staged changes (≈2 min)…"
-if QA_MODE=pre-commit QA_OUT="$out" QA_MANIFEST_OUT="$root/qa/coverage-manifest.json" node "$snap/qa/run-tests.mjs" > "$out/run.log" 2>&1; then
+if [ -n "${QA_ONLY:-}" ]; then echo "pre-commit: running SELECTED regression tests: $QA_ONLY"; else echo "pre-commit: running regression suite on the staged changes (≈2 min)…"; fi
+if QA_ONLY="${QA_ONLY:-}" QA_MODE=pre-commit QA_OUT="$out" QA_MANIFEST_OUT="$root/qa/coverage-manifest.json" node "$snap/qa/run-tests.mjs" > "$out/run.log" 2>&1; then
   tail -n 1 "$out/run.log"
   # Keep the suite's coverage baseline in step with the code in this same commit.
   git -C "$root" add qa/coverage-manifest.json
