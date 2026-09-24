@@ -130,23 +130,30 @@
       if (p.demo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
         .filter(function (x) { return x[1]; })
-        .map(function (x) { return '<div class="snap"><h3>' + esc(x[0]) + '</h3><p>' + md(x[1]) + '</p></div>'; }).join('');
+        .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
       var decide = '';
-      if (p.tradeoff) decide += '<div><h3>Key trade-off</h3><p>' + md(p.tradeoff) + '</p></div>';
-      if (p.validated) decide += '<div><h3>Validated with</h3><p>' + md(p.validated) + '</p></div>';
-      if (arr(p.outcomes).length) decide += '<div><h3>Value &amp; outcomes</h3><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
+      var d = 3;
+      if (p.tradeoff) decide += '<div style="--i:' + d++ + '"><h4>Key trade-off</h4><p>' + md(p.tradeoff) + '</p></div>';
+      if (p.validated) decide += '<div style="--i:' + d++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
+      if (arr(p.outcomes).length) decide += '<div style="--i:' + d++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
+      // Teaser: first lines of the customer pain, faded out, so the card shows there is depth inside.
+      var peek = p.pain ? '<div class="acc-peek" aria-hidden="true"><div class="peek-in"><span class="peek-label">Customer pain</span><p>' + md(p.pain) + '</p></div></div>' : '';
       return '<article class="acc" data-arena="' + esc(p.arena) + '" id="p-' + esc(id) + '"' + color + '>' +
-        '<button class="acc-head" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
-          '<span class="acc-main">' +
-            '<span class="kicker">' + esc(p.kicker || a.label || '') + '</span>' +
-            '<span class="acc-title">' + esc(p.name) + '</span>' +
-            '<span class="acc-sum">' + md(p.summary) + '</span>' +
-            (tags ? '<span class="acc-meta">' + tags + '</span>' : '') +
-          '</span>' +
-          '<span class="chev" aria-hidden="true"><svg><use href="#i-chev"/></svg></span>' +
-        '</button>' +
-        (links ? '<div class="acc-links">' + links + '</div>' : '') +
-        '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details"><div class="acc-inner">' +
+        '<div class="acc-head">' +
+          '<span class="kicker">' + esc(p.kicker || a.label || '') + '</span>' +
+          '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
+          '<p class="acc-sum">' + md(p.summary) + '</p>' +
+          (tags ? '<div class="acc-meta">' + tags + '</div>' : '') +
+        '</div>' +
+        peek +
+        '<div class="acc-links">' +
+          '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
+            '<span class="t-labels"><span class="t-open">Explore case study</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
+            '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
+          '</button>' +
+          links +
+        '</div>' +
+        '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details" inert><div class="acc-inner">' +
           (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
           (decide ? '<div class="decide">' + decide + '</div>' : '') +
           (p.note ? '<p class="note">' + md(p.note) + '</p>' : '') +
@@ -289,21 +296,40 @@
   /* ---------- interactions ---------- */
   function wire() {
     var nav = document.getElementById('nav');
+    // Product cards: one real toggle button per card (keyboard + screen readers); the rest of the
+    // card surface is a mouse/touch shortcut. Height animates in CSS (grid rows 0fr → 1fr).
     function setAcc(acc, open) {
-      var head = acc.querySelector('.acc-head'), body = acc.querySelector('.acc-body');
+      var btn = acc.querySelector('.acc-toggle'), body = acc.querySelector('.acc-body');
       acc.classList.toggle('open', open);
-      head.setAttribute('aria-expanded', open ? 'true' : 'false');
-      body.style.maxHeight = open ? body.scrollHeight + 'px' : '0px';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.querySelector('.t-open').setAttribute('aria-hidden', open ? 'true' : 'false');
+      btn.querySelector('.t-close').setAttribute('aria-hidden', open ? 'false' : 'true');
+      if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
     }
-    document.querySelectorAll('.acc-head').forEach(function (head) {
-      head.addEventListener('click', function () {
-        var acc = head.closest('.acc');
+    document.querySelectorAll('.acc').forEach(function (acc) {
+      acc.querySelector('.acc-toggle').addEventListener('click', function (e) {
+        e.stopPropagation();
+        setAcc(acc, !acc.classList.contains('open'));
+      });
+      acc.addEventListener('click', function (e) {
+        if (e.target.closest('a, button, .acc-body')) return;          // links, buttons and the open content keep their own behaviour
+        if (String(window.getSelection && window.getSelection()).length) return; // don't toggle while selecting text
         setAcc(acc, !acc.classList.contains('open'));
       });
     });
-    window.addEventListener('resize', function () {
-      document.querySelectorAll('.acc.open .acc-body').forEach(function (b) { b.style.maxHeight = b.scrollHeight + 'px'; });
-    });
+    // One-time hint: the first card's button pulses gently the first time it scrolls into view.
+    var firstToggle = document.querySelector('.acc .acc-toggle');
+    var seenHint = false;
+    try { seenHint = localStorage.getItem('portfolio-explore-hint') === '1'; } catch (e) { /* storage unavailable */ }
+    if (firstToggle && !seenHint && 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var hio = new IntersectionObserver(function (en) {
+        if (!en[0].isIntersecting) return;
+        hio.disconnect();
+        setTimeout(function () { firstToggle.classList.add('hint'); }, 500);
+        try { localStorage.setItem('portfolio-explore-hint', '1'); } catch (e) { /* ignore */ }
+      }, { threshold: 1 });
+      hio.observe(firstToggle);
+    }
 
     var chips = document.querySelectorAll('.chipbtn');
     function applyFilter(f) {
@@ -324,8 +350,8 @@
       var y = 0, el = card;
       while (el) { y += el.offsetTop; el = el.offsetParent; }
       window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
-      var head = card.querySelector('.acc-head');
-      if (head) head.focus({ preventScroll: true });
+      var btn = card.querySelector('.acc-toggle');
+      if (btn) btn.focus({ preventScroll: true });
       return true;
     }
     function openFromHash() {

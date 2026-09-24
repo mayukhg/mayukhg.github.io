@@ -340,18 +340,93 @@ await test('C. Interactions', 'C1', 'Product card accordion expands and collapse
   const { context } = await ctx();
   const page = await open(context, '/');
   const card = page.locator('#p-policy-foundry');
-  const head = card.locator('.acc-head');
+  const head = card.locator('.acc-toggle');
   eq(await head.getAttribute('aria-expanded'), 'false', 'initially collapsed');
   await head.click(); await page.waitForTimeout(500);
   eq(await head.getAttribute('aria-expanded'), 'true', 'expanded');
   assert((await card.locator('.acc-body').evaluate((b) => b.getBoundingClientRect().height)) > 200, 'body visible');
-  assert(await card.locator('text=Customer pain').isVisible(), 'details visible');
+  assert(await card.locator('.acc-body').getByText('Customer pain').isVisible(), 'details visible');
   await revealAll(page);
   await shot(card, 'product-card-expanded');
   await head.click(); await page.waitForTimeout(500);
   eq(await head.getAttribute('aria-expanded'), 'false', 'collapsed again');
-  eq(await card.locator('.acc-body').evaluate((b) => b.getBoundingClientRect().height), 0, 'body hidden');
+  assert((await card.locator('.acc-body').evaluate((b) => b.getBoundingClientRect().height)) <= 1, 'body hidden');
   await context.close();
+});
+
+await test('C. Interactions', 'C9', 'Product card affordance: “Explore case study” button, content preview, whole-card click, animations, one-time hint', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const p0 = productsJSON.products[0];
+  const card = page.locator('#p-' + p0.id);
+  const btn = card.locator('.acc-toggle');
+  const visibleLabel = () => btn.evaluate((b) => [...b.querySelectorAll('.t-labels > span')].find((s) => getComputedStyle(s).opacity === '1')?.textContent);
+  // Closed state: explicit label, preview of the customer pain, no bare chevron, hidden content unreachable.
+  eq(await card.locator('.chev').count(), 0, 'old chevron removed');
+  // Card chrome keeps its styling (guards against CSS rules being lost in refactors).
+  const chrome = await card.evaluate((c) => {
+    const st = (sel) => { const e = c.querySelector(sel); return e ? getComputedStyle(e) : null; };
+    return { kUpper: st('.kicker')?.textTransform, kPad: st('.kicker')?.paddingLeft, tagRadius: st('.tag')?.borderRadius, tagBorder: st('.tag')?.borderTopWidth,
+      clientRadius: st('.client')?.borderRadius, btnBg: st('.acc-toggle')?.backgroundColor, titleFont: st('.acc-title')?.fontFamily };
+  });
+  eq(chrome.kUpper, 'uppercase', 'kicker style'); assert(parseFloat(chrome.kPad) >= 8, 'kicker padding');
+  assert(parseFloat(chrome.tagRadius) > 100 && chrome.tagBorder === '1px', 'tag pill style');
+  assert(parseFloat(chrome.clientRadius) > 100, 'client pill style');
+  assert(chrome.btnBg !== 'rgba(0, 0, 0, 0)', 'button filled');
+  assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
+  eq(await visibleLabel(), 'Explore case study', 'closed label');
+  const strip = (s) => s.replace(/\*\*/g, '');
+  assert((await card.locator('.acc-peek').innerText()).includes(strip(p0.pain).slice(0, 40)), 'customer-pain preview shown');
+  eq(await card.locator('.acc-peek').getAttribute('aria-hidden'), 'true', 'preview hidden from screen readers (duplicate text)');
+  eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
+  // Hover: card lifts, button arrow nudges.
+  await card.scrollIntoViewIfNeeded(); await revealAll(page);
+  await card.locator('.acc-title').hover();
+  await page.waitForTimeout(350);
+  assert(await card.evaluate((c) => /-2px/.test(getComputedStyle(c).translate)), 'card lifts on hover');
+  assert(await card.locator('.t-arrow').evaluate((a) => getComputedStyle(a).transform !== 'none'), 'arrow nudges on hover');
+  await shot(card, 'product-card-closed-hover');
+  // Whole-card click (on the summary text) opens it.
+  await card.locator('.acc-sum').click();
+  await page.waitForTimeout(700);
+  eq(await btn.getAttribute('aria-expanded'), 'true', 'card surface click opens');
+  eq(await visibleLabel(), 'Hide details', 'label switches');
+  eq(await card.locator('.acc-body').getAttribute('inert'), null, 'open content is interactive');
+  assert((await card.locator('.acc-peek').evaluate((e) => e.getBoundingClientRect().height)) < 2, 'preview collapses when open');
+  assert(await card.locator('.t-arrow').evaluate((a) => /matrix\(0, -1, 1, 0/.test(getComputedStyle(a).transform) || /matrix\(6\.\d+e-17, -1/.test(getComputedStyle(a).transform)), 'arrow turns to point up');
+  // Staggered reveal: later blocks start later.
+  const delays = await card.locator('.snap, .decide > div').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).transitionDelay)));
+  assert(delays.every((d, i) => i === 0 || d > delays[i - 1]), `stagger delays increase: ${delays}`);
+  assert(await card.locator('.snap').first().evaluate((e) => getComputedStyle(e).opacity === '1'), 'blocks fully visible after animation');
+  await shot(card, 'product-card-open');
+  // Clicks inside the open content, and on product links, do not collapse the card.
+  await card.locator('.snap').first().click();
+  eq(await btn.getAttribute('aria-expanded'), 'true', 'click inside content keeps it open');
+  const [gh] = await Promise.all([context.waitForEvent('page'), card.locator('.acc-link').first().click()]);
+  await gh.close();
+  eq(await btn.getAttribute('aria-expanded'), 'true', 'GitHub link does not toggle');
+  // Keyboard: the button toggles with Enter/Space; header click closes again.
+  await btn.focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(600);
+  eq(await btn.getAttribute('aria-expanded'), 'false', 'Enter closes');
+  await page.keyboard.press('Space'); await page.waitForTimeout(100);
+  eq(await btn.getAttribute('aria-expanded'), 'true', 'Space opens');
+  await card.locator('.acc-title').click(); await page.waitForTimeout(100);
+  eq(await btn.getAttribute('aria-expanded'), 'false', 'header click closes');
+  await context.close();
+  // One-time hint: pulses on first view only; never under reduced motion.
+  const c2 = await ctx();
+  const p2 = await open(c2.context, '/');
+  await p2.locator('.acc-toggle').first().scrollIntoViewIfNeeded();
+  await p2.waitForFunction(() => document.querySelector('.acc-toggle').classList.contains('hint'), null, { timeout: 4000 });
+  await p2.reload({ waitUntil: 'networkidle' }); await p2.waitForSelector('html.ready');
+  await p2.locator('.acc-toggle').first().scrollIntoViewIfNeeded(); await p2.waitForTimeout(1200);
+  eq(await p2.locator('.acc-toggle').first().evaluate((b) => b.classList.contains('hint')), false, 'hint shown only once');
+  await c2.context.close();
+  const c3 = await ctx({ reducedMotion: 'reduce' });
+  const p3 = await open(c3.context, '/');
+  await p3.locator('.acc-toggle').first().scrollIntoViewIfNeeded(); await p3.waitForTimeout(1200);
+  eq(await p3.locator('.acc-toggle').first().evaluate((b) => b.classList.contains('hint')), false, 'no hint with reduced motion');
+  await c3.context.close();
 });
 
 await test('C. Interactions', 'C2', 'Arena filter chips show the right products and counts', async () => {
@@ -411,7 +486,7 @@ await test('C. Interactions', 'C5', 'Deep links open products (URL hash, filtere
   const { context } = await ctx();
   let page = await open(context, '/#p-kyc');
   await page.waitForTimeout(500);
-  eq(await page.locator('#p-kyc .acc-head').getAttribute('aria-expanded'), 'true', 'hash opens card');
+  eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'hash opens card');
   await page.close();
   page = await open(context, '/');
   await page.locator('.chipbtn[data-f="agentic"]').click();
@@ -419,7 +494,7 @@ await test('C. Interactions', 'C5', 'Deep links open products (URL hash, filtere
   await page.locator('.exp-panel:not([hidden]) .stackline a').first().click();
   await page.waitForTimeout(600);
   assert(await page.locator('#p-kyc').isVisible(), 'filtered-out card is revealed');
-  eq(await page.locator('#p-kyc .acc-head').getAttribute('aria-expanded'), 'true', 'related link opens card');
+  eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'related link opens card');
   await context.close();
 });
 
@@ -442,7 +517,7 @@ await test('C. Interactions', 'C8', 'Summary (“at a glance”) cards: one per 
     // wait for the smooth scroll to bring the card just below the sticky nav
     await page.waitForFunction((id) => { const t = document.getElementById(id).getBoundingClientRect().top, n = document.getElementById('nav').offsetHeight; return t >= n && t < n + 60; }, 'p-' + p.id, { timeout: 5000 }).catch(() => {});
     assert(await page.locator('#p-' + p.id).isVisible(), `${p.id} visible after click`);
-    eq(await page.locator(`#p-${p.id} .acc-head`).getAttribute('aria-expanded'), 'true', `${p.id} opened`);
+    eq(await page.locator(`#p-${p.id} .acc-toggle`).getAttribute('aria-expanded'), 'true', `${p.id} opened`);
     eq(await page.evaluate(() => location.hash), '#p-' + p.id, 'URL hash updated');
     const top = await page.locator('#p-' + p.id).evaluate((el) => el.getBoundingClientRect().top);
     const navH = await page.locator('#nav').evaluate((n) => n.offsetHeight);
@@ -451,15 +526,15 @@ await test('C. Interactions', 'C8', 'Summary (“at a glance”) cards: one per 
   }
   // Clicking the same card again (hash unchanged) re-opens a collapsed card.
   const last = productsJSON.products[productsJSON.products.length - 1].id;
-  await page.locator(`#p-${last} .acc-head`).click();
+  await page.locator(`#p-${last} .acc-toggle`).click();
   await page.locator(`.glance-card[data-product="${last}"]`).click();
   await page.waitForTimeout(500);
-  eq(await page.locator(`#p-${last} .acc-head`).getAttribute('aria-expanded'), 'true', 're-click re-opens');
+  eq(await page.locator(`#p-${last} .acc-toggle`).getAttribute('aria-expanded'), 'true', 're-click re-opens');
   // Keyboard: cards are links reachable with Tab and activated with Enter.
   await page.locator('.glance-card').nth(1).focus();
   await page.keyboard.press('Enter');
   await page.waitForTimeout(500);
-  eq(await page.locator(`#p-${productsJSON.products[1].id} .acc-head`).getAttribute('aria-expanded'), 'true', 'Enter opens');
+  eq(await page.locator(`#p-${productsJSON.products[1].id} .acc-toggle`).getAttribute('aria-expanded'), 'true', 'Enter opens');
   await context.close();
 });
 
@@ -503,7 +578,7 @@ for (const [w, hgt, label] of VIEWPORTS) {
     const { context, errors } = await ctx({ viewport: { width: w, height: hgt }, isMobile: w < 800, hasTouch: w < 800 });
     const page = await open(context, '/');
     await revealAll(page);
-    await page.locator('.acc-head').first().click();
+    await page.locator('.acc-toggle').first().click();
     await page.waitForTimeout(450);
     const o = await page.evaluate(() => {
       const vw = document.documentElement.clientWidth;
@@ -544,7 +619,7 @@ await test('D. Responsive', 'D-touch', 'Touch targets are at least 44×44px on m
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await open(context, '/');
   await page.locator('#burger').click();
-  const small = await page.evaluate(() => [...document.querySelectorAll('#burger, .nav-links a, .btn, .chipbtn, .acc-link, .exp-tab, .acc-head')]
+  const small = await page.evaluate(() => [...document.querySelectorAll('#burger, .nav-links a, .btn, .chipbtn, .acc-link, .exp-tab, .acc-toggle, .glance-card')]
     .filter((el) => el.offsetParent !== null)
     .map((el) => { const r = el.getBoundingClientRect(); return { n: el.textContent.trim().slice(0, 30), w: r.width, h: r.height }; })
     .filter((r) => r.h < 44 || r.w < 44));
@@ -566,7 +641,7 @@ async function axe(page, label) {
 await test('E. Accessibility', 'E1', 'axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card)', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  await page.locator('.acc-head').first().click(); await page.waitForTimeout(450);
+  await page.locator('.acc-toggle').first().click(); await page.waitForTimeout(450);
   const v = await axe(page, 'Desktop');
   eq(v.length, 0, `axe violations: ${v.map((x) => x.id).join(', ')}`);
   await context.close();
@@ -749,8 +824,8 @@ await test('G. Admin editor', 'G3', 'Add a new product through the form; it appe
   await shot(newCard, 'preview-new-summary-card');
   await newCard.click();
   await preview.waitForTimeout(500);
-  eq(await preview.locator('#p-agent-evaluation-harness .acc-head').getAttribute('aria-expanded'), 'true', 'summary card opens the new product');
-  assert(await preview.locator('#p-agent-evaluation-harness strong', { hasText: 'regression tests' }).isVisible(), 'rich text rendered');
+  eq(await preview.locator('#p-agent-evaluation-harness .acc-toggle').getAttribute('aria-expanded'), 'true', 'summary card opens the new product');
+  assert(await preview.locator('#p-agent-evaluation-harness .acc-body strong', { hasText: 'regression tests' }).isVisible(), 'rich text rendered');
   await revealAll(preview);
   await shot(preview.locator('#p-agent-evaluation-harness'), 'preview-new-product');
   await context.close();
@@ -1007,7 +1082,7 @@ for (const p of productsJSON.products) {
     const card = page.locator(`.glance-card[data-product="${p.id}"]`);
     eq(await card.locator('h4').innerText(), p.name, 'summary card name');
     await card.click();
-    await page.waitForFunction((id) => document.querySelector(`#${id} .acc-head`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
+    await page.waitForFunction((id) => document.querySelector(`#${id} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
     const acc = page.locator('#p-' + p.id);
     const text = (await acc.innerText()).replace(/\s+/g, ' ');
     const strip = (s) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
@@ -1050,7 +1125,7 @@ for (const a of productsJSON.arenas) {
       eq(await panel.locator('.exp-metrics li').count(), r.metrics.length, 'metric chips');
       for (const id of r.related || []) {
         await panel.locator(`a[href="#p-${id}"]`).click();
-        await page.waitForFunction((x) => document.querySelector(`#${x} .acc-head`).getAttribute('aria-expanded') === 'true', 'p-' + id);
+        await page.waitForFunction((x) => document.querySelector(`#${x} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + id);
         await page.locator('.exp-tab').nth(i).click();
       }
     });
