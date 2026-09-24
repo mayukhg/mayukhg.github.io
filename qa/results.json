@@ -1,6 +1,6 @@
 {
-  "date": "2026-09-24T07:10:41.563Z",
-  "pass": 48,
+  "date": "2026-09-24T07:25:39.599Z",
+  "pass": 49,
   "fail": 0,
   "results": [
     {
@@ -32,7 +32,7 @@
       "id": "A3",
       "name": "Phone number is not published in any site text file",
       "status": "PASS",
-      "ms": 8,
+      "ms": 6,
       "notes": [
         "12 text files scanned; résumé PDF text layer additionally verified with pdfminer (see report)"
       ],
@@ -44,7 +44,7 @@
       "id": "A4",
       "name": "Every local URL referenced by pages and content resolves (HTTP 200)",
       "status": "PASS",
-      "ms": 47,
+      "ms": 51,
       "notes": [
         "9 local references checked"
       ],
@@ -76,7 +76,7 @@
       "id": "B1",
       "name": "Home page loads with zero console errors, page errors or failed requests",
       "status": "PASS",
-      "ms": 1935,
+      "ms": 1963,
       "notes": [
         "DOMContentLoaded 35 ms (local server); web fonts loaded"
       ],
@@ -90,7 +90,7 @@
       "id": "B2",
       "name": "Hero renders name, title, badge, intro (with bold), CTAs, photo and 4 stats",
       "status": "PASS",
-      "ms": 1006,
+      "ms": 1023,
       "notes": [],
       "shots": [
         "02-hero-desktop.png"
@@ -102,9 +102,9 @@
       "id": "B3",
       "name": "Every section renders the expected number of items from content JSON",
       "status": "PASS",
-      "ms": 704,
+      "ms": 717,
       "notes": [
-        "facts=6, steps=6, principles=3, products=7, pillars=3, metrics=4, roles=7, panels=7, skills=4, edu=3, contact=4"
+        "facts=6, steps=6, principles=3, products=7, glance=7, pillars=3, metrics=4, roles=7, panels=7, skills=4, edu=3, contact=4"
       ],
       "shots": [],
       "error": ""
@@ -114,7 +114,7 @@
       "id": "B4",
       "name": "Content fidelity: every product, role, skill and education entry appears on the page",
       "status": "PASS",
-      "ms": 716,
+      "ms": 692,
       "notes": [],
       "shots": [],
       "error": ""
@@ -124,7 +124,7 @@
       "id": "C1",
       "name": "Product card accordion expands and collapses (aria-expanded + height)",
       "status": "PASS",
-      "ms": 1975,
+      "ms": 1969,
       "notes": [],
       "shots": [
         "03-product-card-expanded.png"
@@ -136,7 +136,7 @@
       "id": "C2",
       "name": "Arena filter chips show the right products and counts",
       "status": "PASS",
-      "ms": 1219,
+      "ms": 1453,
       "notes": [],
       "shots": [
         "04-filter-agentic.png"
@@ -148,7 +148,7 @@
       "id": "C3",
       "name": "Experience tabs: clicking each tab shows exactly its panel",
       "status": "PASS",
-      "ms": 3479,
+      "ms": 4057,
       "notes": [
         "7 tabs exercised"
       ],
@@ -162,7 +162,7 @@
       "id": "C4",
       "name": "Experience tabs support keyboard (Arrow keys, Home, End) with roving tabindex",
       "status": "PASS",
-      "ms": 745,
+      "ms": 748,
       "notes": [],
       "shots": [],
       "error": ""
@@ -172,9 +172,21 @@
       "id": "C5",
       "name": "Deep links open products (URL hash, filtered state, experience “related product” links)",
       "status": "PASS",
-      "ms": 2679,
+      "ms": 4431,
       "notes": [],
       "shots": [],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C8",
+      "name": "Summary (“at a glance”) cards: one per product, in order, each opens its product case",
+      "status": "PASS",
+      "ms": 9245,
+      "notes": [],
+      "shots": [
+        "06-summary-cards-desktop.png"
+      ],
       "error": ""
     },
     {
@@ -182,7 +194,7 @@
       "id": "C6",
       "name": "Nav links scroll to sections; active link and scrolled state update",
       "status": "PASS",
-      "ms": 6500,
+      "ms": 6448,
       "notes": [],
       "shots": [],
       "error": ""
@@ -192,7 +204,7 @@
       "id": "C7",
       "name": "Links: external open safely in new tab, mailto correct, résumé PDF served",
       "status": "PASS",
-      "ms": 733,
+      "ms": 731,
       "notes": [
         "12 external links, 7 product GitHub links"
       ],
@@ -204,10 +216,10 @@
       "id": "D-1440",
       "name": "No horizontal overflow and correct layout at 1440px (desktop)",
       "status": "PASS",
-      "ms": 1919,
+      "ms": 2069,
       "notes": [],
       "shots": [
-        "06-desktop-1440-full-page.jpg"
+        "07-desktop-1440-full-page.jpg"
       ],
       "error": ""
     },
@@ -216,10 +228,10 @@
       "id": "D-1024",
       "name": "No horizontal overflow and correct layout at 1024px (laptop)",
       "status": "PASS",
-      "ms": 1770,
+      "ms": 1785,
       "notes": [],
       "shots": [
-        "07-laptop-1024-full-page.jpg"
+        "08-laptop-1024-full-page.jpg"
       ],
       "error": ""
     },
@@ -228,10 +240,10 @@
       "id": "D-768",
       "name": "No horizontal overflow and correct layout at 768px (tablet)",
       "status": "PASS",
-      "ms": 1898,
+      "ms": 1952,
       "notes": [],
       "shots": [
-        "08-tablet-768-full-page.jpg"
+        "09-tablet-768-full-page.jpg"
       ],
       "error": ""
     },
@@ -240,10 +252,10 @@
       "id": "D-390",
       "name": "No horizontal overflow and correct layout at 390px (mobile)",
       "status": "PASS",
-      "ms": 1644,
+      "ms": 1734,
       "notes": [],
       "shots": [
-        "09-mobile-390-full-page.jpg"
+        "10-mobile-390-full-page.jpg"
       ],
       "error": ""
     },
@@ -252,10 +264,10 @@
       "id": "D-320",
       "name": "No horizontal overflow and correct layout at 320px (small-mobile)",
       "status": "PASS",
-      "ms": 1616,
+      "ms": 1656,
       "notes": [],
       "shots": [
-        "10-small-mobile-320-full-page.jpg"
+        "11-small-mobile-320-full-page.jpg"
       ],
       "error": ""
     },
@@ -264,10 +276,10 @@
       "id": "D-menu",
       "name": "Mobile menu opens/closes (button, link tap, Escape) with correct ARIA",
       "status": "PASS",
-      "ms": 964,
+      "ms": 956,
       "notes": [],
       "shots": [
-        "11-mobile-menu-open.png"
+        "12-mobile-menu-open.png"
       ],
       "error": ""
     },
@@ -276,7 +288,7 @@
       "id": "D-touch",
       "name": "Touch targets are at least 44×44px on mobile",
       "status": "PASS",
-      "ms": 777,
+      "ms": 747,
       "notes": [],
       "shots": [],
       "error": ""
@@ -286,7 +298,7 @@
       "id": "E1",
       "name": "axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card)",
       "status": "PASS",
-      "ms": 2073,
+      "ms": 2041,
       "notes": [
         "Desktop: 45 axe rules passed, 0 violations"
       ],
@@ -298,7 +310,7 @@
       "id": "E2",
       "name": "axe-core WCAG 2.1 AA audit — home page (mobile, menu open)",
       "status": "PASS",
-      "ms": 1591,
+      "ms": 1561,
       "notes": [
         "Mobile: 45 axe rules passed, 0 violations"
       ],
@@ -310,7 +322,7 @@
       "id": "E3",
       "name": "Semantics: one H1, no skipped heading levels, landmarks, named controls, image alts",
       "status": "PASS",
-      "ms": 684,
+      "ms": 711,
       "notes": [],
       "shots": [],
       "error": ""
@@ -320,10 +332,10 @@
       "id": "E4",
       "name": "Keyboard: skip link is first tab stop and moves focus to main content; focus is visible",
       "status": "PASS",
-      "ms": 770,
+      "ms": 804,
       "notes": [],
       "shots": [
-        "12-keyboard-skip-link.png"
+        "13-keyboard-skip-link.png"
       ],
       "error": ""
     },
@@ -332,7 +344,7 @@
       "id": "E5",
       "name": "Reduced motion: content is visible immediately without animations",
       "status": "PASS",
-      "ms": 702,
+      "ms": 717,
       "notes": [],
       "shots": [],
       "error": ""
@@ -342,7 +354,7 @@
       "id": "E6",
       "name": "No-JavaScript fallback shows a message with résumé + email links",
       "status": "PASS",
-      "ms": 636,
+      "ms": 628,
       "notes": [],
       "shots": [],
       "error": ""
@@ -352,10 +364,10 @@
       "id": "F1",
       "name": "If content JSON fails to load, a friendly error is shown (no crash, no blank page)",
       "status": "PASS",
-      "ms": 739,
+      "ms": 710,
       "notes": [],
       "shots": [
-        "13-content-load-error.png"
+        "14-content-load-error.png"
       ],
       "error": ""
     },
@@ -364,7 +376,7 @@
       "id": "F2",
       "name": "Preview mode renders the local draft only when ?preview=1 is present",
       "status": "PASS",
-      "ms": 1948,
+      "ms": 1901,
       "notes": [],
       "shots": [],
       "error": ""
@@ -374,7 +386,7 @@
       "id": "F3",
       "name": "XSS-safe rendering: HTML/script and javascript: links in content are neutralised",
       "status": "PASS",
-      "ms": 1364,
+      "ms": 1337,
       "notes": [],
       "shots": [],
       "error": ""
@@ -384,10 +396,10 @@
       "id": "F4",
       "name": "404 page renders on unknown URLs with a way back",
       "status": "PASS",
-      "ms": 668,
+      "ms": 697,
       "notes": [],
       "shots": [
-        "14-404-page.png"
+        "15-404-page.png"
       ],
       "error": ""
     },
@@ -406,10 +418,10 @@
       "id": "G1",
       "name": "Editor loads with no errors, populates every form from content, all tabs work",
       "status": "PASS",
-      "ms": 1078,
+      "ms": 1081,
       "notes": [],
       "shots": [
-        "15-admin-profile-tab.png"
+        "16-admin-profile-tab.png"
       ],
       "error": ""
     },
@@ -418,10 +430,10 @@
       "id": "G2",
       "name": "Editing a field marks the draft dirty, autosaves, and “Preview draft” shows it on the real site",
       "status": "PASS",
-      "ms": 2309,
+      "ms": 2358,
       "notes": [],
       "shots": [
-        "16-admin-preview-draft.png"
+        "17-admin-preview-draft.png"
       ],
       "error": ""
     },
@@ -430,11 +442,12 @@
       "id": "G3",
       "name": "Add a new product through the form; it appears on the site with correct arena filter counts",
       "status": "PASS",
-      "ms": 1991,
+      "ms": 2573,
       "notes": [],
       "shots": [
-        "17-admin-new-product-form.png",
-        "18-preview-new-product.png"
+        "18-admin-new-product-form.png",
+        "19-preview-new-summary-card.png",
+        "20-preview-new-product.png"
       ],
       "error": ""
     },
@@ -443,7 +456,7 @@
       "id": "G4",
       "name": "Reorder, duplicate and delete list items (with confirmation)",
       "status": "PASS",
-      "ms": 1420,
+      "ms": 1428,
       "notes": [],
       "shots": [],
       "error": ""
@@ -453,10 +466,10 @@
       "id": "G5",
       "name": "Validation blocks publishing and points to each problem (required, email, URL, duplicate ID, unknown link)",
       "status": "PASS",
-      "ms": 1202,
+      "ms": 1117,
       "notes": [],
       "shots": [
-        "19-admin-validation-errors.png"
+        "21-admin-validation-errors.png"
       ],
       "error": ""
     },
@@ -465,10 +478,10 @@
       "id": "G6",
       "name": "Connect flow: bad token shows a friendly error; valid token connects",
       "status": "PASS",
-      "ms": 1160,
+      "ms": 1144,
       "notes": [],
       "shots": [
-        "20-admin-connected.png"
+        "22-admin-connected.png"
       ],
       "error": ""
     },
@@ -477,10 +490,10 @@
       "id": "G7",
       "name": "Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state",
       "status": "PASS",
-      "ms": 1133,
+      "ms": 1117,
       "notes": [],
       "shots": [
-        "21-admin-published.png"
+        "23-admin-published.png"
       ],
       "error": ""
     },
@@ -489,7 +502,7 @@
       "id": "G8",
       "name": "Publish detects a remote change and asks before overwriting (cancel = no commit)",
       "status": "PASS",
-      "ms": 1483,
+      "ms": 1481,
       "notes": [],
       "shots": [],
       "error": ""
@@ -499,10 +512,10 @@
       "id": "G9",
       "name": "File uploads: résumé PDF committed; wrong type and fake PDF rejected; portfolio + photo wire into content",
       "status": "PASS",
-      "ms": 1715,
+      "ms": 1618,
       "notes": [],
       "shots": [
-        "22-admin-files-uploaded.png"
+        "24-admin-files-uploaded.png"
       ],
       "error": ""
     },
@@ -511,7 +524,7 @@
       "id": "G10",
       "name": "Backup download + restore, and “Discard draft” reverts to live content",
       "status": "PASS",
-      "ms": 1203,
+      "ms": 1230,
       "notes": [],
       "shots": [],
       "error": ""
@@ -521,7 +534,7 @@
       "id": "G11",
       "name": "“Remember on this device” stores token in localStorage; Disconnect removes it everywhere",
       "status": "PASS",
-      "ms": 1717,
+      "ms": 1729,
       "notes": [
         "Reopening the editor reconnects automatically"
       ],
@@ -533,12 +546,12 @@
       "id": "G12",
       "name": "Editor is usable on mobile (390px): no horizontal overflow, axe audit clean",
       "status": "PASS",
-      "ms": 1469,
+      "ms": 1452,
       "notes": [
         "Admin axe: 0 violations"
       ],
       "shots": [
-        "23-admin-mobile-390.png"
+        "25-admin-mobile-390.png"
       ],
       "error": ""
     },
@@ -547,12 +560,12 @@
       "id": "G13",
       "name": "Products tab and Files tab render correctly (visual check)",
       "status": "PASS",
-      "ms": 1148,
+      "ms": 1154,
       "notes": [],
       "shots": [
-        "24-admin-products-tab.png",
-        "25-admin-files-tab.png",
-        "26-admin-connect-tab.png"
+        "26-admin-products-tab.png",
+        "27-admin-files-tab.png",
+        "28-admin-connect-tab.png"
       ],
       "error": ""
     }

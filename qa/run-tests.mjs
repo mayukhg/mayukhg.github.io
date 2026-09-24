@@ -88,7 +88,9 @@ async function shot(target, name, opts = {}) {
   // Full-page captures are large, so they are stored as JPEG; element/viewport captures stay lossless PNG.
   const ext = opts.fullPage ? 'jpg' : 'png';
   const file = `${String(++shotNo).padStart(2, '0')}-${name}.${ext}`;
-  await target.screenshot({ path: path.join(SHOTS, file), ...(opts.fullPage ? { type: 'jpeg', quality: 82 } : {}), ...opts });
+  // Element captures hide the sticky nav so it doesn't overlap the element; page captures keep it.
+  const isPage = typeof target.goto === 'function';
+  await target.screenshot({ path: path.join(SHOTS, file), ...(opts.fullPage ? { type: 'jpeg', quality: 82 } : {}), ...(isPage ? {} : { style: '#nav{visibility:hidden!important}' }), ...opts });
   current.shots.push(file);
   return file;
 }
@@ -273,12 +275,13 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
   const counts = await page.evaluate(() => ({
     facts: document.querySelectorAll('.fact').length, steps: document.querySelectorAll('.step').length,
     principles: document.querySelectorAll('.principle').length, products: document.querySelectorAll('#product-list .acc').length,
+    glance: document.querySelectorAll('.glance-card').length,
     pillars: document.querySelectorAll('.pillar').length, metrics: document.querySelectorAll('.metric').length,
     roles: document.querySelectorAll('.exp-tab').length, panels: document.querySelectorAll('.exp-panel').length,
     skills: document.querySelectorAll('.skill-card').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
-    products: productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
+    products: productsJSON.products.length, glance: productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
     roles: profileJSON.experience.roles.length, panels: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
     edu: profileJSON.education.length, contact: 4 };
   for (const k in exp) eq(counts[k], exp[k], `${k} count`);
@@ -387,6 +390,46 @@ await test('C. Interactions', 'C5', 'Deep links open products (URL hash, filtere
   await page.waitForTimeout(600);
   assert(await page.locator('#p-kyc').isVisible(), 'filtered-out card is revealed');
   eq(await page.locator('#p-kyc .acc-head').getAttribute('aria-expanded'), 'true', 'related link opens card');
+  await context.close();
+});
+
+await test('C. Interactions', 'C8', 'Summary (“at a glance”) cards: one per product, in order, each opens its product case', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const cards = page.locator('.glance-card');
+  eq(await cards.count(), productsJSON.products.length, 'one card per product');
+  const names = await cards.locator('h4').allInnerTexts();
+  eq(names.join('|'), productsJSON.products.map((p) => p.name).join('|'), 'card order and names');
+  const icons = await page.locator('.glance-card .g-icon use').evaluateAll((u) => u.map((x) => x.getAttribute('href')));
+  eq(icons.join(','), productsJSON.products.map((p) => '#g-' + p.icon).join(','), 'icons from content');
+  eq(await page.locator('.glance-title').innerText(), productsJSON.overview.title, 'panel title');
+  await revealAll(page);
+  await shot(page.locator('.glance'), 'summary-cards-desktop');
+  // Filter to a different arena first: clicking a card must still reveal and open its product.
+  await page.locator('.chipbtn[data-f="agentic"]').click();
+  for (const p of [productsJSON.products[0], productsJSON.products[productsJSON.products.length - 1]]) {
+    await page.locator(`.glance-card[data-product="${p.id}"]`).click();
+    // wait for the smooth scroll to bring the card just below the sticky nav
+    await page.waitForFunction((id) => { const t = document.getElementById(id).getBoundingClientRect().top, n = document.getElementById('nav').offsetHeight; return t >= n && t < n + 60; }, 'p-' + p.id, { timeout: 5000 }).catch(() => {});
+    assert(await page.locator('#p-' + p.id).isVisible(), `${p.id} visible after click`);
+    eq(await page.locator(`#p-${p.id} .acc-head`).getAttribute('aria-expanded'), 'true', `${p.id} opened`);
+    eq(await page.evaluate(() => location.hash), '#p-' + p.id, 'URL hash updated');
+    const top = await page.locator('#p-' + p.id).evaluate((el) => el.getBoundingClientRect().top);
+    const navH = await page.locator('#nav').evaluate((n) => n.offsetHeight);
+    assert(top >= navH && top < navH + 60, `${p.id} should sit just below the sticky nav (top=${Math.round(top)}, nav=${navH})`);
+    await page.evaluate(() => window.scrollTo(0, document.querySelector('.glance').offsetTop - 100));
+  }
+  // Clicking the same card again (hash unchanged) re-opens a collapsed card.
+  const last = productsJSON.products[productsJSON.products.length - 1].id;
+  await page.locator(`#p-${last} .acc-head`).click();
+  await page.locator(`.glance-card[data-product="${last}"]`).click();
+  await page.waitForTimeout(500);
+  eq(await page.locator(`#p-${last} .acc-head`).getAttribute('aria-expanded'), 'true', 're-click re-opens');
+  // Keyboard: cards are links reachable with Tab and activated with Enter.
+  await page.locator('.glance-card').nth(1).focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  eq(await page.locator(`#p-${productsJSON.products[1].id} .acc-head`).getAttribute('aria-expanded'), 'true', 'Enter opens');
   await context.close();
 });
 
@@ -655,6 +698,8 @@ await test('G. Admin editor', 'G3', 'Add a new product through the form; it appe
   eq(await field(item, 'Product ID').inputValue(), 'agent-evaluation-harness', 'ID auto-filled from name');
   await field(item, 'Arena').selectOption('agentic');
   await field(item, 'One-line summary').fill('Golden-dataset regression testing for multi-agent systems.');
+  await field(item, 'Summary card icon').selectOption('trend');
+  await field(item, 'Summary card tagline').fill('Regression-test agents before they reach production.');
   await field(item, 'Built with').fill('Python\nLangSmith\nRAGAS');
   await field(item, 'Customer pain').fill('Teams ship agents without **regression tests**.');
   await field(item, 'Value & outcomes').fill('Catch regressions before GA\nFaster release cycles');
@@ -665,8 +710,16 @@ await test('G. Admin editor', 'G3', 'Add a new product through the form; it appe
   eq(await preview.locator('#product-list .acc').count(), productsJSON.products.length + 1, 'product added');
   const agentic = productsJSON.products.filter((p) => p.arena === 'agentic').length + 1;
   eq(await preview.locator('.chipbtn[data-f="agentic"] .ct').innerText(), String(agentic), 'filter count updated');
-  await preview.locator('#p-agent-evaluation-harness .acc-head').click();
-  await preview.waitForTimeout(450);
+  eq(await preview.locator('.glance-card').count(), productsJSON.products.length + 1, 'summary card added automatically');
+  const newCard = preview.locator('.glance-card[data-product="agent-evaluation-harness"]');
+  eq(await newCard.locator('h4').innerText(), 'Agent Evaluation Harness', 'summary card name');
+  eq(await newCard.locator('.g-icon use').getAttribute('href'), '#g-trend', 'chosen icon used');
+  assert((await newCard.locator('p').innerText()).includes('Regression-test agents'), 'tagline used');
+  await revealAll(preview);
+  await shot(newCard, 'preview-new-summary-card');
+  await newCard.click();
+  await preview.waitForTimeout(500);
+  eq(await preview.locator('#p-agent-evaluation-harness .acc-head').getAttribute('aria-expanded'), 'true', 'summary card opens the new product');
   assert(await preview.locator('#p-agent-evaluation-harness strong', { hasText: 'regression tests' }).isVisible(), 'rich text rendered');
   await revealAll(preview);
   await shot(preview.locator('#p-agent-evaluation-harness'), 'preview-new-product');

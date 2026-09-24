@@ -155,6 +155,31 @@
     }).join(''));
   }
 
+  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers'];
+  var GLANCE_COLORS = ['#dc4c43', '#0e98a8', '#6554e0', '#5b6b85', '#138a6c', '#c7870f'];
+  function renderGlance(d) {
+    var o = d.overview || {}, products = arr(d.products), el = slot('glance');
+    if (o.show === false || !products.length) { el.hidden = true; el.innerHTML = ''; return; }
+    var arenaById = {};
+    arr(d.arenas).forEach(function (a) { arenaById[a.id] = a; });
+    el.hidden = false;
+    el.innerHTML =
+      (o.eyebrow ? '<p class="eyebrow">' + esc(o.eyebrow) + '</p>' : '') +
+      (o.title ? '<h3 class="glance-title">' + esc(o.title) + '</h3>' : '') +
+      '<ul class="glance-grid">' + products.map(function (p, i) {
+        var id = slug(p.id || p.name);
+        var icon = GLANCE_ICONS.indexOf(p.icon) > -1 ? p.icon : GLANCE_ICONS[i % GLANCE_ICONS.length];
+        var arena = (arenaById[p.arena] || {}).label || '';
+        return '<li><a class="glance-card" href="#p-' + esc(id) + '" data-product="' + esc(id) + '">' +
+          '<span class="g-icon" style="--c:' + GLANCE_COLORS[i % GLANCE_COLORS.length] + '" aria-hidden="true"><svg><use href="#g-' + icon + '"/></svg></span>' +
+          (arena ? '<span class="g-arena">' + esc(arena) + '</span>' : '') +
+          '<h4>' + esc(p.name) + '</h4>' +
+          '<p>' + md(p.tagline || p.summary) + '</p>' +
+          '<span class="g-more" aria-hidden="true">View case study →</span>' +
+        '</a></li>';
+      }).join('') + '</ul>';
+  }
+
   function renderEcosystem(d) {
     var e = d.ecosystem || {}, el = slot('ecosystem');
     if (!e.show) { el.hidden = true; el.innerHTML = ''; return; }
@@ -244,12 +269,13 @@
     renderHero(c.profile, arr(c.products.products).length);
     renderAbout(c.profile);
     renderApproach(c.profile);
+    renderGlance(c.products);
     renderProducts(c.products);
     renderEcosystem(c.products);
     renderExperience(c.profile, productIndex);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .exp-shell, .skill-card, .card, .contact h2, .contact-row')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .exp-shell, .skill-card, .card, .contact h2, .contact-row')
       .forEach(function (el) { el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -262,6 +288,7 @@
 
   /* ---------- interactions ---------- */
   function wire() {
+    var nav = document.getElementById('nav');
     function setAcc(acc, open) {
       var head = acc.querySelector('.acc-head'), body = acc.querySelector('.acc-body');
       acc.classList.toggle('open', open);
@@ -287,17 +314,35 @@
     }
     chips.forEach(function (c) { c.addEventListener('click', function () { applyFilter(c.dataset.f); }); });
 
-    function openFromHash() {
-      var id = decodeURIComponent(location.hash.slice(1));
-      if (!/^p-/.test(id)) return;
+    function openProduct(id) {
       var card = document.getElementById(id);
-      if (!card || !card.classList.contains('acc')) return;
+      if (!card || !card.classList.contains('acc')) return false;
       if (card.hidden) applyFilter('all');
       card.classList.add('in');
       setAcc(card, true);
-      card.scrollIntoView({ block: 'start' });
+      // offsetTop ignores the reveal animation's transform, so the card lands exactly below the sticky nav.
+      var y = 0, el = card;
+      while (el) { y += el.offsetTop; el = el.offsetParent; }
+      window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
+      var head = card.querySelector('.acc-head');
+      if (head) head.focus({ preventScroll: true });
+      return true;
+    }
+    function openFromHash() {
+      var id = decodeURIComponent(location.hash.slice(1));
+      if (/^p-/.test(id)) openProduct(id);
     }
     window.addEventListener('hashchange', openFromHash);
+    // Summary cards: open the product even when its hash is already in the URL.
+    document.querySelectorAll('.glance-card').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = 'p-' + a.dataset.product;
+        if (openProduct(id)) {
+          e.preventDefault();
+          if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+        }
+      });
+    });
 
     var tabs = [].slice.call(document.querySelectorAll('.exp-tab'));
     function activate(tab, focus) {
@@ -321,7 +366,6 @@
       });
     });
 
-    var nav = document.getElementById('nav');
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
     var navMap = { ecosystem: 'products', education: 'skills' };

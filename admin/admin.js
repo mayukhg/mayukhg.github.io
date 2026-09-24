@@ -17,6 +17,10 @@
      ====================================================================== */
   function S(key, label, type, extra) { var o = { key: key, label: label, type: type }; for (var k in extra) o[k] = extra[k]; return o; }
 
+  var GLANCE_ICONS = [['shield', 'Shield'], ['target', 'Target'], ['chip', 'Chip / AI'], ['wrench', 'Wrench / tools'], ['grid', 'Grid / modules'],
+    ['trend', 'Trend / growth'], ['alert', 'Alert'], ['globe', 'Globe / trade'], ['bank', 'Bank / finance'], ['bolt', 'Lightning'],
+    ['search', 'Search'], ['layers', 'Layers / platform']];
+
   var PROFILE_SCHEMA = [
     S('person', 'Basics', 'object', { section: true, open: true, fields: [
       S('name', 'Full name', 'string', { required: true }),
@@ -88,6 +92,11 @@
     S('_heading', 'Section heading', 'object', { section: true, flat: true, fields: [
       S('title', 'Heading', 'string', { required: true }), S('subtitle', 'Sub-heading', 'text')
     ] }),
+    S('overview', 'Summary panel (“at a glance” cards)', 'object', { section: true, desc: 'One clickable card per product is generated automatically — order and content follow the Products list below.', fields: [
+      S('show', 'Show the summary panel', 'bool'),
+      S('eyebrow', 'Small label', 'string'),
+      S('title', 'Heading', 'string')
+    ] }),
     S('arenas', 'Arenas (filter groups)', 'array', { section: true, desc: 'Each product belongs to one arena. Arenas with no products are hidden.', itemTitle: function (x) { return x.label; }, fields: [
       S('id', 'Arena ID', 'string', { required: true, check: 'id', hint: 'Lowercase letters, numbers and dashes.' }),
       S('label', 'Label', 'string', { required: true }),
@@ -98,6 +107,8 @@
       S('id', 'Product ID', 'string', { required: true, check: 'productId', hint: 'Short unique ID used in links, e.g. “risk-copilot”. Filled from the name if left empty.' }),
       S('arena', 'Arena', 'select', { required: true, options: function () { return (state.products.arenas || []).map(function (a) { return [a.id, a.label || a.id]; }); } }),
       S('kicker', 'Label above the name', 'string', { hint: 'e.g. “AI Defence Ecosystem · Prevent”. Empty = arena name.' }),
+      S('icon', 'Summary card icon', 'select', { options: function () { return GLANCE_ICONS; } }),
+      S('tagline', 'Summary card tagline', 'md', { hint: 'One short sentence for the “at a glance” card. Empty = uses the one-line summary.' }),
       S('summary', 'One-line summary', 'md', { required: true }),
       S('client', 'Implemented for', 'string'),
       S('stack', 'Built with', 'lines', { hint: 'One technology per line.' }),
@@ -239,7 +250,8 @@
         var cur = parent[f.key] || '';
         input.innerHTML = '';
         var opts = f.options();
-        if (!cur || !opts.some(function (o) { return o[0] === cur; })) input.appendChild(h('option', { value: cur, text: cur ? cur + ' (unknown)' : '— choose —' }));
+        if (!f.required) input.appendChild(h('option', { value: '', text: 'Automatic' }));
+        if (cur ? !opts.some(function (o) { return o[0] === cur; }) : f.required) input.appendChild(h('option', { value: cur, text: cur ? cur + ' (unknown)' : '— choose —' }));
         opts.forEach(function (o) { input.appendChild(h('option', { value: o[0], text: o[1] })); });
         input.value = cur;
       };
