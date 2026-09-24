@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Mayukh Ghosh — Product Leader, Agentic AI & Cybersecurity",
+    "description": "Director of Product Management with 20+ years across enterprise security platforms and consumer AI. Seven shipped AI products across security, trade and finance — from customer pain to governed, agentic AI."
+  },
+  "person": {
+    "name": "Mayukh Ghosh",
+    "headline": "Director of Product Management",
+    "tags": ["Agentic AI", "Cybersecurity"],
+    "badge": "Open to Director / VP product leadership roles in AI & security",
+    "lede": "I turn real customer pain into shipped AI products — and have the judgment to use AI only where it earns its place. At **Qualys** I drive the roadmap for the Agentic AI security platform; before that at **BP** I secured **$2M+** for enterprise AI and built the “AI Defence Ecosystem” across **15+ business units**.",
+    "location": "Pune, India",
+    "portraitCaption": "20+ years · Product & Platform",
+    "photo": "assets/mayukh.jpg",
+    "photoAlt": "Portrait of Mayukh Ghosh"
+  },
+  "links": {
+    "email": "mayukhg@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/mayukh-ghosh-310a327",
+    "github": "https://github.com/mayukhg",
+    "resume": "resume.pdf",
+    "portfolio": ""
+  },
+  "stats": [
+    { "value": "20+ yrs", "label": "B2B enterprise security & B2C consumer AI" },
+    { "value": "$2M+", "label": "capital secured for enterprise AI initiatives" },
+    { "value": "Up to 85%", "label": "infrastructure spend cut via re-architecture" },
+    { "value": "15+", "label": "enterprise pilots for Qualys Agentic AI in two quarters" }
+  ],
+  "about": {
+    "title": "A product leader for the agentic-AI era.",
+    "paragraphs": [
+      "I've spent **20+ years building across B2B enterprise security platforms and B2C consumer AI products** — a combination most PMs never get. A hands-on cloud engineering and systems-architecture background gives me the technical depth to evaluate platform trade-offs and win CXO-level buy-in, not just spec features.",
+      "My career started in **test and quality** — risk-based test frameworks, automated execution and API-level verification. That foundation now shows up as rigour around **AI evaluation, success metrics and production monitoring**: golden datasets, guardrails and pass/fail thresholds before anything goes GA.",
+      "Today I'm **Director of Product Management at Qualys**, defining the roadmap for its Agentic AI security platform — exposing agents through MCP, CLI and Slack / Teams so engineers can use them without ever opening a dashboard. I also publish on Agentic AI and enterprise product strategy, and ship hands-on AI builds in the open."
+    ],
+    "facts": [
+      { "label": "Focus", "value": "Agentic AI & security platforms" },
+      { "label": "Currently", "value": "Director of PM, Qualys" },
+      { "label": "Based in", "value": "Pune, India" },
+      { "label": "Experience", "value": "20+ years" },
+      { "label": "Education", "value": "MBA (IT), Symbiosis · IIM Kozhikode (DS & AI)" },
+      { "label": "Certified", "value": "AWS SA · AWS Security" }
+    ]
+  },
+  "approach": {
+    "title": "From ideation to business & user value.",
+    "subtitle": "A repeatable process I run on every product — anchored on the customer's real problem, not the technology.",
+    "steps": [
+      { "title": "Ideate & Frame", "text": "Anchor on the customer's real pain." },
+      { "title": "Discover & Validate", "text": "Test the pain; size impact & fit." },
+      { "title": "Decide on AI", "text": "LLM, classic ML or governance — right-sized." },
+      { "title": "Architect & Build", "text": "Agents, RAG, MCP + a trust layer." },
+      { "title": "Demo & Iterate", "text": "Ship a zero-install demo; evaluate." },
+      { "title": "Deliver Value", "text": "Measurable business & user value." }
+    ],
+    "throughline": "**The through-line:** relentless focus on the customer's problem — and the judgment to apply AI only where it earns its place.",
+    "principles": [
+      { "title": "Judgment over hype", "text": "LLMs where reasoning matters, classic ML where it's cheaper, governance where earning trust unlocks adoption." },
+      { "title": "Value-obsessed", "text": "Every product ties to business value (cost, risk, new channels) and user value (their own tools, hours-to-minutes, trust built in)." },
+      { "title": "Ship, don't slideware", "text": "Every product has a working, zero-install way to see it run — with metrics honestly flagged as modelled targets." }
+    ]
+  },
+  "experience": {
+    "title": "Two decades behind the work.",
+    "subtitle": "From test engineering to software architecture, cloud engineering leadership and product — each step adding the depth I now bring to AI platform decisions.",
+    "roles": [
+      {
+        "tab": "Qualys",
+        "period": "2026 – now",
+        "title": "Director of Product Management",
+        "company": "Qualys",
+        "org": "Enterprise Cybersecurity · Agentic AI · Pune",
+        "dates": "Feb 2026 – Present",
+        "summary": "Platform & roadmap strategy for agentic AI security — multi-agent orchestration, tool use and evaluation.",
+        "metrics": ["15+ enterprise pilots", "40% pilot → paid PoC", "15% faster scoping"],
+        "bullets": [
+          "Defined product vision and roadmap for the Agentic AI security platform, translating multi-agent and LLM capabilities into a GTM strategy adopted across **15+ enterprise pilot accounts** in the first two quarters.",
+          "Exposed agentic capabilities through API-first, tool-based surfaces — **Model Context Protocol (MCP), CLI and Slack / Microsoft Teams** — so developers consume security agents in their own workflows.",
+          "Designed agent action interfaces and tool integrations so agents take real actions (exploit validation, remediation orchestration) — beyond chatbot flows toward autonomous, action-taking agents.",
+          "Built the requirements, evaluation and success-metrics framework for multi-agent orchestration — accuracy criteria, response-safety guardrails and pass/fail thresholds that set the baseline for the first GA release.",
+          "Partnered with Engineering, UX and Data Science to prioritise AI-driven security analytics, cutting feature scoping cycle time by **15%**.",
+          "Led CXO-level evangelism on Agentic AI, converting **40%** of pilot conversations into paid proof-of-concept commitments within the first quarter."
+        ],
+        "related": ["mcp", "copilot"]
+      },
+      {
+        "tab": "Fractional CPO",
+        "period": "2024 – now",
+        "title": "Fractional CPO",
+        "company": "Independent",
+        "org": "AI Product & Strategy Consultant · B2B & B2C · Remote",
+        "dates": "Jul 2024 – Present",
+        "summary": "Shipped a B2C healthtech LLM product alongside B2B AI advisory for early-stage founders.",
+        "metrics": ["3+ 0→1 in <4 months", "+24% engagement", "−35% cost / query", "50K+ queries / month"],
+        "bullets": [
+          "Defined product strategy for a consumer healthtech app where an LLM answers users' medical queries in real time, owning the **query-accuracy and response-safety evaluation framework** from MVP through launch.",
+          "Served as Fractional CPO for early-stage AI founders, defining roadmaps and personas that took **3+ 0-to-1 concepts** from raw idea to market-ready SaaS in under 4 months each.",
+          "Architected a computer-vision MVP for a Digital Wellness startup; rapid A/B loops lifted user engagement by **24%** within 6 weeks of launch.",
+          "Advised a B2B AgriTech & Crop Insurance platform on LLM and RAG architecture, cutting infrastructure cost per query by **35%** while scaling to **50K+** farmer queries monthly.",
+          "Designed compliance protocols aligned to NIST and the EU AI Act, institutionalising a “Trust by Design” framework across 2 client engagements."
+        ],
+        "related": []
+      },
+      {
+        "tab": "BP",
+        "period": "2021 – 2026",
+        "title": "Head of Cloud Engineering",
+        "company": "BP",
+        "org": "Global GenAI & Cloud Security · Pune",
+        "dates": "Jul 2021 – Jan 2026",
+        "summary": "Owned GenAI and cloud security product strategy as an internal platform serving 15+ global business units.",
+        "metrics": ["$2M+ AI funding", "20% faster time-to-market", "~50% less policy review time", "94% team retention"],
+        "bullets": [
+          "Secured **$2M+** in capital allocation for enterprise AI initiatives by presenting data-backed ROI models to C-suite executives across 15+ business units.",
+          "Designed and launched the **“AI Defence Ecosystem”** as reusable platform capabilities (Prevention, Detection, Governance), scaling adoption across BP's global cloud security portfolio.",
+          "Aligned internal PMs, engineering leaders and compliance stakeholders on a shared roadmap and reusable standards.",
+          "Built the corporate **“AI Maturity Index”** and deployment framework, accelerating cloud time-to-market for new applications by **20%**.",
+          "Established the **AI Policy Foundry** as a reusable governance capability, cutting manual policy review cycle time by an estimated **50%**.",
+          "Directed a 25-person cross-functional engineering and product team with a **94% retention** rate."
+        ],
+        "related": ["policy-foundry", "soc-portal", "ai-spm"]
+      },
+      {
+        "tab": "Amdocs",
+        "period": "2020 – 2021",
+        "title": "Lead Principal Consultant",
+        "company": "Amdocs",
+        "org": "Cloud Modernization · Pune",
+        "dates": "Jan 2020 – Jul 2021",
+        "summary": "Secured multi-million dollar contracts through technical RFPs and built the Cloud Transformation CoE.",
+        "metrics": ["Multi-million $ contracts", "10+ engagements", "−25% migration risk incidents"],
+        "bullets": [
+          "Authored technical product proposals and RFP responses that directly secured **multi-million dollar** cloud modernization contracts.",
+          "Founded the **Cloud Transformation Center of Excellence**, standardising multi-tenant data migration playbooks adopted across 10+ client engagements.",
+          "Led modernization initiatives embedding next-gen analytics into legacy enterprise systems for 3 major telecom clients.",
+          "Translated modernization roadmaps into phased delivery plans, reducing migration risk incidents by **25%**."
+        ],
+        "related": []
+      },
+      {
+        "tab": "Western Union",
+        "period": "2018 – 2020",
+        "title": "Technical Architect, Payments Products",
+        "company": "Western Union",
+        "org": "Western Union Business Solutions · Pune",
+        "dates": "Jan 2018 – Jan 2020",
+        "summary": "Cut infrastructure costs 70% via a serverless, event-driven re-architecture.",
+        "metrics": ["−70% infra cost", "NLP voice payments", "Blockchain KYC"],
+        "bullets": [
+          "Slashed core cloud infrastructure costs by **70%** by re-architecting legacy processing systems into serverless, event-driven, cloud-native frameworks.",
+          "Owned technical product discovery for voice-based payment features powered by NLP models, translating customer research into engineering requirements.",
+          "Designed a blockchain-integrated **KYC-as-a-Service** and compliance platform, validated through direct executive sign-off before rollout."
+        ],
+        "related": ["kyc"]
+      },
+      {
+        "tab": "Pitney Bowes",
+        "period": "2013 – 2018",
+        "title": "Software Architect",
+        "company": "Pitney Bowes",
+        "org": "Global e-commerce & shipping · Pune",
+        "dates": "Dec 2013 – Jan 2018",
+        "summary": "Cut engineering onboarding time 20% via a microservices migration.",
+        "metrics": ["20% faster onboarding", "DDD microservices"],
+        "bullets": [
+          "Transitioned a monolithic architecture to microservices via Domain-Driven Design, accelerating engineering onboarding efficiency by **20%**.",
+          "Optimised high-volume order search with tailored Elasticsearch layers, measurably improving platform performance and user satisfaction."
+        ],
+        "related": ["hscode"]
+      },
+      {
+        "tab": "Early career",
+        "period": "2005 – 2013",
+        "title": "Quality & test foundation",
+        "company": "",
+        "org": "Principal Financial Group · PTC | Cybage",
+        "dates": "2005 – 2013",
+        "summary": "The rigour that now shapes how I evaluate AI: risk-based testing, automation and API-level verification.",
+        "metrics": [],
+        "bullets": [
+          "**Principal Financial Group — System Test Lead (2007–2013):** designed risk-based test frameworks, automated script execution and resource plans.",
+          "**PTC | Cybage — Test Engineer (2005–2007):** orchestrated multi-OS functional verification and API-level automated testing infrastructure."
+        ],
+        "related": []
+      }
+    ]
+  },
+  "skills": {
+    "title": "What I work with.",
+    "groups": [
+      { "name": "AI & Product", "items": ["Agentic AI strategy & roadmaps", "Multi-agent orchestration", "Platform product management", "AI evaluation & governance", "Golden datasets & regression testing", "Human-in-the-loop", "LLMs & RAG", "GTM strategy", "CXO-level evangelism"] },
+      { "name": "Platform & Developer Experience", "items": ["API-first design", "Developer experience", "Internal developer portals", "Tool use / action interfaces (MCP)", "Event-driven architecture", "Observability", "Serverless", "Microservices & DDD"] },
+      { "name": "Cloud & Security", "items": ["Enterprise cloud platforms (AWS)", "Cybersecurity architecture", "Governance architecture", "Risk & compliance", "NIST AI RMF", "EU AI Act", "AI security posture"] },
+      { "name": "Certifications", "items": ["AWS Certified Solutions Architect", "AWS Certified Security – Specialty", "Machine Learning in Production (DeepLearning.AI)", "Data Science & AI — IIM Kozhikode"] }
+    ]
+  },
+  "writing": {
+    "title": "Writing & open-source builds",
+    "text": "Published **15+ articles on LinkedIn** on Agentic AI, enterprise product strategy and cloud security. I ship and open-source hands-on AI builds, each documented with problem framing, trade-offs and evaluation results."
+  },
+  "education": [
+    { "mark": "IIMK", "degree": "Professional Certificate, Data Science & AI", "school": "Indian Institute of Management, Kozhikode · 2024" },
+    { "mark": "SIU", "degree": "MBA (IT)", "school": "Symbiosis International University · 2003–2005" },
+    { "mark": "BU", "degree": "Bachelor of Computer Science", "school": "Bangalore University · 2000–2003" }
+  ],
+  "contact": {
+    "title": "Let's build AI that earns trust.",
+    "text": "Seeking Director / VP-level product leadership building AI or security products in the enterprise — where the hard problems are trust, adoption and turning capability into outcomes."
+  }
+}

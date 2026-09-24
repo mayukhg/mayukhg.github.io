@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://api.github.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Portfolio Editor</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234338ca'/><text y='66' x='50' text-anchor='middle' font-size='52' font-family='Arial' font-weight='700' fill='white'>✎</text></svg>">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="title">
+      <span class="logo" aria-hidden="true">✎</span>
+      <div><h1>Portfolio editor</h1><p class="sub">Edit your site's content — no code needed.</p></div>
+    </div>
+    <div class="actions">
+      <span class="status" id="conn-status" role="status">Not connected</span>
+      <span class="dirty" id="dirty-flag" hidden>Unpublished changes</span>
+      <button type="button" class="btn" id="btn-preview">Preview draft</button>
+      <button type="button" class="btn primary" id="btn-publish" disabled>Publish changes</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="side" aria-label="Editor sections">
+    <div role="tablist" aria-orientation="vertical" id="tabs">
+      <button type="button" role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true">Profile &amp; résumé</button>
+      <button type="button" role="tab" id="tab-products" aria-controls="panel-products" aria-selected="false" tabindex="-1">Product portfolio</button>
+      <button type="button" role="tab" id="tab-files" aria-controls="panel-files" aria-selected="false" tabindex="-1">Files (PDFs &amp; photo)</button>
+      <button type="button" role="tab" id="tab-connect" aria-controls="panel-connect" aria-selected="false" tabindex="-1">Connect to GitHub</button>
+      <button type="button" role="tab" id="tab-help" aria-controls="panel-help" aria-selected="false" tabindex="-1">Help</button>
+    </div>
+    <div class="side-tools">
+      <button type="button" class="link" id="btn-export">Download backup (JSON)</button>
+      <label class="link file-link">Restore from backup<input type="file" id="inp-import" accept="application/json,.json" hidden></label>
+      <button type="button" class="link danger" id="btn-discard">Discard draft</button>
+    </div>
+  </nav>
+
+  <main class="panels" id="main">
+    <div class="notice" id="notice" hidden role="alert"></div>
+
+    <section class="panel" role="tabpanel" id="panel-profile" aria-labelledby="tab-profile">
+      <div class="panel-head">
+        <h2>Profile &amp; résumé</h2>
+        <p>Everything about you: intro, headline numbers, experience, skills, education and contact. Changes save as a draft automatically; press <b>Publish changes</b> to put them live.</p>
+      </div>
+      <div id="form-profile" class="form"></div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-products" aria-labelledby="tab-products" hidden>
+      <div class="panel-head">
+        <h2>Product portfolio</h2>
+        <p>Add, edit, reorder or remove product case studies. Products are grouped by <b>arena</b> — the filter buttons on the site are built from the arenas list.</p>
+      </div>
+      <div id="form-products" class="form"></div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-files" aria-labelledby="tab-files" hidden>
+      <div class="panel-head">
+        <h2>Files</h2>
+        <p>Upload a new résumé, portfolio PDF or headshot. PDFs go live as soon as the upload finishes. Needs a GitHub connection.</p>
+      </div>
+      <div class="warn"><b>Privacy check:</b> uploaded PDFs are public. Remove your phone number and anything else private before uploading.</div>
+      <div class="upload-grid">
+        <div class="upload-card" data-upload="resume">
+          <h3>Résumé (PDF)</h3>
+          <p class="hint">Replaces <code>resume.pdf</code> — the “View résumé” button links here.</p>
+          <p class="current">Current: <a id="cur-resume" href="../resume.pdf" target="_blank" rel="noopener">resume.pdf</a></p>
+          <label class="drop"><input type="file" accept="application/pdf,.pdf" data-kind="resume"><span>Choose PDF…</span></label>
+          <p class="up-status" aria-live="polite"></p>
+        </div>
+        <div class="upload-card" data-upload="portfolio">
+          <h3>Product portfolio (PDF)</h3>
+          <p class="hint">Saved as <code>assets/portfolio.pdf</code>. Adds “Portfolio PDF” buttons to the site.</p>
+          <p class="current">Current: <span id="cur-portfolio">none</span></p>
+          <label class="drop"><input type="file" accept="application/pdf,.pdf" data-kind="portfolio"><span>Choose PDF…</span></label>
+          <p class="up-status" aria-live="polite"></p>
+        </div>
+        <div class="upload-card" data-upload="photo">
+          <h3>Headshot photo</h3>
+          <p class="hint">JPG, PNG or WebP. A square crop around your face looks best.</p>
+          <img id="cur-photo" class="thumb" alt="Current headshot" src="">
+          <label class="drop"><input type="file" accept="image/jpeg,image/png,image/webp" data-kind="photo"><span>Choose image…</span></label>
+          <p class="up-status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-connect" aria-labelledby="tab-connect" hidden>
+      <div class="panel-head">
+        <h2>Connect to GitHub</h2>
+        <p>The editor saves straight to your GitHub repository. You need a <b>fine-grained personal access token</b> once — it stays in this browser only and is sent only to <code>api.github.com</code>.</p>
+      </div>
+      <ol class="steps">
+        <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Settings → Fine-grained tokens → Generate new token</a>.</li>
+        <li>Under <b>Repository access</b> choose <i>Only select repositories</i> → <code>mayukhg.github.io</code>.</li>
+        <li>Under <b>Permissions → Repository permissions</b> set <b>Contents</b> to <i>Read and write</i>. Nothing else is needed.</li>
+        <li>Generate, copy the token and paste it below.</li>
+      </ol>
+      <form class="form connect" id="connect-form" novalidate>
+        <div class="row3">
+          <label class="field"><span>GitHub owner</span><input id="cfg-owner" autocomplete="off" required></label>
+          <label class="field"><span>Repository</span><input id="cfg-repo" autocomplete="off" required></label>
+          <label class="field"><span>Branch</span><input id="cfg-branch" autocomplete="off" required><small>The branch GitHub Pages publishes from (usually <code>main</code>).</small></label>
+        </div>
+        <label class="field"><span>Access token</span><input id="cfg-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+        <label class="check"><input type="checkbox" id="cfg-remember"> Remember on this device (leave unticked on shared computers)</label>
+        <div class="btn-row">
+          <button type="submit" class="btn primary" id="btn-connect">Connect &amp; test</button>
+          <button type="button" class="btn" id="btn-disconnect">Disconnect</button>
+        </div>
+        <p class="up-status" id="connect-result" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-help" aria-labelledby="tab-help" hidden>
+      <div class="panel-head"><h2>Help</h2></div>
+      <div class="help">
+        <h3>How it works</h3>
+        <ol>
+          <li><b>Connect</b> once with a GitHub token (Connect tab).</li>
+          <li><b>Edit</b> any field. Your work is saved as a draft in this browser automatically.</li>
+          <li><b>Preview draft</b> opens the real site with your unpublished changes.</li>
+          <li><b>Publish changes</b> saves to GitHub. The live site updates in about a minute.</li>
+        </ol>
+        <h3>Formatting text</h3>
+        <p>Fields marked <span class="md-badge">rich</span> support <code>**bold text**</code> and links written as <code>[link text](https://example.com)</code>. Everything else is plain text.</p>
+        <h3>Lists</h3>
+        <p>Boxes marked “one per line” turn each line into a separate item — bullet points, tags or metric chips.</p>
+        <h3>Linking experience to products</h3>
+        <p>In a role's <i>Related product IDs</i>, list product IDs (from the Product portfolio tab), one per line. The site shows them as links under that role.</p>
+        <h3>New résumé?</h3>
+        <p>Upload the PDF on the Files tab, then update the matching text in Profile &amp; résumé — the site text isn't read from the PDF.</p>
+        <h3>Something went wrong?</h3>
+        <p>Every publish is a normal GitHub commit, so any change can be undone from the repository history. <i>Download backup</i> saves your current draft as a file you can restore later.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="admin.js" defer></script>
+</body>
+</html>

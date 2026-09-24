@@ -1,82 +1,85 @@
-# Personal Product & Engineering Portfolio
+# Mayukh Ghosh — Product Portfolio
 
-A responsive, high-performance, single-page product portfolio showcasing zero-to-one product initiatives, cloud security posture systems, and agentic AI architectures. 
+A fast, accessible, single-page portfolio for **Mayukh Ghosh**, Director of Product Management (Agentic AI & Cybersecurity). It covers:
 
-Hosted statically on [GitHub Pages](https://pages.github.com/).
+- seven AI product case studies
+- the AI Defence Ecosystem platform story
+- two decades of experience
+
+All content is editable **without touching code** through a built-in editor at **`/admin`**.
+
+Hosted on [GitHub Pages](https://pages.github.com/) → `https://mayukhg.github.io/`
 
 ---
 
-## 🚀 Live Site
+## ✏️ Updating your résumé & portfolio (no code)
 
-- **Production URL:** `https://<your-username>.github.io/` (or `https://<your-username>.github.io/portfolio/`)
-- **Target Audience:** Engineering & Product Leadership, Recruiters, Founders, Design Partners
+1. Open **`https://mayukhg.github.io/admin/`**.
+2. **Connect to GitHub** (one-time setup): create a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new) with these settings:
+   - *Repository access:* only `mayukhg.github.io`
+   - *Permissions:* **Contents → Read and write**
+
+   Paste it into the Connect tab. The token stays in your browser and is sent only to `api.github.com`.
+3. **Edit** any section: profile, headline numbers, experience, skills, education, products, arenas, spotlight. You can add, reorder, duplicate or delete items with the buttons on each row. Drafts save automatically in your browser.
+4. Click **Preview draft** to see the real site with your unpublished changes.
+5. Click **Publish changes**. Each publish is a normal Git commit, and the live site updates in about a minute.
+6. **Files tab:** upload a new résumé PDF, a portfolio PDF or a headshot. PDFs are public, so remove private details such as your phone number first.
+
+Text fields marked **rich** support `**bold**` and `[link text](https://…)`. List boxes take one item per line. The **Help** tab in the editor has more detail. **Download backup** saves your draft to a file.
+
+> The editor publishes to the branch set on its Connect tab (default `main`, the branch GitHub Pages serves).
 
 ---
 
-## 📁 Repository Structure
+## 📁 Repository structure
 
 ```text
-├── index.html        # Semantic HTML5 single-page application scaffold
-├── styles.css        # Responsive CSS tokens, layout grid, dark-theme system
-├── script.js         # Tab switching & accessible smooth navigation logic
-├── resume.pdf        # Downloadable résumé
-├── assets/           # Media, headshot/avatar, diagrams, project assets
-└── README.md         # Repository documentation
+├── index.html              # Page shell: layout, meta/SEO tags, section slots
+├── styles.css              # Design tokens, layout, responsive rules (self-hosted fonts)
+├── script.js               # Renders content/*.json into the page + interactions
+├── content/
+│   ├── profile.json        # Hero, about, approach, experience, skills, education, contact
+│   └── products.json       # Arenas, product case studies, ecosystem spotlight
+├── admin/                  # No-code editor (GitHub API, strict CSP, noindex)
+│   ├── index.html
+│   ├── admin.js
+│   └── admin.css
+├── assets/                 # Headshot, social share card, self-hosted fonts, uploaded PDFs
+├── resume.pdf              # Downloadable résumé (phone number removed)
+├── 404.html · robots.txt · sitemap.xml · .nojekyll
+└── qa/                     # End-to-end test suite, screenshots, validation report
 ```
 
----
+## 🛠️ Tech & design principles
 
-## 🛠️ Tech Stack & Design Principles
+- **No build step, no framework:** semantic HTML5, modern CSS and vanilla JS. The content is plain JSON.
+- **Fast:** self-hosted variable fonts (latin subset, ~50 KB) and no third-party runtime requests.
+- **Accessible:** WCAG 2.1 AA, audited with axe-core. Tabs follow the WAI-ARIA pattern with arrow-key support, and there's a skip link, visible focus and reduced-motion support.
+- **Safe rendering:** content is HTML-escaped. Only `**bold**` and `http(s)` / relative links are turned into markup.
+- **Editor security:** strict Content-Security-Policy, least-privilege fine-grained token, `noindex`, and blocked in `robots.txt`.
 
-- **Zero Build Tooling:** Pure vanilla semantic HTML5, modern CSS3 (Custom Properties, CSS Grid, Flexbox), and lightweight vanilla JavaScript. No framework overhead or node module bloat.
-- **Fast First Paint:** Instant load times, no third-party runtime bundles, optimized for mobile and desktop screens.
-- **Accessible & Semantic:** Structured with accessible tab roles (`role="tablist"`, `role="tabpanel"`), descriptive meta tags, and high-contrast typography (`Plus Jakarta Sans` & `Space Grotesk`).
-- **Narrative Architecture:** Structured into modular sections:
-  1. **Hero & Value Proposition:** Role alignment, headline, and direct CTAs.
-  2. **About:** Philosophy, strategic focus, and quick bio metadata.
-  3. **Case Studies (`#work`):** Deep dives using Problem $\rightarrow$ Product Decision $\rightarrow$ Production Impact framing.
-  4. **Experience (`#experience`):** Tabbed chronological career track record with key quantitative metrics.
-  5. **Skills:** Categorized domain pills covering Product Strategy, AI Systems, Cloud Security, and Data Architecture.
-
----
-
-## 💻 Local Development
-
-No package manager (`npm` / `yarn` / `pnpm`) is required. You can preview the site using any static local server:
-
-### Option 1: VS Code Live Server
-1. Install the **Live Server** extension in VS Code.
-2. Right-click `index.html` and select **Open with Live Server**.
-
-### Option 2: Python HTTP Server
-Run from the root directory:
+## 💻 Local preview
 
 ```bash
-# Python 3.x
-python3 -m http.server 8000
+python3 -m http.server 8000     # then open http://localhost:8000
 ```
-Then visit `http://localhost:8000` in your browser.
 
----
+The page loads its content with `fetch`, so open it through a local server rather than as a `file://` URL.
 
-## 🚢 Deployment (GitHub Pages)
+## ✅ Quality assurance
 
-This repository deploys automatically to GitHub Pages from the `main` branch.
+A full end-to-end suite (48 test cases) covers static integrity, rendering, interactions, five viewport sizes, accessibility, resilience and security, and the editor, using a mocked GitHub API.
 
-1. Commit and push changes:
-   ```bash
-   git add .
-   git commit -m "feat: update case studies and metrics"
-   git push origin main
-   ```
-2. Navigate to **Settings** $\rightarrow$ **Pages** in this GitHub repository.
-3. Under **Build and deployment**:
-   - **Source:** `Deploy from a branch`
-   - **Branch:** `main` / `/ (root)`
-4. The deployment pipeline will trigger automatically, updating the live URL in 1–2 minutes.
+```bash
+cd qa && npm install && npm test
+```
 
----
+Results: [`qa/VALIDATION_REPORT.md`](qa/VALIDATION_REPORT.md) · Screenshots: [`qa/screenshots/`](qa/screenshots/)
 
-## 📄 License & Attribution
+## 🚢 Deployment
 
-The code and layout styling in this repository are available under the [MIT License](LICENSE). Content, career metrics, and personal branding copy belong to the author.
+GitHub Pages → **Settings → Pages → Deploy from a branch → `main` / root**. Every push, including every **Publish** from the editor, redeploys automatically.
+
+## 📄 License
+
+Code and layout: MIT. Content, career metrics, photo and personal branding belong to Mayukh Ghosh.
