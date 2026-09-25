@@ -75,7 +75,7 @@
     if (person.photo) {
       portrait.hidden = false;
       portrait.innerHTML = '<img class="portrait" src="' + esc(safeUrl(person.photo)) + '" width="640" height="640" alt="' + esc(person.photoAlt || name) + '" fetchpriority="high">' +
-        (person.location || person.portraitCaption ? '<div class="portrait-tag"><span class="dot" aria-hidden="true"></span><span>' + esc(person.location) + '<small>' + esc(person.portraitCaption) + '</small></span></div>' : '');
+        (person.location || person.portraitCaption ? '<div class="portrait-tag"><span>' + esc(person.location) + '<small>' + esc(person.portraitCaption) + '</small></span></div>' : '');
     } else { portrait.hidden = true; }
 
     var stats = arr(p.stats);
@@ -163,7 +163,6 @@
   }
 
   var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers'];
-  var GLANCE_COLORS = ['#dc4c43', '#0e98a8', '#6554e0', '#5b6b85', '#138a6c', '#c7870f'];
   function renderGlance(d) {
     var o = d.overview || {}, products = arr(d.products), el = slot('glance');
     if (o.show === false || !products.length) { el.hidden = true; el.innerHTML = ''; return; }
@@ -178,7 +177,7 @@
         var icon = GLANCE_ICONS.indexOf(p.icon) > -1 ? p.icon : GLANCE_ICONS[i % GLANCE_ICONS.length];
         var arena = (arenaById[p.arena] || {}).label || '';
         return '<li><a class="glance-card" href="#p-' + esc(id) + '" data-product="' + esc(id) + '">' +
-          '<span class="g-icon" style="--c:' + GLANCE_COLORS[i % GLANCE_COLORS.length] + '" aria-hidden="true"><svg><use href="#g-' + icon + '"/></svg></span>' +
+          '<span class="g-icon" aria-hidden="true"><svg><use href="#g-' + icon + '"/></svg></span>' +
           (arena ? '<span class="g-arena">' + esc(arena) + '</span>' : '') +
           '<h4>' + esc(p.name) + '</h4>' +
           '<p>' + md(p.tagline || p.summary) + '</p>' +

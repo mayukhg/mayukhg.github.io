@@ -369,9 +369,10 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
     return { kUpper: st('.kicker')?.textTransform, kPad: st('.kicker')?.paddingLeft, tagRadius: st('.tag')?.borderRadius, tagBorder: st('.tag')?.borderTopWidth,
       clientRadius: st('.client')?.borderRadius, btnBg: st('.acc-toggle')?.backgroundColor, titleFont: st('.acc-title')?.fontFamily };
   });
-  eq(chrome.kUpper, 'uppercase', 'kicker style'); assert(parseFloat(chrome.kPad) >= 8, 'kicker padding');
-  assert(parseFloat(chrome.tagRadius) > 100 && chrome.tagBorder === '1px', 'tag pill style');
-  assert(parseFloat(chrome.clientRadius) > 100, 'client pill style');
+  // Flat design: arena label is plain sentence-case text (no tinted chip), tags are small hairline rectangles, client is plain text.
+  eq(chrome.kUpper, 'none', 'kicker is plain text'); eq(parseFloat(chrome.kPad), 0, 'kicker has no chip padding');
+  assert(parseFloat(chrome.tagRadius) <= 8 && chrome.tagBorder === '1px', 'tag is a small-radius hairline box');
+  eq(parseFloat(chrome.clientRadius) || 0, 0, 'client is plain text, not a pill');
   assert(chrome.btnBg !== 'rgba(0, 0, 0, 0)', 'button filled');
   assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
   eq(await visibleLabel(), 'Explore case study', 'closed label');
@@ -379,11 +380,14 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   assert((await card.locator('.acc-peek').innerText()).includes(strip(p0.pain).slice(0, 40)), 'customer-pain preview shown');
   eq(await card.locator('.acc-peek').getAttribute('aria-hidden'), 'true', 'preview hidden from screen readers (duplicate text)');
   eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
-  // Hover: card lifts, button arrow nudges.
+  // Hover: hairline border takes the arena colour (no lift, no shadow), button arrow nudges.
   await card.scrollIntoViewIfNeeded(); await revealAll(page);
+  const restBorder = await card.evaluate((c) => getComputedStyle(c).borderTopColor);
   await card.locator('.acc-title').hover();
   await page.waitForTimeout(350);
-  assert(await card.evaluate((c) => /-2px/.test(getComputedStyle(c).translate)), 'card lifts on hover');
+  const hov = await card.evaluate((c) => ({ b: getComputedStyle(c).borderTopColor, sh: getComputedStyle(c).boxShadow, tr: getComputedStyle(c).translate }));
+  assert(hov.b !== restBorder, 'card border changes on hover');
+  assert(hov.sh === 'none' && (hov.tr === 'none' || hov.tr === '0px'), 'no hover shadow or lift');
   assert(await card.locator('.t-arrow').evaluate((a) => getComputedStyle(a).transform !== 'none'), 'arrow nudges on hover');
   await shot(card, 'product-card-closed-hover');
   // Whole-card click (on the summary text) opens it.
@@ -641,7 +645,9 @@ async function axe(page, label) {
 await test('E. Accessibility', 'E1', 'axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card)', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  await page.locator('.acc-toggle').first().click(); await page.waitForTimeout(450);
+  await page.locator('.acc-toggle').first().click();
+  // Wait for the card's staggered reveal to finish; auditing mid-fade measures a half-transparent colour.
+  await page.evaluate(() => Promise.all(document.querySelector('.acc').getAnimations({ subtree: true }).map((a) => a.finished.catch(() => {}))));
   const v = await axe(page, 'Desktop');
   eq(v.length, 0, `axe violations: ${v.map((x) => x.id).join(', ')}`);
   await context.close();

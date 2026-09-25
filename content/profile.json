@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Mayukh Ghosh — Product Leader, Agentic AI & Cybersecurity",
-    "description": "Director of Product Management with 20+ years across enterprise security platforms and consumer AI. Seven shipped AI products across security, trade and finance — from customer pain to governed, agentic AI."
+    "title": "Mayukh Ghosh · Product Leader, Agentic AI & Cybersecurity",
+    "description": "Director of Product Management with 20+ years across enterprise security platforms and consumer AI. Seven shipped AI products across security, trade and finance, each built from a real customer problem."
   },
   "person": {
     "name": "Mayukh Ghosh",
     "headline": "Director of Product Management",
     "tags": ["Agentic AI", "Cybersecurity"],
-    "badge": "Open to Director / VP product leadership roles in AI & security",
-    "lede": "I turn real customer pain into shipped AI products — and have the judgment to use AI only where it earns its place. At **Qualys** I drive the roadmap for the Agentic AI security platform; before that at **BP** I secured **$2M+** for enterprise AI and built the “AI Defence Ecosystem” across **15+ business units**.",
+    "badge": "Open to Director / VP roles in AI and security",
+    "lede": "I build AI products from real customer problems, and use AI only where it beats a simpler option. At **Qualys** I own the roadmap for the Agentic AI security platform. Before that, at **BP**, I secured **$2M+** for enterprise AI and built the “AI Defence Ecosystem” used across **15+ business units**.",
     "location": "Pune, India",
     "portraitCaption": "20+ years · Product & Platform",
     "photo": "assets/mayukh.jpg",
@@ -30,9 +30,9 @@
   "about": {
     "title": "A product leader for the agentic-AI era.",
     "paragraphs": [
-      "I've spent **20+ years building across B2B enterprise security platforms and B2C consumer AI products** — a combination most PMs never get. A hands-on cloud engineering and systems-architecture background gives me the technical depth to evaluate platform trade-offs and win CXO-level buy-in, not just spec features.",
-      "My career started in **test and quality** — risk-based test frameworks, automated execution and API-level verification. That foundation now shows up as rigour around **AI evaluation, success metrics and production monitoring**: golden datasets, guardrails and pass/fail thresholds before anything goes GA.",
-      "Today I'm **Director of Product Management at Qualys**, defining the roadmap for its Agentic AI security platform — exposing agents through MCP, CLI and Slack / Teams so engineers can use them without ever opening a dashboard. I also publish on Agentic AI and enterprise product strategy, and ship hands-on AI builds in the open."
+      "I've spent **20+ years building across B2B enterprise security platforms and B2C consumer AI products**. A hands-on cloud engineering and systems-architecture background lets me evaluate platform trade-offs and win CXO-level buy-in, not just spec features.",
+      "My career started in **test and quality**: risk-based test frameworks, automated execution and API-level verification. That shows up today in how I run **AI evaluation, success metrics and production monitoring**: golden datasets, guardrails and pass/fail thresholds before anything goes GA.",
+      "Today I'm **Director of Product Management at Qualys**, defining the roadmap for its Agentic AI security platform. We expose agents through MCP, CLI and Slack / Teams, so engineers can use them without opening a dashboard. I also write about Agentic AI and enterprise product strategy, and publish my AI builds on GitHub."
     ],
     "facts": [
       { "label": "Focus", "value": "Agentic AI & security platforms" },
@@ -45,25 +45,25 @@
   },
   "approach": {
     "title": "From ideation to business & user value.",
-    "subtitle": "A repeatable process I run on every product — anchored on the customer's real problem, not the technology.",
+    "subtitle": "The process I run on every product. It starts from the customer's problem, not the technology.",
     "steps": [
       { "title": "Ideate & Frame", "text": "Anchor on the customer's real pain." },
       { "title": "Discover & Validate", "text": "Test the pain; size impact & fit." },
-      { "title": "Decide on AI", "text": "LLM, classic ML or governance — right-sized." },
+      { "title": "Decide on AI", "text": "LLM, classic ML or governance, sized to the problem." },
       { "title": "Architect & Build", "text": "Agents, RAG, MCP + a trust layer." },
       { "title": "Demo & Iterate", "text": "Ship a zero-install demo; evaluate." },
       { "title": "Deliver Value", "text": "Measurable business & user value." }
     ],
-    "throughline": "**The through-line:** relentless focus on the customer's problem — and the judgment to apply AI only where it earns its place.",
+    "throughline": "**The through-line:** I start from the customer's problem and use AI only where it beats a simpler option.",
     "principles": [
-      { "title": "Judgment over hype", "text": "LLMs where reasoning matters, classic ML where it's cheaper, governance where earning trust unlocks adoption." },
+      { "title": "Judgment over hype", "text": "LLMs where reasoning matters, classic ML where it's cheaper, governance where users need to trust the output before they adopt it." },
       { "title": "Value-obsessed", "text": "Every product ties to business value (cost, risk, new channels) and user value (their own tools, hours-to-minutes, trust built in)." },
-      { "title": "Ship, don't slideware", "text": "Every product has a working, zero-install way to see it run — with metrics honestly flagged as modelled targets." }
+      { "title": "Ship, don't slideware", "text": "Every product has a working, zero-install way to see it run. Metrics that are modelled targets are labelled as such." }
     ]
   },
   "experience": {
     "title": "Two decades behind the work.",
-    "subtitle": "From test engineering to software architecture, cloud engineering leadership and product — each step adding the depth I now bring to AI platform decisions.",
+    "subtitle": "From test engineering to software architecture, cloud engineering leadership and product. Each step added depth I now use in AI platform decisions.",
     "roles": [
       {
         "tab": "Qualys",
@@ -72,13 +72,13 @@
         "company": "Qualys",
         "org": "Enterprise Cybersecurity · Agentic AI · Pune",
         "dates": "Feb 2026 – Present",
-        "summary": "Platform & roadmap strategy for agentic AI security — multi-agent orchestration, tool use and evaluation.",
+        "summary": "Platform and roadmap strategy for agentic AI security: multi-agent orchestration, tool use and evaluation.",
         "metrics": ["15+ enterprise pilots", "40% pilot → paid PoC", "15% faster scoping"],
         "bullets": [
           "Defined product vision and roadmap for the Agentic AI security platform, translating multi-agent and LLM capabilities into a GTM strategy adopted across **15+ enterprise pilot accounts** in the first two quarters.",
-          "Exposed agentic capabilities through API-first, tool-based surfaces — **Model Context Protocol (MCP), CLI and Slack / Microsoft Teams** — so developers consume security agents in their own workflows.",
-          "Designed agent action interfaces and tool integrations so agents take real actions (exploit validation, remediation orchestration) — beyond chatbot flows toward autonomous, action-taking agents.",
-          "Built the requirements, evaluation and success-metrics framework for multi-agent orchestration — accuracy criteria, response-safety guardrails and pass/fail thresholds that set the baseline for the first GA release.",
+          "Exposed agentic capabilities through API-first, tool-based surfaces (**Model Context Protocol (MCP), CLI and Slack / Microsoft Teams**), so developers use security agents in their own workflows.",
+          "Designed agent action interfaces and tool integrations so agents take real actions, such as exploit validation and remediation orchestration, instead of only answering in a chat.",
+          "Built the requirements, evaluation and success-metrics framework for multi-agent orchestration: accuracy criteria, response-safety guardrails and pass/fail thresholds that set the baseline for the first GA release.",
           "Partnered with Engineering, UX and Data Science to prioritise AI-driven security analytics, cutting feature scoping cycle time by **15%**.",
           "Led CXO-level evangelism on Agentic AI, converting **40%** of pilot conversations into paid proof-of-concept commitments within the first quarter."
         ],
@@ -133,7 +133,7 @@
         "bullets": [
           "Authored technical product proposals and RFP responses that directly secured **multi-million dollar** cloud modernization contracts.",
           "Founded the **Cloud Transformation Center of Excellence**, standardising multi-tenant data migration playbooks adopted across 10+ client engagements.",
-          "Led modernization initiatives embedding next-gen analytics into legacy enterprise systems for 3 major telecom clients.",
+          "Led modernization projects that added analytics to legacy enterprise systems for 3 major telecom clients.",
           "Translated modernization roadmaps into phased delivery plans, reducing migration risk incidents by **25%**."
         ],
         "related": []
@@ -179,8 +179,8 @@
         "summary": "The rigour that now shapes how I evaluate AI: risk-based testing, automation and API-level verification.",
         "metrics": [],
         "bullets": [
-          "**Principal Financial Group — System Test Lead (2007–2013):** designed risk-based test frameworks, automated script execution and resource plans.",
-          "**PTC | Cybage — Test Engineer (2005–2007):** orchestrated multi-OS functional verification and API-level automated testing infrastructure."
+          "**Principal Financial Group, System Test Lead (2007–2013):** designed risk-based test frameworks, automated script execution and resource plans.",
+          "**PTC | Cybage, Test Engineer (2005–2007):** built multi-OS functional verification and API-level automated testing infrastructure."
         ],
         "related": []
       }
@@ -192,7 +192,7 @@
       { "name": "AI & Product", "items": ["Agentic AI strategy & roadmaps", "Multi-agent orchestration", "Platform product management", "AI evaluation & governance", "Golden datasets & regression testing", "Human-in-the-loop", "LLMs & RAG", "GTM strategy", "CXO-level evangelism"] },
       { "name": "Platform & Developer Experience", "items": ["API-first design", "Developer experience", "Internal developer portals", "Tool use / action interfaces (MCP)", "Event-driven architecture", "Observability", "Serverless", "Microservices & DDD"] },
       { "name": "Cloud & Security", "items": ["Enterprise cloud platforms (AWS)", "Cybersecurity architecture", "Governance architecture", "Risk & compliance", "NIST AI RMF", "EU AI Act", "AI security posture"] },
-      { "name": "Certifications", "items": ["AWS Certified Solutions Architect", "AWS Certified Security – Specialty", "Machine Learning in Production (DeepLearning.AI)", "Data Science & AI — IIM Kozhikode"] }
+      { "name": "Certifications", "items": ["AWS Certified Solutions Architect", "AWS Certified Security – Specialty", "Machine Learning in Production (DeepLearning.AI)", "Data Science & AI, IIM Kozhikode"] }
     ]
   },
   "writing": {
@@ -206,6 +206,6 @@
   ],
   "contact": {
     "title": "Let's build AI that earns trust.",
-    "text": "Seeking Director / VP-level product leadership building AI or security products in the enterprise — where the hard problems are trust, adoption and turning capability into outcomes."
+    "text": "I'm looking for a Director or VP product role building AI or security products for the enterprise, where the hard problems are trust, adoption and turning capability into outcomes."
   }
 }
