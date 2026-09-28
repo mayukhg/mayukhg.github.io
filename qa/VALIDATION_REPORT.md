@@ -43,7 +43,7 @@ The suite discovers features from the code on every run (`qa/lib/discover.mjs`) 
 |---|---|---|---|---|
 | A1 | All required files exist | ✅ Pass | 0.0s | 15 files checked |
 | A2 | Content JSON is valid and internally consistent | ✅ Pass | 0.0s | 7 products, 3 arenas, 7 roles |
-| A3 | Phone number is not published in any site text file | ✅ Pass | 0.0s | 12 text files scanned; résumé PDF text layer additionally verified with pdfminer (see report) |
+| A3 | Phone number is not published in any site text file | ✅ Pass | 0.0s | 12 text files scanned; résumé PDF intentionally includes the phone number |
 | A4 | Every local URL referenced by pages and content resolves (HTTP 200) | ✅ Pass | 0.0s | 9 local references checked |
 | A5 | SEO & social metadata (title, description, canonical, Open Graph, JSON-LD) | ✅ Pass | 0.0s |  |
 | A6 | Crawl rules: robots.txt blocks /admin, admin + 404 are noindex, sitemap valid | ✅ Pass | 0.0s |  |
@@ -214,7 +214,7 @@ All screenshots are in [`qa/screenshots/`](screenshots/).
 
 These were done by hand once, outside this automated suite:
 
-- **Résumé PDF redaction:** the phone number was removed from the PDF's content stream, and the leftover (unreferenced) copy of the original page was purged. Text extraction with `pdfminer.six` then found no phone number, and the contact line reads `email | LinkedIn | Pune, India`. Test A3 re-checks the raw bytes on every run.
+- **Résumé PDF contact details:** the downloadable résumé intentionally includes the phone number (owner's decision, Sep 2026). Test A3 keeps the number out of the site's pages and text files only.
 - **Visual review:** every screenshot in this report was inspected at desktop and mobile sizes. That inspection found and fixed a wrapping logo mark, a stretched portrait, and a heading-level and contrast issue that axe also caught.
 
 ## Known limitations

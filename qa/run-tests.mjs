@@ -210,8 +210,8 @@ await test('A. Static integrity', 'A3', 'Phone number is not published in any si
   const text = walk(ROOT).filter((f) => /\.(html|css|js|json|md|txt|xml)$/.test(f));
   const hits = text.filter((f) => PHONE_RE.test(fs.readFileSync(f, 'utf8')));
   eq(hits.length, 0, `Phone number found in ${hits.join(', ')}`);
-  assert(!fs.readFileSync(path.join(ROOT, 'resume.pdf')).includes('9860345364'), 'Phone digits in resume.pdf bytes');
-  note(`${text.length} text files scanned; résumé PDF text layer additionally verified with pdfminer (see report)`);
+  // The résumé PDF intentionally includes the phone number (owner's decision, Sep 2026), so it is not checked here.
+  note(`${text.length} text files scanned; résumé PDF intentionally includes the phone number`);
 });
 
 await test('A. Static integrity', 'A4', 'Every local URL referenced by pages and content resolves (HTTP 200)', async () => {
@@ -1287,13 +1287,13 @@ ${results.flatMap((r) => r.shots.map((s) => `- [${s}](screenshots/${s}) — ${r.
 - **Viewports:** 1440, 1024, 768, 390 and 320 px wide; mobile runs emulate touch.
 - **GitHub API:** editor tests use an in-memory mock of the GitHub REST API, so no real commits are made. The mock checks auth headers, SHAs (it rejects stale SHAs with a 409, the same way GitHub does), branch and payload encoding.
 - **Accessibility:** the axe-core WCAG 2.0/2.1 A + AA rule sets plus best practices, and manual keyboard, heading, landmark and reduced-motion checks.
-- **Security:** XSS attempts through content fields, the admin Content-Security-Policy, token storage and phone-number leakage.
+- **Security:** XSS attempts through content fields, the admin Content-Security-Policy, token storage and phone-number leakage in site pages.
 
 ## One-time checks done at initial build (24 Sep 2026)
 
 These were done by hand once, outside this automated suite:
 
-- **Résumé PDF redaction:** the phone number was removed from the PDF's content stream, and the leftover (unreferenced) copy of the original page was purged. Text extraction with \`pdfminer.six\` then found no phone number, and the contact line reads \`email | LinkedIn | Pune, India\`. Test A3 re-checks the raw bytes on every run.
+- **Résumé PDF contact details:** the downloadable résumé intentionally includes the phone number (owner's decision, Sep 2026). Test A3 keeps the number out of the site's pages and text files only.
 - **Visual review:** every screenshot in this report was inspected at desktop and mobile sizes. That inspection found and fixed a wrapping logo mark, a stretched portrait, and a heading-level and contrast issue that axe also caught.
 
 ## Known limitations
