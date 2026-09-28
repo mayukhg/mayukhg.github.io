@@ -28,7 +28,7 @@
   "stats": [
     {
       "value": "3 PMs",
-      "label": "led & coached at Qualys; 25-person team at BP, 94% retention"
+      "label": "led & coached at Qualys; 25-person team at BP"
     },
     {
       "value": "$1.5M",
@@ -292,7 +292,7 @@
           "**AI Policy Foundry:** cut policy review cycles from 1–3 weeks to **30 minutes** with 95%+ policy accuracy and **$2.4M** annual savings, using a 5-agent GPT-4 product with full clause-level auditability.",
           "**AI SOC Portal:** reduced Mean Time to Triage by **more than 60%** and executive reporting overhead by ~50%, sustaining an **85%+** analyst action rate (RAGAS groundedness above 0.90).",
           "**AI-SPM:** delivered sub-second threat blocking and predictive drift and anomaly detection across 6 data quality dimensions, flagging issues before business impact and automating NIST & EU AI Act compliance evidence.",
-          "Led a 25-person product team without direct reporting lines, setting its vision, goals and priorities while sustaining **94% retention**; built organisational AI capability through the corporate **AI Maturity Index**, accelerating cloud time-to-market by **20%**."
+          "Led a 25-person product team without direct reporting lines, setting its vision, goals and priorities; built organisational AI capability through the corporate **AI Maturity Index**, accelerating cloud time-to-market by **20%**."
         ],
         "related": [
           "policy-foundry",
