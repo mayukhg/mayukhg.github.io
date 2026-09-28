@@ -52,15 +52,19 @@
         "items": [
           {
             "label": "Current role",
-            "value": "Director of Product Management, Qualys (since Feb 2026)"
+            "value": "Director of Product Management, Qualys: took the Agentic AI suite from pilots to GA"
           },
           {
             "label": "Looking for",
-            "value": "Director-level AI product leadership in enterprise security, payments or analytics"
+            "value": "Director-level AI product roles: GenAI & agentic products in security, payments or analytics"
           },
           {
             "label": "Domains",
-            "value": "Agentic AI · Enterprise security · Payments · Analytics"
+            "value": "Agentic & GenAI · Enterprise security · Payments · B2B & B2C"
+          },
+          {
+            "label": "Edge",
+            "value": "Architect-turned-product leader: prototypes to de-risk bets; responsible AI (NIST, EU AI Act) built in"
           }
         ]
       },
@@ -69,8 +73,8 @@
         "tone": "impact",
         "items": [
           {
-            "label": "Experience",
-            "value": "20+ years across AI-enabled analytics, payments and enterprise security"
+            "label": "Track record",
+            "value": "15+ enterprise pilots, 40% converted to paid POCs, shipped to GA"
           },
           {
             "label": "Teams led",
@@ -78,7 +82,7 @@
           },
           {
             "label": "Business impact",
-            "value": "$2M+ C-suite investment won; $2.4M annual savings; $1.5M POC pipeline"
+            "value": "**$2M+** C-suite investment won; **$2.4M** annual savings; **$1.5M** POC pipeline"
           }
         ]
       },
@@ -92,7 +96,11 @@
           },
           {
             "label": "Work mode",
-            "value": "Hybrid"
+            "value": "Remote / Hybrid"
+          },
+          {
+            "label": "Notice period",
+            "value": "30 days (negotiable)"
           },
           {
             "label": "Documents",
@@ -128,7 +136,7 @@
       },
       {
         "label": "Work mode",
-        "value": "Hybrid"
+        "value": "Remote / Hybrid"
       },
       {
         "label": "Experience",

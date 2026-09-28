@@ -157,7 +157,8 @@ section{padding:100px 0;position:relative;}
 .sn-item{padding:9px 0;border-top:1px solid var(--line);}
 .sn-item:first-child{border-top:0;padding-top:0;}
 .sn-item dt{font-size:.78rem;font-weight:600;color:var(--muted);}
-.sn-item dd{margin:2px 0 0;font-size:.94rem;font-weight:600;line-height:1.45;color:var(--ink);}
+.sn-item dd{margin:2px 0 0;font-size:.94rem;font-weight:500;line-height:1.45;color:var(--ink);}
+.sn-item dd strong{font-weight:800;}
 .sn-item dd a{color:var(--ink);}
 
 /* ---------- about ---------- */
