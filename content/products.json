@@ -9,7 +9,7 @@
   "arenas": [
     {
       "id": "defence",
-      "label": "AI Defence Ecosystem",
+      "label": "AI Defense Ecosystem",
       "color": "#4338ca"
     },
     {
@@ -28,13 +28,13 @@
       "id": "policy-foundry",
       "name": "AI Policy Foundry",
       "arena": "defence",
-      "kicker": "AI Defence Ecosystem · Prevent",
+      "kicker": "AI Defense Ecosystem · Prevent",
       "icon": "shield",
       "tagline": "Autonomous cloud-security policy from live threat intel and your own risk register.",
       "summary": "Generates cloud-security policy from the organisation's own risk register. Audit-ready in minutes, not weeks.",
-      "headline": "~70% faster policy, ~94% coverage",
-      "evidence": "modelled",
-      "client": "British Petroleum",
+      "headline": "Policy review cycles cut from 1–3 weeks to 30 minutes",
+      "evidence": "production",
+      "client": "BP",
       "stack": [
         "GPT-4 multi-agent",
         "React + TypeScript",
@@ -43,30 +43,30 @@
       ],
       "github": "https://github.com/mayukhg/ai-policy-foundry",
       "demo": "",
-      "pain": "Cloud security policy is written by hand: 2–6 weeks per policy, 60–75% coverage. Providers ship new services faster than policy keeps up, so gaps (and risk) accumulate.",
+      "pain": "Cloud security policy is written by hand: 1–3 weeks per policy, 60–75% coverage. Providers ship new services faster than policy keeps up, so gaps (and risk) accumulate.",
       "bet": "A multi-agent system that generates, validates and continuously updates policy from live threat intel **and** the organisation's own uploaded risk/control docs.",
       "whyLabel": "Why AI is the right call",
       "why": "Inputs are unstructured (threat feeds, regulations, risk registers) and the mapping is non-deterministic. Templates can't do that; it needs language understanding and reasoning. Grounding in the organisation's own documents lifts accuracy from ~65% to ~95%.",
       "tradeoff": "Deprioritised multi-cloud breadth to first get per-clause traceability right. An auditor won't trust a policy they can't trace back to a specific control.",
       "validated": "BP's cloud-security policy-management team. Their weeks-long manual cycles and creeping coverage gaps drove risk-register grounding + continuous auto-update.",
       "outcomes": [
-        "~70% faster, ~94% coverage (modelled)",
-        "Fewer policy gaps → lower breach exposure",
+        "Policy review cycles cut from 1–3 weeks to 30 minutes",
+        "95%+ policy accuracy and $2.4M annual savings",
         "Roadmap: threat correlation, batch docs, OCR"
       ],
-      "note": "Figures modelled on the public build; production figures under NDA."
+      "note": ""
     },
     {
       "id": "soc-portal",
       "name": "AI SOC Portal",
       "arena": "defence",
-      "kicker": "AI Defence Ecosystem · Detect & Respond",
+      "kicker": "AI Defense Ecosystem · Detect & Respond",
       "icon": "target",
       "tagline": "Auditable, AI-native SOC triage and threat hunting. Every verdict can be replayed.",
       "summary": "An AI-native SOC workspace where every machine verdict can be traced, evaluated and audited. Trust is a product requirement.",
-      "headline": "Analysts can check every AI verdict before acting on it",
-      "evidence": "",
-      "client": "British Petroleum",
+      "headline": "Mean Time to Triage cut by more than 60%",
+      "evidence": "production",
+      "client": "BP",
       "stack": [
         "LangChain / LangGraph",
         "AWS Lambda (Python)",
@@ -82,9 +82,9 @@
       "tradeoff": "Spent the build on trust infrastructure over more raw detection features. In a regulated SOC, trust is what gates adoption.",
       "validated": "Multiple interview rounds across all levels of BP's SOC team. Analysts won't act on a verdict they can't interrogate, so ~half the build is eval, explainability and audit.",
       "outcomes": [
-        "Analysts can check every AI verdict before acting on it",
-        "Faster triage; defensible, replayable verdicts",
-        "Roadmap: publish RAGAS baselines; SIEM/EDR ingest"
+        "Mean Time to Triage cut by more than 60%; executive reporting overhead ~50% lower",
+        "85%+ analyst action rate at RAGAS groundedness above 0.90",
+        "Roadmap: SIEM/EDR ingest"
       ],
       "note": ""
     },
@@ -92,13 +92,13 @@
       "id": "ai-spm",
       "name": "AI Security Posture Management (AI-SPM)",
       "arena": "defence",
-      "kicker": "AI Defence Ecosystem · Protect",
+      "kicker": "AI Defense Ecosystem · Protect",
       "icon": "chip",
       "tagline": "Posture management for your own AI/ML assets, drift and compliance evidence.",
       "summary": "Governs and secures the organisation's own AI/ML assets across their lifecycle. Built with applied ML, not an LLM.",
-      "headline": "Makes AI adoption governable & auditable",
-      "evidence": "",
-      "client": "British Petroleum",
+      "headline": "Sub-second threat blocking; drift detection across 6 data quality dimensions",
+      "evidence": "production",
+      "client": "BP",
       "stack": [
         "Python FastAPI",
         "Istio mTLS",
@@ -114,7 +114,7 @@
       "tradeoff": "Chose applied ML/statistics over an LLM. An LLM would add cost and risk, not accuracy.",
       "validated": "BP's cloud-security team on how they plan to secure the org's AI initiatives. The absence of any AI-asset inventory scoped this to posture management for AI itself.",
       "outcomes": [
-        "Makes AI adoption governable & auditable",
+        "Sub-second threat blocking; drift detection across 6 data quality dimensions",
         "Automated compliance evidence, Wiz-native",
         "Roadmap: broader frameworks & integrations"
       ],
@@ -244,13 +244,13 @@
         "Multi-institution collaboration, GDPR-aware",
         "Solves thin-file cold-start via shared learning"
       ],
-      "note": ""
+      "note": "Status: targeted for launch in select markets."
     }
   ],
   "ecosystem": {
     "show": true,
     "eyebrow": "Spotlight: the platform",
-    "title": "The AI Defence Ecosystem.",
+    "title": "The AI Defense Ecosystem.",
     "subtitle": "Three products, one platform, covering the full lifecycle. AI both defends the enterprise and is something the enterprise must defend.",
     "pillars": [
       {
@@ -261,7 +261,7 @@
       {
         "phase": "Protect",
         "name": "AI-SPM",
-        "text": "Governs the org's own AI/ML assets: adversarial defence, drift, compliance evidence."
+        "text": "Governs the org's own AI/ML assets: adversarial defense, drift, compliance evidence."
       },
       {
         "phase": "Detect & Respond",
@@ -270,6 +270,7 @@
       }
     ],
     "spine": "**One trust layer across all three.** Every AI decision is explainable, evaluated and logged. Gaps found in Detect feed back to Prevent; assets in Protect are watched by Detect.",
+    "evidence": "modelled",
     "opportunity": [
       "AI-security spend is growing but split across point tools. No one owns the whole lifecycle.",
       "Regulation (EU AI Act, NIST AI RMF) requires every enterprise to govern its AI. That buyer need is mandatory and growing.",
@@ -302,7 +303,6 @@
         "caption": "one governed platform loop"
       }
     ],
-    "evidence": "modelled",
     "note": "Success metrics modelled on the public builds; production figures under NDA."
   }
 }

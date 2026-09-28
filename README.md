@@ -4,7 +4,7 @@ A fast, accessible, single-page portfolio for **Mayukh Ghosh**, Director of Prod
 
 - a "60-second snapshot" for recruiters, with the résumé and portfolio one click away from anywhere on the page
 - seven AI product case studies
-- the AI Defence Ecosystem platform story
+- the AI Defense Ecosystem platform story
 - two decades of experience on a colour-coded career timeline
 
 **Colour coding.** Amber always means a document (résumé, portfolio). Each product arena, career track and snapshot group has its own colour, which you can change in the editor, and every colour appears with a text label.
@@ -26,7 +26,7 @@ Hosted on [GitHub Pages](https://pages.github.com/) → `https://mayukhg.github.
 3. **Edit** any section: profile, headline numbers, 60-second snapshot, experience (including career tracks), skills, education, products, arenas, spotlight. You can add, reorder, duplicate or delete items with the buttons on each row. Drafts save automatically in your browser.
 4. Click **Preview draft** to see the real site with your unpublished changes.
 5. Click **Publish changes**. Each publish is a normal Git commit, and the live site updates in about a minute.
-6. **Files tab:** upload a new résumé PDF, a portfolio PDF or a headshot. PDFs are public, so remove private details such as your phone number first.
+6. **Files tab:** upload a new résumé PDF, a portfolio PDF or a headshot. PDFs are public: the résumé intentionally includes your phone number, so check any other PDF for private details before uploading.
 
 Text fields marked **rich** support `**bold**` and `[link text](https://…)`. List boxes take one item per line. The **Help** tab in the editor has more detail. **Download backup** saves your draft to a file.
 
@@ -48,7 +48,7 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 │   ├── admin.js
 │   └── admin.css
 ├── assets/                 # Headshot, social share card, self-hosted fonts, portfolio.pdf
-├── resume.pdf              # Downloadable résumé (phone number removed)
+├── resume.pdf              # Downloadable résumé (includes phone number by choice)
 ├── 404.html · robots.txt · sitemap.xml · .nojekyll
 ├── .githooks/pre-commit     # Runs the regression suite before every commit
 ├── .github/workflows/       # Same suite in CI on every push / PR
@@ -75,7 +75,7 @@ The page loads its content with `fetch`, so open it through a local server rathe
 
 `qa/` contains a self-updating, end-to-end regression suite that runs in headless Chromium. It uses Playwright plus the axe-core accessibility checker. It covers:
 
-- static integrity and privacy (for example, no phone number published)
+- static integrity and privacy (for example, no phone number in site pages; the résumé PDF includes it by choice)
 - rendering and content accuracy
 - every interaction: summary cards, accordions, filters, the experience timeline, deep links, nav and the print layout
 - the colour coding and the recruiter essentials (résumé in the sticky nav at every width, the snapshot)

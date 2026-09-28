@@ -710,7 +710,7 @@
       },
       {
         "key": "ecosystem",
-        "label": "Spotlight section (AI Defence Ecosystem)",
+        "label": "Spotlight section (AI Defense Ecosystem)",
         "type": "object"
       },
       {
@@ -859,7 +859,7 @@
       },
       {
         "tab": "BP",
-        "title": "Head of Cloud Engineering"
+        "title": "Principal Product Manager"
       },
       {
         "tab": "Amdocs",
@@ -879,9 +879,11 @@
       }
     ],
     "skillGroups": [
+      "Product Management",
       "AI & Product",
       "Platform & Developer Experience",
       "Cloud & Security",
+      "Payments & Fintech",
       "Certifications"
     ],
     "stats": 4,
