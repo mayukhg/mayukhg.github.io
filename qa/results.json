@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-28T10:16:23.748Z",
+  "date": "2026-09-28T10:24:41.461Z",
   "mode": "full",
   "pass": 92,
   "fail": 0,
@@ -14,7 +14,7 @@
       "id": "A1",
       "name": "All required files exist",
       "status": "PASS",
-      "ms": 1,
+      "ms": 0,
       "notes": [
         "16 files checked"
       ],
@@ -38,7 +38,7 @@
       "id": "A3",
       "name": "Phone number is not published in any site text file",
       "status": "PASS",
-      "ms": 189,
+      "ms": 2,
       "notes": [
         "12 text files scanned; résumé PDF intentionally includes the phone number"
       ],
@@ -50,7 +50,7 @@
       "id": "A4",
       "name": "Every local URL referenced by pages and content resolves (HTTP 200)",
       "status": "PASS",
-      "ms": 88,
+      "ms": 54,
       "notes": [
         "10 local references checked"
       ],
@@ -62,7 +62,7 @@
       "id": "A5",
       "name": "SEO & social metadata (title, description, canonical, Open Graph, JSON-LD)",
       "status": "PASS",
-      "ms": 2,
+      "ms": 0,
       "notes": [],
       "shots": [],
       "error": ""
@@ -82,9 +82,9 @@
       "id": "B1",
       "name": "Home page loads with zero console errors, page errors or failed requests",
       "status": "PASS",
-      "ms": 3932,
+      "ms": 2523,
       "notes": [
-        "DOMContentLoaded 106 ms (local server); web fonts loaded"
+        "DOMContentLoaded 33 ms (local server); web fonts loaded"
       ],
       "shots": [
         "01-desktop-1440-full-page.jpg"
@@ -96,7 +96,7 @@
       "id": "B2",
       "name": "Hero renders name, title, badge, intro (with bold), CTAs, photo and 4 stats",
       "status": "PASS",
-      "ms": 1075,
+      "ms": 1027,
       "notes": [],
       "shots": [
         "02-hero-desktop.png"
@@ -108,7 +108,7 @@
       "id": "B3",
       "name": "Every section renders the expected number of items from content JSON",
       "status": "PASS",
-      "ms": 736,
+      "ms": 702,
       "notes": [
         "facts=8, steps=6, principles=3, products=7, glance=7, pillars=3, metrics=4, roles=7, legend=3, snapshot=3, snapItems=9, skills=6, edu=3, contact=5"
       ],
@@ -120,7 +120,7 @@
       "id": "B4",
       "name": "Content fidelity: every product, role, skill and education entry appears on the page",
       "status": "PASS",
-      "ms": 725,
+      "ms": 683,
       "notes": [],
       "shots": [],
       "error": ""
@@ -130,7 +130,7 @@
       "id": "B5",
       "name": "Section headings and sub-headings render exactly as written in the content files",
       "status": "PASS",
-      "ms": 870,
+      "ms": 797,
       "notes": [],
       "shots": [
         "03-products-heading.png"
@@ -142,7 +142,7 @@
       "id": "C1",
       "name": "Product card accordion expands and collapses (aria-expanded + height)",
       "status": "PASS",
-      "ms": 2036,
+      "ms": 2000,
       "notes": [],
       "shots": [
         "04-product-card-expanded.png"
@@ -154,7 +154,7 @@
       "id": "C9",
       "name": "Product card affordance: “Explore case study” button, content preview, whole-card click, animations, one-time hint",
       "status": "PASS",
-      "ms": 14667,
+      "ms": 12988,
       "notes": [],
       "shots": [
         "05-product-card-closed-hover.png",
@@ -167,7 +167,7 @@
       "id": "C2",
       "name": "Arena filter chips show the right products and counts",
       "status": "PASS",
-      "ms": 1364,
+      "ms": 1267,
       "notes": [],
       "shots": [
         "07-filter-agentic.png"
@@ -179,7 +179,7 @@
       "id": "C3",
       "name": "Experience timeline: every role visible at once; each role expands/collapses its achievements",
       "status": "PASS",
-      "ms": 2566,
+      "ms": 2366,
       "notes": [
         "7 roles on the timeline"
       ],
@@ -193,7 +193,7 @@
       "id": "C4",
       "name": "Colour coding: career tracks, product arenas, snapshot groups and documents each use their own labelled colour",
       "status": "PASS",
-      "ms": 1128,
+      "ms": 1003,
       "notes": [],
       "shots": [
         "09-colour-coded-summary-cards.png"
@@ -205,7 +205,7 @@
       "id": "C5",
       "name": "Deep links open products (URL hash, filtered state, experience “related product” links)",
       "status": "PASS",
-      "ms": 2604,
+      "ms": 2624,
       "notes": [],
       "shots": [],
       "error": ""
@@ -215,7 +215,7 @@
       "id": "C8",
       "name": "Summary (“at a glance”) cards: one per product, in order, each opens its product case",
       "status": "PASS",
-      "ms": 9196,
+      "ms": 9149,
       "notes": [],
       "shots": [
         "10-summary-cards-desktop.png"
@@ -227,7 +227,7 @@
       "id": "C6",
       "name": "Nav links scroll to sections; active link and scrolled state update",
       "status": "PASS",
-      "ms": 6466,
+      "ms": 6437,
       "notes": [],
       "shots": [],
       "error": ""
@@ -237,7 +237,7 @@
       "id": "C10",
       "name": "Recruiter essentials: résumé always one click away (sticky nav, all widths); 60-second snapshot; skills “+N more”",
       "status": "PASS",
-      "ms": 4068,
+      "ms": 3876,
       "notes": [],
       "shots": [
         "11-mobile-nav-resume.png",
@@ -250,9 +250,9 @@
       "id": "C11",
       "name": "Print / Save as PDF: navigation and buttons hidden, every case study, role and skill included",
       "status": "PASS",
-      "ms": 1068,
+      "ms": 965,
       "notes": [
-        "Print-to-PDF: 1020 KB"
+        "Print-to-PDF: 1009 KB"
       ],
       "shots": [],
       "error": ""
@@ -262,7 +262,7 @@
       "id": "C7",
       "name": "Links: external open safely in new tab, mailto correct, résumé PDF served",
       "status": "PASS",
-      "ms": 735,
+      "ms": 734,
       "notes": [
         "11 external links, 7 product GitHub links"
       ],
@@ -274,7 +274,7 @@
       "id": "D-1440",
       "name": "No horizontal overflow and correct layout at 1440px (desktop)",
       "status": "PASS",
-      "ms": 3320,
+      "ms": 2710,
       "notes": [],
       "shots": [
         "13-desktop-1440-full-page.jpg"
@@ -286,7 +286,7 @@
       "id": "D-1024",
       "name": "No horizontal overflow and correct layout at 1024px (laptop)",
       "status": "PASS",
-      "ms": 2382,
+      "ms": 1909,
       "notes": [],
       "shots": [
         "14-laptop-1024-full-page.jpg"
@@ -298,7 +298,7 @@
       "id": "D-768",
       "name": "No horizontal overflow and correct layout at 768px (tablet)",
       "status": "PASS",
-      "ms": 2729,
+      "ms": 1893,
       "notes": [],
       "shots": [
         "15-tablet-768-full-page.jpg"
@@ -310,7 +310,7 @@
       "id": "D-390",
       "name": "No horizontal overflow and correct layout at 390px (mobile)",
       "status": "PASS",
-      "ms": 1802,
+      "ms": 1770,
       "notes": [],
       "shots": [
         "16-mobile-390-full-page.jpg"
@@ -322,7 +322,7 @@
       "id": "D-320",
       "name": "No horizontal overflow and correct layout at 320px (small-mobile)",
       "status": "PASS",
-      "ms": 1772,
+      "ms": 1645,
       "notes": [],
       "shots": [
         "17-small-mobile-320-full-page.jpg"
@@ -334,7 +334,7 @@
       "id": "D-menu",
       "name": "Mobile menu opens/closes (button, link tap, Escape) with correct ARIA",
       "status": "PASS",
-      "ms": 918,
+      "ms": 874,
       "notes": [],
       "shots": [
         "18-mobile-menu-open.png"
@@ -346,7 +346,7 @@
       "id": "D-touch",
       "name": "Touch targets are at least 44×44px on mobile",
       "status": "PASS",
-      "ms": 791,
+      "ms": 724,
       "notes": [],
       "shots": [],
       "error": ""
@@ -356,7 +356,7 @@
       "id": "E1",
       "name": "axe-core WCAG 2.1 AA audit — home page (desktop, with an expanded card)",
       "status": "PASS",
-      "ms": 2574,
+      "ms": 2450,
       "notes": [
         "Desktop: 42 axe rules passed, 0 violations"
       ],
@@ -368,7 +368,7 @@
       "id": "E2",
       "name": "axe-core WCAG 2.1 AA audit — home page (mobile, menu open)",
       "status": "PASS",
-      "ms": 1719,
+      "ms": 1661,
       "notes": [
         "Mobile: 42 axe rules passed, 0 violations"
       ],
@@ -380,7 +380,7 @@
       "id": "E3",
       "name": "Semantics: one H1, no skipped heading levels, landmarks, named controls, image alts",
       "status": "PASS",
-      "ms": 702,
+      "ms": 688,
       "notes": [],
       "shots": [],
       "error": ""
@@ -390,7 +390,7 @@
       "id": "E4",
       "name": "Keyboard: skip link is first tab stop and moves focus to main content; focus is visible",
       "status": "PASS",
-      "ms": 769,
+      "ms": 743,
       "notes": [],
       "shots": [
         "19-keyboard-skip-link.png"
@@ -402,7 +402,7 @@
       "id": "E5",
       "name": "Reduced motion: content is visible immediately without animations",
       "status": "PASS",
-      "ms": 703,
+      "ms": 699,
       "notes": [],
       "shots": [],
       "error": ""
@@ -412,7 +412,7 @@
       "id": "E6",
       "name": "No-JavaScript fallback shows a message with résumé + email links",
       "status": "PASS",
-      "ms": 630,
+      "ms": 627,
       "notes": [],
       "shots": [],
       "error": ""
@@ -422,7 +422,7 @@
       "id": "F1",
       "name": "If content JSON fails to load, a friendly error is shown (no crash, no blank page)",
       "status": "PASS",
-      "ms": 700,
+      "ms": 695,
       "notes": [],
       "shots": [
         "20-content-load-error.png"
@@ -434,7 +434,7 @@
       "id": "F2",
       "name": "Preview mode renders the local draft only when ?preview=1 is present",
       "status": "PASS",
-      "ms": 1987,
+      "ms": 1950,
       "notes": [],
       "shots": [],
       "error": ""
@@ -444,7 +444,7 @@
       "id": "F3",
       "name": "XSS-safe rendering: HTML/script and javascript: links in content are neutralised",
       "status": "PASS",
-      "ms": 1381,
+      "ms": 1366,
       "notes": [],
       "shots": [],
       "error": ""
@@ -454,7 +454,7 @@
       "id": "F4",
       "name": "404 page renders on unknown URLs with a way back",
       "status": "PASS",
-      "ms": 651,
+      "ms": 639,
       "notes": [],
       "shots": [
         "21-404-page.png"
@@ -466,7 +466,7 @@
       "id": "F5",
       "name": "Admin page ships a strict Content-Security-Policy and never leaks the token in URLs",
       "status": "PASS",
-      "ms": 1,
+      "ms": 0,
       "notes": [],
       "shots": [],
       "error": ""
@@ -476,7 +476,7 @@
       "id": "G1",
       "name": "Editor loads with no errors, populates every form from content, all tabs work",
       "status": "PASS",
-      "ms": 1028,
+      "ms": 1052,
       "notes": [],
       "shots": [
         "22-admin-profile-tab.png"
@@ -488,7 +488,7 @@
       "id": "G2",
       "name": "Editing a field marks the draft dirty, autosaves, and “Preview draft” shows it on the real site",
       "status": "PASS",
-      "ms": 2310,
+      "ms": 2225,
       "notes": [],
       "shots": [
         "23-admin-preview-draft.png"
@@ -500,7 +500,7 @@
       "id": "G3",
       "name": "Add a new product through the form; it appears on the site with correct arena filter counts",
       "status": "PASS",
-      "ms": 2440,
+      "ms": 2322,
       "notes": [],
       "shots": [
         "24-admin-new-product-form.png",
@@ -514,7 +514,7 @@
       "id": "G4",
       "name": "Reorder, duplicate and delete list items (with confirmation)",
       "status": "PASS",
-      "ms": 1425,
+      "ms": 1409,
       "notes": [],
       "shots": [],
       "error": ""
@@ -524,7 +524,7 @@
       "id": "G5",
       "name": "Validation blocks publishing and points to each problem (required, email, URL, duplicate ID, unknown link)",
       "status": "PASS",
-      "ms": 1149,
+      "ms": 1140,
       "notes": [],
       "shots": [
         "27-admin-validation-errors.png"
@@ -536,7 +536,7 @@
       "id": "G6",
       "name": "Connect flow: bad token shows a friendly error; valid token connects",
       "status": "PASS",
-      "ms": 1128,
+      "ms": 1087,
       "notes": [],
       "shots": [
         "28-admin-connected.png"
@@ -548,7 +548,7 @@
       "id": "G7",
       "name": "Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state",
       "status": "PASS",
-      "ms": 1137,
+      "ms": 1108,
       "notes": [],
       "shots": [
         "29-admin-published.png"
@@ -560,7 +560,7 @@
       "id": "G8",
       "name": "Publish detects a remote change and asks before overwriting (cancel = no commit)",
       "status": "PASS",
-      "ms": 1488,
+      "ms": 1465,
       "notes": [],
       "shots": [],
       "error": ""
@@ -570,7 +570,7 @@
       "id": "G9",
       "name": "File uploads: résumé PDF committed; wrong type and fake PDF rejected; portfolio + photo wire into content",
       "status": "PASS",
-      "ms": 1247,
+      "ms": 1210,
       "notes": [],
       "shots": [
         "30-admin-files-uploaded.png"
@@ -582,7 +582,7 @@
       "id": "G10",
       "name": "Backup download + restore, and “Discard draft” reverts to live content",
       "status": "PASS",
-      "ms": 1229,
+      "ms": 1188,
       "notes": [],
       "shots": [],
       "error": ""
@@ -592,7 +592,7 @@
       "id": "G11",
       "name": "“Remember on this device” stores token in localStorage; Disconnect removes it everywhere",
       "status": "PASS",
-      "ms": 1764,
+      "ms": 1726,
       "notes": [
         "Reopening the editor reconnects automatically"
       ],
@@ -604,7 +604,7 @@
       "id": "G12",
       "name": "Editor is usable on mobile (390px): no horizontal overflow, axe audit clean",
       "status": "PASS",
-      "ms": 1720,
+      "ms": 1484,
       "notes": [
         "Admin axe: 0 violations"
       ],
@@ -618,7 +618,7 @@
       "id": "G13",
       "name": "Products tab and Files tab render correctly (visual check)",
       "status": "PASS",
-      "ms": 1109,
+      "ms": 1107,
       "notes": [],
       "shots": [
         "32-admin-products-tab.png",
@@ -644,7 +644,7 @@
       "id": "R-section-top",
       "name": "Section #top renders with content",
       "status": "PASS",
-      "ms": 21,
+      "ms": 20,
       "notes": [],
       "shots": [],
       "error": ""
@@ -654,7 +654,7 @@
       "id": "R-section-snapshot",
       "name": "Section #snapshot renders with content",
       "status": "PASS",
-      "ms": 8,
+      "ms": 9,
       "notes": [],
       "shots": [],
       "error": ""
@@ -664,7 +664,7 @@
       "id": "R-section-products",
       "name": "Section #products renders with content",
       "status": "PASS",
-      "ms": 8,
+      "ms": 7,
       "notes": [],
       "shots": [],
       "error": ""
@@ -674,7 +674,7 @@
       "id": "R-section-experience",
       "name": "Section #experience renders with content",
       "status": "PASS",
-      "ms": 8,
+      "ms": 9,
       "notes": [],
       "shots": [],
       "error": ""
@@ -684,7 +684,7 @@
       "id": "R-section-ecosystem",
       "name": "Section #ecosystem renders with content",
       "status": "PASS",
-      "ms": 10,
+      "ms": 8,
       "notes": [],
       "shots": [],
       "error": ""
@@ -694,7 +694,7 @@
       "id": "R-section-about",
       "name": "Section #about renders with content",
       "status": "PASS",
-      "ms": 8,
+      "ms": 9,
       "notes": [],
       "shots": [],
       "error": ""
@@ -714,7 +714,7 @@
       "id": "R-section-skills",
       "name": "Section #skills renders with content",
       "status": "PASS",
-      "ms": 7,
+      "ms": 9,
       "notes": [],
       "shots": [],
       "error": ""
@@ -734,7 +734,7 @@
       "id": "R-section-contact",
       "name": "Section #contact renders with content",
       "status": "PASS",
-      "ms": 7,
+      "ms": 8,
       "notes": [],
       "shots": [],
       "error": ""
@@ -754,7 +754,7 @@
       "id": "R-product-policy-foundry",
       "name": "Product “AI Policy Foundry”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2217,
+      "ms": 2237,
       "notes": [],
       "shots": [],
       "error": ""
@@ -764,7 +764,7 @@
       "id": "R-product-soc-portal",
       "name": "Product “AI SOC Portal”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2770,
+      "ms": 2748,
       "notes": [],
       "shots": [],
       "error": ""
@@ -774,7 +774,7 @@
       "id": "R-product-ai-spm",
       "name": "Product “AI Security Posture Management (AI-SPM)”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2763,
+      "ms": 2768,
       "notes": [],
       "shots": [],
       "error": ""
@@ -784,7 +784,7 @@
       "id": "R-product-mcp",
       "name": "Product “Exploit Validation & Remediation MCP Server”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2845,
+      "ms": 2835,
       "notes": [],
       "shots": [],
       "error": ""
@@ -794,7 +794,7 @@
       "id": "R-product-copilot",
       "name": "Product “Unified Risk Copilot”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2797,
+      "ms": 2802,
       "notes": [],
       "shots": [],
       "error": ""
@@ -804,7 +804,7 @@
       "id": "R-product-hscode",
       "name": "Product “HS Code Prediction API”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2825,
+      "ms": 2731,
       "notes": [],
       "shots": [],
       "error": ""
@@ -814,7 +814,7 @@
       "id": "R-product-kyc",
       "name": "Product “KYC-as-a-Service”: summary card opens its full case with the right content and links",
       "status": "PASS",
-      "ms": 2771,
+      "ms": 2787,
       "notes": [],
       "shots": [],
       "error": ""
@@ -824,7 +824,7 @@
       "id": "R-arena-defence",
       "name": "Arena “AI Defense Ecosystem” filter shows exactly its 3 product(s)",
       "status": "PASS",
-      "ms": 786,
+      "ms": 730,
       "notes": [],
       "shots": [],
       "error": ""
@@ -834,7 +834,7 @@
       "id": "R-arena-agentic",
       "name": "Arena “Agentic Platform” filter shows exactly its 2 product(s)",
       "status": "PASS",
-      "ms": 755,
+      "ms": 725,
       "notes": [],
       "shots": [],
       "error": ""
@@ -844,7 +844,7 @@
       "id": "R-arena-applied",
       "name": "Arena “Applied AI” filter shows exactly its 2 product(s)",
       "status": "PASS",
-      "ms": 752,
+      "ms": 750,
       "notes": [],
       "shots": [],
       "error": ""
@@ -854,7 +854,7 @@
       "id": "R-role-1",
       "name": "Experience “Qualys”: timeline shows title, dates, track, metrics and all 7 achievements",
       "status": "PASS",
-      "ms": 2580,
+      "ms": 606,
       "notes": [],
       "shots": [],
       "error": ""
@@ -864,7 +864,7 @@
       "id": "R-role-2",
       "name": "Experience “Fractional CPO”: timeline shows title, dates, track, metrics and all 5 achievements",
       "status": "PASS",
-      "ms": 2951,
+      "ms": 2976,
       "notes": [],
       "shots": [],
       "error": ""
@@ -874,7 +874,7 @@
       "id": "R-role-3",
       "name": "Experience “BP”: timeline shows title, dates, track, metrics and all 6 achievements",
       "status": "PASS",
-      "ms": 4815,
+      "ms": 4792,
       "notes": [],
       "shots": [],
       "error": ""
@@ -884,7 +884,7 @@
       "id": "R-role-4",
       "name": "Experience “Amdocs”: timeline shows title, dates, track, metrics and all 4 achievements",
       "status": "PASS",
-      "ms": 2464,
+      "ms": 2430,
       "notes": [],
       "shots": [],
       "error": ""
@@ -904,7 +904,7 @@
       "id": "R-role-6",
       "name": "Experience “Pitney Bowes”: timeline shows title, dates, track, metrics and all 2 achievements",
       "status": "PASS",
-      "ms": 2500,
+      "ms": 2499,
       "notes": [],
       "shots": [],
       "error": ""
@@ -914,7 +914,7 @@
       "id": "R-role-7",
       "name": "Experience “Early career”: timeline shows title, dates, track, metrics and all 2 achievements",
       "status": "PASS",
-      "ms": 2429,
+      "ms": 2428,
       "notes": [],
       "shots": [],
       "error": ""
@@ -924,7 +924,7 @@
       "id": "R-admin-tab-profile",
       "name": "Editor tab “profile” opens its panel",
       "status": "PASS",
-      "ms": 68,
+      "ms": 51,
       "notes": [],
       "shots": [],
       "error": ""
@@ -934,7 +934,7 @@
       "id": "R-admin-tab-products",
       "name": "Editor tab “products” opens its panel",
       "status": "PASS",
-      "ms": 61,
+      "ms": 66,
       "notes": [],
       "shots": [],
       "error": ""
@@ -944,7 +944,7 @@
       "id": "R-admin-tab-files",
       "name": "Editor tab “files” opens its panel",
       "status": "PASS",
-      "ms": 52,
+      "ms": 54,
       "notes": [],
       "shots": [],
       "error": ""
@@ -954,7 +954,7 @@
       "id": "R-admin-tab-connect",
       "name": "Editor tab “connect” opens its panel",
       "status": "PASS",
-      "ms": 53,
+      "ms": 59,
       "notes": [],
       "shots": [],
       "error": ""
@@ -964,7 +964,7 @@
       "id": "R-admin-tab-help",
       "name": "Editor tab “help” opens its panel",
       "status": "PASS",
-      "ms": 44,
+      "ms": 38,
       "notes": [],
       "shots": [],
       "error": ""
@@ -974,7 +974,7 @@
       "id": "R-admin-upload-resume",
       "name": "Editor upload “resume” has a file picker restricted to the right file types",
       "status": "PASS",
-      "ms": 45,
+      "ms": 44,
       "notes": [],
       "shots": [],
       "error": ""
@@ -984,7 +984,7 @@
       "id": "R-admin-upload-portfolio",
       "name": "Editor upload “portfolio” has a file picker restricted to the right file types",
       "status": "PASS",
-      "ms": 46,
+      "ms": 47,
       "notes": [],
       "shots": [],
       "error": ""
@@ -994,7 +994,7 @@
       "id": "R-admin-upload-photo",
       "name": "Editor upload “photo” has a file picker restricted to the right file types",
       "status": "PASS",
-      "ms": 33,
+      "ms": 52,
       "notes": [],
       "shots": [],
       "error": ""
@@ -1004,7 +1004,7 @@
       "id": "R-admin-fields",
       "name": "Every editor form field (92 kinds, discovered from the schema) round-trips into the draft, and the edited draft renders",
       "status": "PASS",
-      "ms": 5163,
+      "ms": 4950,
       "notes": [
         "105 distinct fields edited through the UI — string: 53, lines: 5, md: 19, path: 3, email: 1, url: 4, select: 6, paras: 1, text: 5, color: 2, mdlines: 4, bool: 2"
       ],

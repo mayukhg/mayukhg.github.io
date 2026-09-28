@@ -270,7 +270,7 @@
       }
     ],
     "spine": "**One trust layer across all three.** Every AI decision is explainable, evaluated and logged. Gaps found in Detect feed back to Prevent; assets in Protect are watched by Detect.",
-    "evidence": "modelled",
+    "evidence": "",
     "opportunity": [
       "AI-security spend is growing but split across point tools. No one owns the whole lifecycle.",
       "Regulation (EU AI Act, NIST AI RMF) requires every enterprise to govern its AI. That buyer need is mandatory and growing.",
@@ -283,26 +283,26 @@
     ],
     "metrics": [
       {
-        "value": "~70%",
-        "label": "faster time-to-policy",
-        "caption": "vs. 2–6 week manual baseline"
+        "value": "30 min",
+        "label": "policy review cycle",
+        "caption": "down from 1–3 weeks (AI Policy Foundry)"
       },
       {
-        "value": "94%+",
-        "label": "policy & control coverage",
-        "caption": "up from 60–75% manual"
+        "value": "$2.4M",
+        "label": "annual savings",
+        "caption": "from AI policy automation"
       },
       {
-        "value": "100%",
-        "label": "AI verdicts auditable",
-        "caption": "traceable & replayable by design"
+        "value": ">60%",
+        "label": "faster SOC triage",
+        "caption": "Mean Time to Triage (AI SOC Portal)"
       },
       {
-        "value": "3 → 1",
-        "label": "point tools consolidated",
-        "caption": "one governed platform loop"
+        "value": "$10M+",
+        "label": "risk exposure mitigated",
+        "caption": "across 15+ business units"
       }
     ],
-    "note": "Success metrics modelled on the public builds; production figures under NDA."
+    "note": ""
   }
 }
