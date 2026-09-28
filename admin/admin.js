@@ -106,7 +106,7 @@
       S('name', 'Product name', 'string', { required: true }),
       S('id', 'Product ID', 'string', { required: true, check: 'productId', hint: 'Short unique ID used in links, e.g. “risk-copilot”. Filled from the name if left empty.' }),
       S('arena', 'Arena', 'select', { required: true, options: function () { return (state.products.arenas || []).map(function (a) { return [a.id, a.label || a.id]; }); } }),
-      S('kicker', 'Label above the name', 'string', { hint: 'e.g. “AI Defence Ecosystem · Prevent”. Empty = arena name.' }),
+      S('kicker', 'Label above the name', 'string', { hint: 'e.g. “AI Defense Ecosystem · Prevent”. Empty = arena name.' }),
       S('icon', 'Summary card icon', 'select', { options: function () { return GLANCE_ICONS; } }),
       S('tagline', 'Summary card tagline', 'md', { hint: 'One short sentence for the “at a glance” card. Empty = uses the one-line summary.' }),
       S('summary', 'One-line summary', 'md', { required: true }),
@@ -123,7 +123,7 @@
       S('outcomes', 'Value & outcomes', 'mdlines', { hint: 'One per line.' }),
       S('note', 'Footnote', 'md')
     ] }),
-    S('ecosystem', 'Spotlight section (AI Defence Ecosystem)', 'object', { section: true, fields: [
+    S('ecosystem', 'Spotlight section (AI Defense Ecosystem)', 'object', { section: true, fields: [
       S('show', 'Show this section on the site', 'bool'),
       S('eyebrow', 'Small label', 'string'), S('title', 'Heading', 'string'), S('subtitle', 'Sub-heading', 'text'),
       S('pillars', 'Pillars', 'array', { itemTitle: function (x) { return x.phase + (x.name ? ' — ' + x.name : ''); }, fields: [

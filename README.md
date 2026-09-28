@@ -3,7 +3,7 @@
 A fast, accessible, single-page portfolio for **Mayukh Ghosh**, Director of Product Management (Agentic AI & Cybersecurity). It covers:
 
 - seven AI product case studies
-- the AI Defence Ecosystem platform story
+- the AI Defense Ecosystem platform story
 - two decades of experience
 
 All content is editable **without touching code** through a built-in editor at **`/admin`**.
