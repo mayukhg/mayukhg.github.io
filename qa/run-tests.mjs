@@ -282,7 +282,6 @@ await test('B. Rendering', 'B2', 'Hero renders name, title, badge, intro (with b
   assert(/btn-doc/.test(ctas[0].c), 'résumé button uses the document (amber) style');
   assert(ctas.some((a) => a.h === profileJSON.links.resume && a.d), 'résumé download button');
   assert(ctas.some((a) => a.h === profileJSON.links.portfolio), 'portfolio button');
-  assert(ctas.some((a) => a.h === '#products'), 'products button');
   eq(await page.locator('.cta-note').innerText(), `Résumé updated ${profileJSON.links.resumeUpdated} · PDF`, 'résumé date note');
   const img = await page.locator('img.portrait').evaluate((i) => ({ w: i.naturalWidth, alt: i.alt, ratio: i.getBoundingClientRect().width / i.getBoundingClientRect().height }));
   assert(img.w > 0, 'photo loaded'); assert(img.alt.length > 5, 'photo alt');
@@ -304,7 +303,7 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
     skills: document.querySelectorAll('.skill-card').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
-    products: productsJSON.products.length, glance: productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
+    products: productsJSON.products.length, glance: productsJSON.overview?.show === false ? 0 : productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
     roles: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
     legend: profileJSON.experience.tracks.filter((t) => profileJSON.experience.roles.some((r) => r.track === t.id)).length,
     snapshot: profileJSON.snapshot.groups.length, snapItems: profileJSON.snapshot.groups.reduce((n, g) => n + g.items.length, 0),
@@ -387,10 +386,9 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(parseFloat(chrome.clientRadius) || 0, 0, 'client is plain text, not a pill');
   assert(chrome.btnBg !== 'rgba(0, 0, 0, 0)', 'button filled');
   assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
-  eq(await visibleLabel(), 'Explore case study', 'closed label');
-  const strip = (s) => s.replace(/\*\*/g, '');
-  assert((await card.locator('.acc-peek').innerText()).includes(strip(p0.pain).slice(0, 40)), 'customer-pain preview shown');
-  eq(await card.locator('.acc-peek').getAttribute('aria-hidden'), 'true', 'preview hidden from screen readers (duplicate text)');
+  eq(await visibleLabel(), 'Read the case', 'closed label');
+  eq(await card.locator('.acc-peek').count(), 0, 'no faded pain preview');
+  assert((await card.locator('.acc-sum').innerText()).includes('Decision'), 'decision shown on the closed card');
   eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
   // Hover: hairline border takes the arena colour (no lift, no shadow), button arrow nudges.
   await card.scrollIntoViewIfNeeded(); await revealAll(page);
@@ -408,7 +406,6 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(await btn.getAttribute('aria-expanded'), 'true', 'card surface click opens');
   eq(await visibleLabel(), 'Hide details', 'label switches');
   eq(await card.locator('.acc-body').getAttribute('inert'), null, 'open content is interactive');
-  assert((await card.locator('.acc-peek').evaluate((e) => e.getBoundingClientRect().height)) < 2, 'preview collapses when open');
   assert(await card.locator('.t-arrow').evaluate((a) => /matrix\(0, -1, 1, 0/.test(getComputedStyle(a).transform) || /matrix\(6\.\d+e-17, -1/.test(getComputedStyle(a).transform)), 'arrow turns to point up');
   // Staggered reveal: later blocks start later.
   const delays = await card.locator('.snap, .decide > div').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).transitionDelay)));
@@ -445,22 +442,24 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   await c3.context.close();
 });
 
-await test('C. Interactions', 'C2', 'Arena filter chips show the right products and counts', async () => {
+await test('C. Interactions', 'C2', 'Domain filter chips show the right products and counts', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  for (const a of productsJSON.arenas) {
-    const expected = productsJSON.products.filter((p) => p.arena === a.id).length;
-    const chip = page.locator(`.chipbtn[data-f="${a.id}"]`);
+  for (const a of productsJSON.domains) {
+    const expected = productsJSON.products.filter((p) => p.domain === a.id).length;
+    const chip = page.locator(`#products .chipbtn[data-f="${a.id}"]`);
     await chip.click();
     eq(await chip.getAttribute('aria-pressed'), 'true', `${a.id} pressed`);
     eq(await page.locator('#product-list .acc:not([hidden])').count(), expected, `${a.id} visible count`);
     eq(await chip.locator('.ct').innerText(), String(expected), `${a.id} chip count`);
+    eq(await page.locator('#experience .tl-item:not([hidden])').count(), profileJSON.experience.roles.filter((r) => (r.domains || []).includes(a.id)).length, `${a.id} roles`);
   }
-  await page.locator('.chipbtn[data-f="agentic"]').click();
+  await page.locator('#products .chipbtn[data-f="security"]').click();
   await revealAll(page);
-  await shot(page.locator('#products'), 'filter-agentic');
-  await page.locator('.chipbtn[data-f="all"]').click();
+  await shot(page.locator('#products'), 'filter-security');
+  await page.locator('#products .chipbtn[data-f="all"]').click();
   eq(await page.locator('#product-list .acc:not([hidden])').count(), productsJSON.products.length, 'All restores every product');
+  eq(await page.locator('#experience .tl-item:not([hidden])').count(), profileJSON.experience.roles.length, 'All restores every role');
   await context.close();
 });
 
@@ -503,17 +502,16 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
     eq(await page.locator('.tl-card').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
     assert((await page.locator('.tl-item').nth(i).locator('.tl-track').innerText()) === tr.label, `${r.tab} track label`);
   }
-  // Products: summary cards and product cards carry their arena colour; filter chips show a swatch.
+  // Products: each card's edge uses its domain colour; filter chips show a swatch.
   for (const p of productsJSON.products) {
-    const col = rgb(productsJSON.arenas.find((a) => a.id === p.arena).color);
-    eq(await page.locator(`.glance-card[data-product="${p.id}"]`).evaluate((c) => getComputedStyle(c).borderTopColor), col, `${p.id} summary card colour`);
-    eq(await page.locator('#p-' + p.id).evaluate((c) => getComputedStyle(c).borderLeftColor), col, `${p.id} card colour`);
+    const dom = productsJSON.domains.find((a) => a.id === p.domain);
+    eq(await page.locator('#p-' + p.id).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(dom.color), `${p.id} card colour`);
   }
-  const arenaColours = new Set(productsJSON.arenas.map((a) => a.color.toLowerCase()));
-  eq(arenaColours.size, productsJSON.arenas.length, 'every arena has a distinct colour');
+  const domainColours = new Set(productsJSON.domains.map((a) => a.color.toLowerCase()));
+  eq(domainColours.size, productsJSON.domains.length, 'every domain has a distinct colour');
   const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase());
-  assert(!arenaColours.has(accent), 'link/focus accent is not reused as an arena colour');
-  eq(await page.locator('.chipbtn[data-f] .swatch').count(), productsJSON.arenas.length, 'filter chips show arena swatches');
+  assert(!domainColours.has(accent), 'link/focus accent is not reused as a domain colour');
+  eq(await page.locator('#products .chipbtn[data-f] .swatch').count(), productsJSON.domains.length, 'filter chips show domain swatches');
   // Snapshot groups: one colour per group.
   const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
   eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
@@ -523,7 +521,7 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   // Evidence badges follow the content flags.
   for (const p of productsJSON.products) eq(await page.locator(`#p-${p.id} .acc-outcome .ev`).count(), p.evidence ? 1 : 0, `${p.id} evidence badge`);
   if (productsJSON.ecosystem.evidence) eq(await page.locator('.metrics-ev .ev').count(), 1, 'ecosystem metrics badge');
-  await shot(page.locator('.glance'), 'colour-coded-summary-cards');
+  await shot(page.locator('#products'), 'colour-coded-portfolio');
   await context.close();
 });
 
@@ -534,51 +532,32 @@ await test('C. Interactions', 'C5', 'Deep links open products (URL hash, filtere
   eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'hash opens card');
   await page.close();
   page = await open(context, '/');
-  await page.locator('.chipbtn[data-f="agentic"]').click();
-  await page.locator('.tl-item', { hasText: 'Western Union' }).locator('.stackline a').first().click();
+  await page.locator('#products .chipbtn[data-f="healthcare"]').click();
+  assert(await page.locator('#p-kyc').isHidden(), 'payments product hidden under healthcare');
+  await page.evaluate(() => { location.hash = '#p-kyc'; });
   await page.waitForTimeout(600);
-  assert(await page.locator('#p-kyc').isVisible(), 'filtered-out card is revealed');
-  eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'related link opens card');
+  assert(await page.locator('#p-kyc').isVisible(), 'hash reveals a filtered-out card');
+  eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'hash opens the card');
   await context.close();
 });
 
-await test('C. Interactions', 'C8', 'Summary (“at a glance”) cards: one per product, in order, each opens its product case', async () => {
+await test('C. Interactions', 'C8', 'Portfolio cards lead with the outcome and the decision, and open the full case', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  const cards = page.locator('.glance-card');
+  const cards = page.locator('#product-list .acc');
   eq(await cards.count(), productsJSON.products.length, 'one card per product');
-  const names = await cards.locator('h4').allInnerTexts();
+  const names = await cards.locator('.acc-title').allInnerTexts();
   eq(names.join('|'), productsJSON.products.map((p) => p.name).join('|'), 'card order and names');
-  const icons = await page.locator('.glance-card .g-icon use').evaluateAll((u) => u.map((x) => x.getAttribute('href')));
-  eq(icons.join(','), productsJSON.products.map((p) => '#g-' + p.icon).join(','), 'icons from content');
-  eq(await page.locator('.glance-title').innerText(), productsJSON.overview.title, 'panel title');
-  await revealAll(page);
-  await shot(page.locator('.glance'), 'summary-cards-desktop');
-  // Filter to a different arena first: clicking a card must still reveal and open its product.
-  await page.locator('.chipbtn[data-f="agentic"]').click();
-  for (const p of [productsJSON.products[0], productsJSON.products[productsJSON.products.length - 1]]) {
-    await page.locator(`.glance-card[data-product="${p.id}"]`).click();
-    // wait for the smooth scroll to bring the card just below the sticky nav
-    await page.waitForFunction((id) => { const t = document.getElementById(id).getBoundingClientRect().top, n = document.getElementById('nav').offsetHeight; return t >= n && t < n + 60; }, 'p-' + p.id, { timeout: 5000 }).catch(() => {});
-    assert(await page.locator('#p-' + p.id).isVisible(), `${p.id} visible after click`);
-    eq(await page.locator(`#p-${p.id} .acc-toggle`).getAttribute('aria-expanded'), 'true', `${p.id} opened`);
-    eq(await page.evaluate(() => location.hash), '#p-' + p.id, 'URL hash updated');
-    const top = await page.locator('#p-' + p.id).evaluate((el) => el.getBoundingClientRect().top);
-    const navH = await page.locator('#nav').evaluate((n) => n.offsetHeight);
-    assert(top >= navH && top < navH + 60, `${p.id} should sit just below the sticky nav (top=${Math.round(top)}, nav=${navH})`);
-    await page.evaluate(() => window.scrollTo(0, document.querySelector('.glance').offsetTop - 100));
-  }
-  // Clicking the same card again (hash unchanged) re-opens a collapsed card.
-  const last = productsJSON.products[productsJSON.products.length - 1].id;
-  await page.locator(`#p-${last} .acc-toggle`).click();
-  await page.locator(`.glance-card[data-product="${last}"]`).click();
-  await page.waitForTimeout(500);
-  eq(await page.locator(`#p-${last} .acc-toggle`).getAttribute('aria-expanded'), 'true', 're-click re-opens');
-  // Keyboard: cards are links reachable with Tab and activated with Enter.
-  await page.locator('.glance-card').nth(1).focus();
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(500);
-  eq(await page.locator(`#p-${productsJSON.products[1].id} .acc-toggle`).getAttribute('aria-expanded'), 'true', 'Enter opens');
+  eq(await page.locator('.glance-card').count(), 0, 'summary grid is hidden');
+  const first = productsJSON.products[0];
+  assert((await page.locator('#p-' + first.id + ' .acc-outcome').innerText()).length > 8, 'outcome is on the card');
+  assert((await page.locator('#p-' + first.id + ' .acc-sum').innerText()).includes('Decision'), 'decision is on the card');
+  await page.locator('#p-' + first.id + ' .acc-toggle').click();
+  await page.waitForTimeout(400);
+  eq(await page.locator('#p-' + first.id + ' .acc-toggle').getAttribute('aria-expanded'), 'true', 'case opens');
+  await page.locator('#products .chipbtn[data-f="payments"]').click();
+  assert(await page.locator('#p-' + first.id).isHidden(), 'other domains hide');
+  assert(await page.locator('#p-kyc').isVisible(), 'payments product stays');
   await context.close();
 });
 
@@ -638,7 +617,8 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: résumé always one 
   }
   // Section order puts what recruiters need first.
   const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
-  eq(order.slice(0, 4).join(','), 'top,snapshot,products,experience', 'recruiter-first order');
+  eq(order.slice(0, 4).join(','), 'top,snapshot,experience,products', 'recruiter-first order');
+  assert(order.indexOf('contact') < order.indexOf('about'), 'contact before the longer about section');
   await context.close();
 });
 
@@ -928,21 +908,15 @@ await test('G. Admin editor', 'G3', 'Add a new product through the form; it appe
   const [preview] = await Promise.all([context.waitForEvent('page'), page.click('#btn-preview')]);
   await preview.waitForSelector('html.ready');
   eq(await preview.locator('#product-list .acc').count(), productsJSON.products.length + 1, 'product added');
-  const agentic = productsJSON.products.filter((p) => p.arena === 'agentic').length + 1;
-  eq(await preview.locator('.chipbtn[data-f="agentic"] .ct').innerText(), String(agentic), 'filter count updated');
-  eq(await preview.locator('.glance-card').count(), productsJSON.products.length + 1, 'summary card added automatically');
-  const newCard = preview.locator('.glance-card[data-product="agent-evaluation-harness"]');
-  eq(await newCard.locator('h4').innerText(), 'Agent Evaluation Harness', 'summary card name');
-  eq(await newCard.locator('.g-icon use').getAttribute('href'), '#g-trend', 'chosen icon used');
-  assert((await newCard.locator('p').innerText()).includes('Regression-test agents'), 'tagline used');
-  await revealAll(preview);
-  await shot(newCard, 'preview-new-summary-card');
-  await newCard.click();
+  eq(await preview.locator('#products .chipbtn[data-f="all"] .ct').innerText(), String(productsJSON.products.length + 1), 'All count includes the new product');
+  const added = preview.locator('#p-agent-evaluation-harness');
+  eq(await added.locator('.acc-title').innerText(), 'Agent Evaluation Harness', 'card name');
+  await added.locator('.acc-toggle').click();
   await preview.waitForTimeout(500);
-  eq(await preview.locator('#p-agent-evaluation-harness .acc-toggle').getAttribute('aria-expanded'), 'true', 'summary card opens the new product');
-  assert(await preview.locator('#p-agent-evaluation-harness .acc-body strong', { hasText: 'regression tests' }).isVisible(), 'rich text rendered');
+  eq(await added.locator('.acc-toggle').getAttribute('aria-expanded'), 'true', 'case opens');
+  assert(await added.locator('.acc-body strong', { hasText: 'regression tests' }).isVisible(), 'rich text rendered');
   await revealAll(preview);
-  await shot(preview.locator('#p-agent-evaluation-harness'), 'preview-new-product');
+  await shot(added, 'preview-new-product');
   await context.close();
 });
 
@@ -1191,36 +1165,37 @@ await test(R, 'R-code', 'Code consistency: every slot rendered by script.js exis
 }
 
 for (const p of productsJSON.products) {
-  await test(R, `R-product-${p.id}`, `Product “${p.name}”: summary card opens its full case with the right content and links`, async () => {
+  await test(R, `R-product-${p.id}`, `Product “${p.name}”: the case opens with the right content and links`, async () => {
     const { context } = await ctx();
     const page = await open(context, '/');
-    const card = page.locator(`.glance-card[data-product="${p.id}"]`);
-    eq(await card.locator('h4').innerText(), p.name, 'summary card name');
-    await card.click();
-    await page.waitForFunction((id) => document.querySelector(`#${id} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
     const acc = page.locator('#p-' + p.id);
+    eq(await acc.locator('.acc-title').innerText(), p.name, 'card name');
+    await acc.locator('.acc-toggle').click();
+    await page.waitForFunction((id) => document.querySelector(`#${id} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
     const text = (await acc.innerText()).replace(/\s+/g, ' ');
     const strip = (s) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
     for (const k of ['summary', 'pain', 'bet', 'why', 'tradeoff', 'validated']) if (p[k]) assert(text.includes(strip(p[k]).slice(0, 60)), `${k} text missing`);
     (p.outcomes || []).forEach((o) => assert(text.includes(strip(o)), `outcome missing: ${o}`));
     if (p.github) eq(await acc.locator('.acc-link').first().getAttribute('href'), p.github, 'GitHub link');
     if (p.demo) assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
-    const arena = productsJSON.arenas.find((a) => a.id === p.arena);
-    await page.locator(`.chipbtn[data-f="${p.arena}"]`).click();
-    assert(await acc.isVisible(), `visible under its arena filter (${arena?.label})`);
+    if (p.domain) {
+      const domain = productsJSON.domains.find((a) => a.id === p.domain);
+      await page.locator(`#products .chipbtn[data-f="${p.domain}"]`).click();
+      assert(await acc.isVisible(), `visible under its domain filter (${domain?.label})`);
+    }
     await context.close();
   });
 }
 
-for (const a of productsJSON.arenas) {
-  const n = productsJSON.products.filter((p) => p.arena === a.id).length;
+for (const a of productsJSON.domains || []) {
+  const n = productsJSON.products.filter((p) => p.domain === a.id).length;
   if (!n) continue;
-  await test(R, `R-arena-${a.id}`, `Arena “${a.label}” filter shows exactly its ${n} product(s)`, async () => {
+  await test(R, `R-domain-${a.id}`, `Domain “${a.label}” filter shows exactly its ${n} product(s)`, async () => {
     const { context } = await ctx();
     const page = await open(context, '/');
-    await page.locator(`.chipbtn[data-f="${a.id}"]`).click();
+    await page.locator(`#products .chipbtn[data-f="${a.id}"]`).click();
     const shown = await page.locator('#product-list .acc:not([hidden])').evaluateAll((els) => els.map((e) => e.id.slice(2)));
-    eq(shown.join(','), productsJSON.products.filter((p) => p.arena === a.id).map((p) => p.id).join(','), 'filtered products');
+    eq(shown.join(','), productsJSON.products.filter((p) => p.domain === a.id).map((p) => p.id).join(','), 'filtered products');
     await context.close();
   });
 }

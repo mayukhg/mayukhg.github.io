@@ -1,8 +1,8 @@
 {
-  "title": "AI products, from customer pain to shipped value.",
-  "subtitle": "Each one framed the same way: customer pain → product bet → why AI (or why not) → the trade-off I made → how it was validated. Click a card to open the full case.",
+  "title": "Product portfolio",
+  "subtitle": "Filter by the domain on the requisition. Each card leads with the outcome and the decision. Stack and GitHub stay inside the case.",
   "overview": {
-    "show": true,
+    "show": false,
     "eyebrow": "Portfolio at a glance",
     "title": "From customer pain to shipped AI product"
   },
@@ -23,11 +23,18 @@
       "color": "#be123c"
     }
   ],
+  "domains": [
+    { "id": "security", "label": "Security", "color": "#4338ca" },
+    { "id": "payments", "label": "Payments", "color": "#be123c" },
+    { "id": "healthcare", "label": "Healthcare", "color": "#0f766e" },
+    { "id": "trade", "label": "Trade", "color": "#a16207" }
+  ],
   "products": [
     {
       "id": "policy-foundry",
       "name": "AI Policy Foundry",
       "arena": "defence",
+      "domain": "security",
       "kicker": "AI Defense Ecosystem · Prevent",
       "icon": "shield",
       "tagline": "Autonomous cloud-security policy from live threat intel and your own risk register.",
@@ -60,6 +67,7 @@
       "id": "soc-portal",
       "name": "AI SOC Portal",
       "arena": "defence",
+      "domain": "security",
       "kicker": "AI Defense Ecosystem · Detect & Respond",
       "icon": "target",
       "tagline": "Auditable, AI-native SOC triage and threat hunting. Every verdict can be replayed.",
@@ -92,6 +100,7 @@
       "id": "ai-spm",
       "name": "AI Security Posture Management (AI-SPM)",
       "arena": "defence",
+      "domain": "security",
       "kicker": "AI Defense Ecosystem · Protect",
       "icon": "chip",
       "tagline": "Posture management for your own AI/ML assets, drift and compliance evidence.",
@@ -124,12 +133,13 @@
       "id": "mcp",
       "name": "Exploit Validation & Remediation MCP Server",
       "arena": "agentic",
+      "domain": "security",
       "kicker": "Agentic Platform Extension",
       "icon": "wrench",
       "tagline": "A governed MCP server for the validate → approve → remediate loop.",
       "summary": "A governed MCP bridge that lets AI agents run the validate → approve → remediate → re-verify loop, with a human approving each fix.",
       "headline": "Cuts mean-time-to-remediate",
-      "evidence": "",
+      "evidence": "pipeline",
       "client": "Qualys",
       "stack": [
         "Python FastMCP",
@@ -155,12 +165,13 @@
       "id": "copilot",
       "name": "Unified Risk Copilot",
       "arena": "agentic",
+      "domain": "security",
       "kicker": "Agentic Platform Extension",
       "icon": "grid",
       "tagline": "Conversational risk triage across 8 security modules, fully audited.",
       "summary": "One conversation that joins 8 security modules into a ranked, evidence-backed, auditable remediation plan.",
       "headline": "Weekly risk report: hours → minutes",
-      "evidence": "",
+      "evidence": "pipeline",
       "client": "Qualys",
       "stack": [
         "qualys-cli-mcp",
@@ -187,6 +198,7 @@
       "id": "hscode",
       "name": "HS Code Prediction API",
       "arena": "applied",
+      "domain": "trade",
       "kicker": "Applied AI · Trade & Customs",
       "icon": "globe",
       "tagline": "Customs classification with classic ML, not an LLM.",
@@ -218,6 +230,7 @@
       "id": "kyc",
       "name": "KYC-as-a-Service",
       "arena": "applied",
+      "domain": "payments",
       "kicker": "Applied AI · Financial Services",
       "icon": "bank",
       "tagline": "Verifiable, privacy-preserving credit scoring, with AI on a blockchain.",
@@ -250,6 +263,7 @@
       "id": "ellyra-pulse",
       "name": "Ellyra Pulse",
       "arena": "applied",
+      "domain": "healthcare",
       "kicker": "Applied AI · Healthcare",
       "icon": "heart",
       "tagline": "Safety-gated patient sentiment for a medical AI: PHI-safe, clinical trust first.",

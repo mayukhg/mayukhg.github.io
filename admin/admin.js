@@ -22,7 +22,7 @@
     ['search', 'Search'], ['layers', 'Layers / platform'], ['heart', 'Heart / health']];
 
   var SNAPSHOT_TONES = [['fit', 'Green — role fit'], ['impact', 'Violet — leadership & impact'], ['logistics', 'Slate — logistics']];
-  var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production']];
+  var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production'], ['pipeline', 'Pipeline']];
 
   var PROFILE_SCHEMA = [
     S('person', 'Basics', 'object', { section: true, open: true, fields: [
@@ -44,9 +44,22 @@
       S('resumeUpdated', 'Résumé last updated', 'string', { hint: 'e.g. “Sep 2026” — shown under the hero buttons. Empty hides the note.' }),
       S('portfolio', 'Portfolio PDF', 'path', { hint: 'Set automatically when you upload a portfolio PDF. Empty hides the buttons.' })
     ] }),
+    S('fit', 'Recruiter fit bar', 'object', { section: true, desc: 'The pinned strip under the navigation: level, domains, work mode and notice.', fields: [
+      S('open', 'Status label', 'string', { hint: 'e.g. Open to' }),
+      S('level', 'Level', 'string', { hint: 'e.g. Director of Product' }),
+      S('domains', 'Domains', 'array', { itemTitle: function (x) { return x.label; }, fields: [
+        S('id', 'Domain ID', 'string', { required: true, hint: 'security, payments, healthcare, trade or analytics.' }),
+        S('label', 'Label', 'string', { required: true })
+      ] }),
+      S('mode', 'Work mode', 'string'),
+      S('notice', 'Notice period', 'string')
+    ] }),
     S('stats', 'Headline numbers', 'array', { section: true, desc: 'The big numbers under the hero. Four fit best.', itemTitle: function (x) { return x.value; }, fields: [
       S('value', 'Number', 'string', { required: true, hint: 'e.g. $2M+' }),
-      S('label', 'Label', 'string', { required: true })
+      S('label', 'Label', 'string', { required: true }),
+      S('company', 'Company', 'string', { hint: 'Shown as a tag on the number, e.g. Qualys.' }),
+      S('status', 'Status', 'select', { options: function () { return [['direct', 'Direct'], ['pipeline', 'Pipeline'], ['production', 'In production']]; } }),
+      S('statusLabel', 'Status label', 'string', { hint: 'Short tag, e.g. Pipeline or In production.' })
     ] }),
     S('snapshot', '60-second snapshot', 'object', { section: true, desc: 'The colour-coded panel right under the hero: what a recruiter needs in one glance.', fields: [
       S('title', 'Heading', 'string'),
@@ -86,6 +99,9 @@
         S('company', 'Company', 'string'),
         S('org', 'Team / location line', 'string'),
         S('dates', 'Dates', 'string', { hint: 'e.g. Feb 2026 – Present' }),
+        S('duration', 'Duration', 'string', { hint: 'Shown under the years, e.g. 8 months or 4.5 years.' }),
+        S('scope', 'Scope', 'string', { hint: 'Direct · 3 PMs, Matrix · 25 people, or Part-time.' }),
+        S('domains', 'Domains', 'lines', { hint: 'One id per line: security, payments, healthcare, trade. Used by the domain filter.' }),
         S('summary', 'One-line summary', 'md'),
         S('metrics', 'Metric chips', 'lines', { hint: 'One per line.' }),
         S('bullets', 'Achievements', 'mdlines', { rows: 8, hint: 'One bullet per line.' }),
@@ -117,8 +133,13 @@
       S('eyebrow', 'Small label', 'string'),
       S('title', 'Heading', 'string')
     ] }),
-    S('arenas', 'Arenas (filter groups)', 'array', { section: true, desc: 'Each product belongs to one arena. Arenas with no products are hidden.', itemTitle: function (x) { return x.label; }, fields: [
+    S('arenas', 'Arenas (labels)', 'array', { section: true, desc: 'Arena is the label above a product name. Recruiters filter by domain, not arena.', itemTitle: function (x) { return x.label; }, fields: [
       S('id', 'Arena ID', 'string', { required: true, check: 'id', hint: 'Lowercase letters, numbers and dashes.' }),
+      S('label', 'Label', 'string', { required: true }),
+      S('color', 'Colour', 'color')
+    ] }),
+    S('domains', 'Domains (recruiter filters)', 'array', { section: true, desc: 'Security, Payments, Healthcare and Trade. The same filter applies to the portfolio and the timeline.', itemTitle: function (x) { return x.label; }, fields: [
+      S('id', 'Domain ID', 'string', { required: true, check: 'id', hint: 'Lowercase letters, numbers and dashes.' }),
       S('label', 'Label', 'string', { required: true }),
       S('color', 'Colour', 'color')
     ] }),
@@ -126,6 +147,7 @@
       S('name', 'Product name', 'string', { required: true }),
       S('id', 'Product ID', 'string', { required: true, check: 'productId', hint: 'Short unique ID used in links, e.g. “risk-copilot”. Filled from the name if left empty.' }),
       S('arena', 'Arena', 'select', { required: true, options: function () { return (state.products.arenas || []).map(function (a) { return [a.id, a.label || a.id]; }); } }),
+      S('domain', 'Domain', 'select', { options: function () { return (state.products.domains || []).map(function (a) { return [a.id, a.label || a.id]; }); } }),
       S('kicker', 'Label above the name', 'string', { hint: 'e.g. “AI Defense Ecosystem · Prevent”. Empty = arena name.' }),
       S('icon', 'Summary card icon', 'select', { options: function () { return GLANCE_ICONS; } }),
       S('tagline', 'Summary card tagline', 'md', { hint: 'One short sentence for the “at a glance” card. Empty = uses the one-line summary.' }),

@@ -43,7 +43,8 @@
   // How much a figure can be trusted: shown as a badge next to outcomes and metrics.
   var EVIDENCE = {
     modelled: ['Modelled estimate', 'Estimated on the public build; production figures are under NDA'],
-    production: ['In production', 'Measured in production']
+    production: ['In production', 'Measured in production'],
+    pipeline: ['Pipeline', 'Pipeline or pilots, not booked revenue']
   };
   function evBadge(kind) {
     var e = EVIDENCE[kind];
@@ -84,8 +85,7 @@
     var cta = '';
     if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View résumé') +
       '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download résumé (PDF)" title="Download résumé (PDF)">' + icon('i-doc') + '</a></span>';
-    if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio (PDF)');
-    cta += '<a class="btn btn-ghost" href="#products">Explore ' + (prodCount ? prodCount + ' ' : '') + 'AI products ' + icon('i-arrow') + '</a>';
+    if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio PDF');
     set('hero-cta', cta);
     set('cta-note', links.resume && links.resumeUpdated ? 'Résumé updated ' + esc(links.resumeUpdated) + ' · PDF' : '').hidden = !(links.resume && links.resumeUpdated);
     set('nav-resume', links.resume ? docLink(links.resume, 'btn btn-doc nav-resume', 'Résumé') : '').hidden = !links.resume;
@@ -99,10 +99,34 @@
 
     var stats = arr(p.stats);
     var st = set('stats', stats.map(function (s) {
-      return '<div class="stat"><dt class="sr-only">' + esc(s.label) + '</dt><dd><span class="n">' + esc(s.value) + '</span><span class="l">' + esc(s.label) + '</span></dd></div>';
+      var tags = '';
+      if (s.company) tags += '<span class="tag-co">' + esc(s.company) + '</span>';
+      if (s.statusLabel) tags += '<span class="tag-st tag-' + esc(s.status || 'direct') + '">' + esc(s.statusLabel) + '</span>';
+      return '<div class="stat"><dt class="sr-only">' + esc(s.label) + '</dt><dd><span class="n">' + esc(s.value) + '</span>' +
+        (tags ? '<span class="stat-tags">' + tags + '</span>' : '') +
+        '<span class="l">' + esc(s.label) + '</span></dd></div>';
     }).join(''));
     st.hidden = !stats.length;
     st.style.setProperty('--cols', Math.min(stats.length || 1, 4));
+  }
+
+  function renderFit(p) {
+    var fit = p.fit || {}, el = slot('fit');
+    if (!el) return;
+    var domains = arr(fit.domains);
+    if (!fit.level && !domains.length) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    var chips = (fit.level ? '<span class="fit-chip level">' + esc(fit.level) + '</span>' : '') +
+      domains.map(function (d) {
+        return '<span class="fit-chip" data-domain="' + esc(d.id) + '">' + esc(d.label) + '</span>';
+      }).join('');
+    var meta = [fit.mode, (p.person || {}).location, fit.notice].filter(Boolean)
+      .map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="fit-dot" aria-hidden="true"></span>');
+    el.innerHTML = '<div class="fit-in">' +
+      (fit.open ? '<span class="fit-live"><i aria-hidden="true"></i>' + esc(fit.open) + '</span>' : '') +
+      chips +
+      (meta ? '<span class="fit-meta">' + meta + '</span>' : '') +
+      '</div>';
   }
 
   function renderSnapshot(p) {
@@ -136,27 +160,34 @@
     set('principles', arr(a.principles).map(function (s) { return '<div class="principle"><h3>' + esc(s.title) + '</h3><p>' + md(s.text) + '</p></div>'; }).join(''));
   }
 
+  function domainFilters(d) {
+    var domains = arr(d.domains), products = arr(d.products), counts = {};
+    products.forEach(function (p) { if (p.domain) counts[p.domain] = (counts[p.domain] || 0) + 1; });
+    var used = domains.filter(function (a) { return counts[a.id]; });
+    if (used.length < 2) return '';
+    return '<button type="button" class="chipbtn" data-f="all" aria-pressed="true">All <span class="ct">' + products.length + '</span></button>' +
+      used.map(function (a) {
+        return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>';
+      }).join('');
+  }
+
   function renderProducts(d) {
     var arenas = arr(d.arenas), products = arr(d.products);
-    var arenaById = {};
+    var arenaById = {}, domainById = {};
     arenas.forEach(function (a) { arenaById[a.id] = a; });
+    arr(d.domains).forEach(function (a) { domainById[a.id] = a; });
     set('products-title', esc(d.title));
     set('products-sub', esc(d.subtitle));
+    var bar = domainFilters(d);
+    set('filters', bar);
+    var expFilters = slot('exp-filters');
+    if (expFilters) expFilters.innerHTML = bar;
 
-    var counts = {};
-    products.forEach(function (p) { counts[p.arena] = (counts[p.arena] || 0) + 1; });
-    var used = arenas.filter(function (a) { return counts[a.id]; });
-    set('filters', used.length > 1
-      ? '<button type="button" class="chipbtn" data-f="all" aria-pressed="true">All <span class="ct">' + products.length + '</span></button>' +
-        used.map(function (a) { return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>'; }).join('')
-      : '');
-
-    set('products', products.map(function (p, i) {
-      var id = slug(p.id || p.name), a = arenaById[p.arena] || {};
-      var color = colorVar('--arena', a.color);
+    set('products', products.map(function (p) {
+      var id = slug(p.id || p.name), a = arenaById[p.arena] || {}, dom = domainById[p.domain] || {};
+      var color = colorVar('--arena', dom.color || a.color);
       var headline = p.headline || arr(p.outcomes)[0];
-      var tags = (p.client ? '<span class="client"><i>Implemented for</i> ' + esc(p.client) + '</span>' : '') +
-        arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+      var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
       if (p.demo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
@@ -164,29 +195,30 @@
         .filter(function (x) { return x[1]; })
         .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
       var decide = '';
-      var d = 3;
-      if (p.tradeoff) decide += '<div style="--i:' + d++ + '"><h4>Key trade-off</h4><p>' + md(p.tradeoff) + '</p></div>';
-      if (p.validated) decide += '<div style="--i:' + d++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
-      if (arr(p.outcomes).length) decide += '<div style="--i:' + d++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
-      // Teaser: first lines of the customer pain, faded out, so the card shows there is depth inside.
-      var peek = p.pain ? '<div class="acc-peek" aria-hidden="true"><div class="peek-in"><span class="peek-label">Customer pain</span><p>' + md(p.pain) + '</p></div></div>' : '';
-      return '<article class="acc" data-arena="' + esc(p.arena) + '" id="p-' + esc(id) + '"' + color + '>' +
-        '<div class="acc-head">' +
-          '<span class="kicker">' + esc(p.kicker || a.label || '') + '</span>' +
-          '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
-          '<p class="acc-sum">' + md(p.summary) + '</p>' +
-          (headline ? '<p class="acc-outcome"><span class="acc-outcome-l">Outcome</span><span class="acc-outcome-t">' + md(headline) + '</span>' + evBadge(p.evidence) + '</p>' : '') +
-          (tags ? '<div class="acc-meta">' + tags + '</div>' : '') +
-        '</div>' +
-        peek +
-        '<div class="acc-links">' +
-          '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
-            '<span class="t-labels"><span class="t-open">Explore case study</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
-            '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
-          '</button>' +
-          links +
+      var n = 3;
+      if (p.tradeoff) decide += '<div style="--i:' + n++ + '"><h4>Key trade-off</h4><p>' + md(p.tradeoff) + '</p></div>';
+      if (p.validated) decide += '<div style="--i:' + n++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
+      if (arr(p.outcomes).length) decide += '<div style="--i:' + n++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
+      var face = (p.tradeoff ? '<p class="acc-sum"><span class="acc-decision-l">Decision.</span> ' + md(p.tradeoff) + '</p>' : '<p class="acc-sum">' + md(p.summary) + '</p>');
+      return '<article class="acc" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
+        '<div class="acc-face">' +
+          '<div class="acc-main">' +
+            '<span class="kicker">' + esc(p.kicker || dom.label || a.label || '') + '</span>' +
+            '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
+            face +
+            '<div class="acc-links">' +
+              '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
+                '<span class="t-labels"><span class="t-open">Read the case</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
+                '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          (headline ? '<div class="acc-result"><span class="acc-outcome-l">Outcome</span><p class="acc-outcome"><span class="acc-outcome-t">' + md(headline) + '</span>' + evBadge(p.evidence) + '</p>' +
+            (p.client ? '<div class="acc-meta"><span class="client">' + esc(p.client) + '</span></div>' : '') + '</div>' : '') +
         '</div>' +
         '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details" inert><div class="acc-inner">' +
+          (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
+          ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
           (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
           (decide ? '<div class="decide">' + decide + '</div>' : '') +
           (p.note ? '<p class="note">' + md(p.note) + '</p>' : '') +
@@ -261,14 +293,15 @@
         var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
         return prod ? '<a href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean);
-      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '"' + colorVar('--track', t.color) + '>' +
-        '<span class="tl-period">' + esc(r.period) + '</span>' +
+      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
+        '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
         '<div class="tl-card">' +
           (t.label ? '<span class="tl-track">' + esc(t.label) + '</span>' : '') +
           '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
           (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
           (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
           (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
+          (r.scope ? '<p class="scope-row"><span class="scope">' + esc(r.scope) + '</span></p>' : '') +
           (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
           (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join('') + '</p>' : '') +
           (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="' + open + '" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
@@ -325,6 +358,7 @@
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
     arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
     renderHero(c.profile, arr(c.products.products).length);
+    renderFit(c.profile);
     renderSnapshot(c.profile);
     renderAbout(c.profile);
     renderApproach(c.profile);
@@ -387,7 +421,11 @@
     function applyFilter(f) {
       chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.f === f ? 'true' : 'false'); });
       document.querySelectorAll('#product-list .acc').forEach(function (card) {
-        card.hidden = !(f === 'all' || card.dataset.arena === f);
+        card.hidden = !(f === 'all' || card.dataset.domain === f);
+      });
+      document.querySelectorAll('.tl-item').forEach(function (item) {
+        var domains = (item.dataset.domains || '').split(/\s+/).filter(Boolean);
+        item.hidden = !(f === 'all' || domains.indexOf(f) !== -1);
       });
     }
     chips.forEach(function (c) { c.addEventListener('click', function () { applyFilter(c.dataset.f); }); });

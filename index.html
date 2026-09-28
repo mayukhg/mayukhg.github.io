@@ -82,12 +82,9 @@
   <div class="nav-in">
     <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span><span class="brand-name">Mayukh Ghosh</span></a>
     <div class="nav-links" id="navlinks">
-      <a href="#products">AI Products</a>
+      <a href="#products">Portfolio</a>
       <a href="#experience">Experience</a>
-      <a href="#about">About</a>
-      <a href="#approach">Approach</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact" class="nav-cta">Get in touch</a>
+      <a href="#contact">Contact</a>
     </div>
     <div class="nav-actions">
       <span data-slot="nav-resume"></span>
@@ -96,6 +93,7 @@
       </button>
     </div>
   </div>
+  <div class="fit" data-slot="fit" hidden></div>
 </nav>
 
 <main id="main" aria-busy="true">
@@ -124,26 +122,45 @@
   </div>
 </section>
 
-<section id="products">
-  <div class="wrap">
-    <h2 class="s-title" data-slot="products-title"></h2>
-    <p class="s-sub" data-slot="products-sub"></p>
-    <div class="glance" data-slot="glance" hidden></div>
-    <div class="filters" role="group" aria-label="Filter products by arena" data-slot="filters"></div>
-    <div id="product-list" data-slot="products"></div>
-  </div>
-</section>
-
-<section id="experience" class="alt">
+<section id="experience">
   <div class="wrap">
     <h2 class="s-title" data-slot="exp-title"></h2>
     <p class="s-sub" data-slot="exp-sub"></p>
+    <div class="filters" role="group" aria-label="Filter experience by domain" data-slot="exp-filters"></div>
     <ul class="legend" aria-label="Career tracks" data-slot="exp-legend"></ul>
     <ol class="timeline" data-slot="exp-timeline"></ol>
   </div>
 </section>
 
+<section id="products" class="alt">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="products-title"></h2>
+    <p class="s-sub" data-slot="products-sub"></p>
+    <div class="glance" data-slot="glance" hidden></div>
+    <div class="filters" role="group" aria-label="Filter by domain" data-slot="filters"></div>
+    <div id="product-list" data-slot="products"></div>
+  </div>
+</section>
+
 <section id="ecosystem" class="eco" data-slot="ecosystem" hidden></section>
+
+<section id="education">
+  <div class="wrap">
+    <h2 class="s-title">Education &amp; writing</h2>
+    <div class="two-col">
+      <div class="card"><h3>Education</h3><ul class="edu-list" data-slot="education"></ul></div>
+      <div class="card" data-slot="writing"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2 data-slot="contact-title"></h2>
+    <p data-slot="contact-text"></p>
+    <div class="contact-row" data-slot="contact-links"></div>
+  </div>
+</section>
 
 <section id="about" class="alt">
   <div class="wrap">
@@ -173,27 +190,12 @@
   </div>
 </section>
 
-<section id="education">
-  <div class="wrap">
-    <h2 class="s-title">Education &amp; writing</h2>
-    <div class="two-col">
-      <div class="card"><h3>Education</h3><ul class="edu-list" data-slot="education"></ul></div>
-      <div class="card" data-slot="writing"></div>
-    </div>
+<footer class="site-foot">
+  <div class="wrap foot">
+    <span>© <span id="year">2026</span> <span data-slot="foot-name">Mayukh Ghosh</span></span>
+    <span>Built with plain HTML, CSS &amp; JS · <a href="#top">Back to top ↑</a></span>
   </div>
-</section>
-
-<section id="contact" class="contact">
-  <div class="wrap">
-    <h2 data-slot="contact-title"></h2>
-    <p data-slot="contact-text"></p>
-    <div class="contact-row" data-slot="contact-links"></div>
-    <footer class="foot">
-      <span>© <span id="year">2026</span> <span data-slot="foot-name">Mayukh Ghosh</span></span>
-      <span>Built with plain HTML, CSS &amp; JS · <a href="#top">Back to top ↑</a></span>
-    </footer>
-  </div>
-</section>
+</footer>
 
 <noscript>
   <p style="padding:24px;text-align:center">This portfolio needs JavaScript to display. You can still <a href="resume.pdf">download the résumé (PDF)</a>, the <a href="assets/portfolio.pdf">product portfolio (PDF)</a>, or email <a href="mailto:mayukhg@gmail.com">mayukhg@gmail.com</a>.</p>

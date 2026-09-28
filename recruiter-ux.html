@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mayukh Ghosh · Product Leader, Agentic AI &amp; Cybersecurity</title>
+<meta name="description" content="Director of Product Management with 20+ years across AI-enabled analytics, payments and enterprise security. Eight AI products across security, trade, finance and healthcare, each built from a real customer problem.">
+<link rel="canonical" href="https://mayukhg.github.io/">
+<meta name="author" content="Mayukh Ghosh">
+<meta name="theme-color" content="#0a0f1f">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mayukhg.github.io/">
+<meta property="og:site_name" content="Mayukh Ghosh">
+<meta property="og:title" content="Mayukh Ghosh · Product Leader, Agentic AI &amp; Cybersecurity">
+<meta property="og:description" content="20+ years across B2B security platforms and B2C AI. Eight AI products across three arenas, each built from a real customer problem.">
+<meta property="og:image" content="https://mayukhg.github.io/assets/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mayukh Ghosh, Product Leader in Agentic AI and Cybersecurity">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mayukh Ghosh · Product Leader, Agentic AI &amp; Cybersecurity">
+<meta name="twitter:description" content="20+ years across B2B security platforms and B2C AI. Eight AI products across three arenas.">
+<meta name="twitter:image" content="https://mayukhg.github.io/assets/og-card.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230a0f1f'/><text y='66' x='50' text-anchor='middle' font-size='46' font-family='Arial' font-weight='700' fill='white'>M<tspan fill='%23fbbf24'>G</tspan></text></svg>">
+<link rel="apple-touch-icon" href="assets/mayukh.jpg">
+<link rel="preload" href="assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* ==========================================================================
+   Mayukh Ghosh — Product portfolio
+   Vanilla CSS, no build step. Tokens first, then sections top-to-bottom.
+   ========================================================================== */
+
+/* Self-hosted variable fonts (latin subset) — no third-party requests. */
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/fonts/plus-jakarta-sans-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:500 700;font-display:swap;src:url(assets/fonts/space-grotesk-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+
+:root{
+  --ink:#0c1222;
+  --body:#3e4758;
+  --muted:#5b6679;
+  --line:#e4e8ef;
+  --soft:#f5f7fb;
+  --bg:#ffffff;
+  --accent:#1d4ed8;          /* blue — links & focus only; colour otherwise always carries meaning */
+  --glow:#fbbf24;            /* amber — logo mark */
+  --doc:#fbbf24;             /* amber — documents (résumé, portfolio) everywhere */
+  --doc-hover:#f59e0b;
+  --dark:#0a0f1f;
+  --defence:#4338ca;         /* arena colours (content can override per arena) */
+  --agentic:#0f766e;
+  --applied:#be123c;
+  --fit:#15803d;             /* snapshot groups */
+  --impact:#6d28d9;
+  --logistics:#475569;
+  --max:1120px;
+  --r:8px;                   /* one small radius site-wide: 8px surfaces, 6px controls */
+  --r-sm:6px;
+  --dark-line:rgba(255,255,255,.14);  /* hairline on dark bands */
+  --sans:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --display:"Space Grotesk","Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:132px;}
+body{
+  margin:0;background:var(--bg);color:var(--body);
+  font-family:var(--sans);font-size:16.5px;line-height:1.66;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{max-width:100%;display:block;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;text-underline-offset:3px;}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px;}
+h1,h2,h3,h4,h5{color:var(--ink);margin:0;line-height:1.18;letter-spacing:-.02em;font-family:var(--display);}
+p{margin:0 0 1rem;}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px;}
+.skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;}
+.skip:focus{left:12px;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+/* ---------- section scaffolding ---------- */
+section{padding:100px 0;position:relative;}
+.alt{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.eyebrow{font-size:.95rem;font-weight:600;color:var(--muted);margin-bottom:10px;}
+.s-title{font-size:clamp(1.85rem,3.6vw,2.6rem);margin-bottom:14px;}
+.s-sub{color:var(--muted);max-width:62ch;font-size:1.03rem;margin-bottom:0;}
+
+/* ---------- nav ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--bg);border-bottom:1px solid transparent;
+  transition:border-color .3s ease;
+}
+.nav.scrolled{border-bottom-color:var(--line);}
+.nav-in{max-width:var(--max);margin:0 auto;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-size:1.06rem;color:var(--ink);font-weight:700;letter-spacing:-.02em;white-space:nowrap;}
+.brand:hover{text-decoration:none;}
+.brand-mark{width:34px;height:34px;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;background:var(--ink);color:#fff;font-size:.78rem;letter-spacing:0;white-space:nowrap;line-height:1;}
+.brand-mark b{color:var(--glow);}
+.nav-links{display:flex;gap:2px;align-items:center;margin-left:auto;}
+.brand-name{white-space:nowrap;}
+.nav-actions{display:flex;align-items:center;gap:8px;flex:none;}
+.nav-actions [data-slot][hidden]{display:none;}
+.nav-links + .nav-actions{margin-left:6px;}
+.btn.nav-resume{min-height:44px;padding:8px 14px;font-size:.875rem;}
+.nav-links a{
+  font-size:.875rem;color:var(--muted);padding:7px 12px;border-radius:var(--r-sm);font-weight:500;
+  display:inline-flex;align-items:center;min-height:44px;transition:color .18s ease,background .18s ease;
+}
+.nav-links a:hover{color:var(--ink);background:var(--soft);text-decoration:none;}
+.nav-links a.active{color:var(--ink);background:var(--soft);}
+.nav-links .nav-cta{background:var(--ink);color:#fff;padding:9px 16px;border-radius:var(--r-sm);margin-left:6px;}
+.nav-links .nav-cta:hover{background:var(--accent);color:#fff;}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:0;cursor:pointer;width:44px;height:44px;}
+.burger span{display:block;width:18px;height:2px;background:var(--ink);margin:4px auto;border-radius:2px;transition:transform .25s,opacity .25s;}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+/* ---------- recruiter fit bar (second row of the sticky nav) ---------- */
+.fit{border-top:1px solid var(--line);background:var(--soft);max-width:100%;}
+.fit[hidden]{display:none;}
+.fit-in{max-width:var(--max);margin:0 auto;padding:8px 28px;display:flex;align-items:center;gap:8px;min-width:0;overflow-x:auto;}
+.fit-live{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:#166534;white-space:nowrap;}
+.fit-live i{width:8px;height:8px;border-radius:50%;background:#16a34a;flex:none;}
+.fit-chip{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap;background:#f1f5f9;color:#334155;}
+.fit-chip[data-domain="security"]{background:#eef2ff;color:#4338ca;}
+.fit-chip[data-domain="payments"]{background:#fdf2f8;color:#be123c;}
+.fit-chip[data-domain="healthcare"]{background:#f0fdfa;color:#0f766e;}
+.fit-chip[data-domain="trade"]{background:#fefce8;color:#a16207;}
+.fit-meta{margin-left:auto;display:inline-flex;align-items:center;gap:10px;font-size:.82rem;font-weight:600;color:var(--body);white-space:nowrap;}
+.fit-dot{width:4px;height:4px;border-radius:50%;background:#94a3b8;flex:none;}
+
+/* ---------- hero ---------- */
+.hero{background:var(--dark);color:#c3cddc;padding:188px 0 72px;overflow:hidden;position:relative;}
+.hero-grid{display:grid;grid-template-columns:1.45fr .8fr;gap:56px;align-items:center;}
+.badge{display:flex;align-items:center;gap:9px;color:#b4c1d4;font-size:.9rem;font-weight:500;margin-bottom:24px;}
+.badge[hidden]{display:none;}
+.dot{width:7px;height:7px;border-radius:50%;background:#34d399;flex:none;}
+.hero h1{color:#fff;font-size:clamp(2.9rem,7.4vw,5.2rem);line-height:1.02;margin-bottom:18px;letter-spacing:-.035em;}
+.hero-role{font-size:clamp(1rem,2vw,1.18rem);color:#9fb0c6;font-weight:500;margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;}
+.hero-role b{color:#eef2f8;font-weight:600;}
+.hero-role .grp{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.sep{width:4px;height:4px;border-radius:50%;background:#4b5b72;}
+.hero-lede{font-size:1.08rem;color:#a3b1c4;max-width:60ch;line-height:1.74;}
+.hero-lede strong{color:#f3f6fb;font-weight:600;}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:11px;margin-top:34px;}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:var(--r-sm);min-height:46px;
+  font-size:.93rem;font-weight:600;border:1px solid var(--line);color:var(--ink);background:#fff;cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,color .16s ease;
+}
+.btn:hover{border-color:var(--ink);text-decoration:none;}
+.btn-light:hover{background:#e6ebf3;border-color:#e6ebf3;}
+.btn-light{background:#fff;color:var(--dark);border-color:#fff;}
+.btn-ghost{background:var(--dark);color:#dbe3ee;border-color:rgba(255,255,255,.24);}
+.btn-ghost:hover{background:var(--dark);border-color:#dbe3ee;}
+.btn svg{width:16px;height:16px;flex:none;}
+.btn-doc{background:var(--doc);border-color:var(--doc);color:var(--dark);}
+.btn-doc:hover{background:var(--doc-hover);border-color:var(--doc-hover);}
+.btn-doc-ghost{background:transparent;color:#fef3c7;border-color:var(--doc);}
+.btn-doc-ghost:hover{background:rgba(251,191,36,.12);border-color:var(--doc);}
+.btn-pair{display:inline-flex;}
+.btn-pair .btn:first-child{border-top-right-radius:0;border-bottom-right-radius:0;}
+.btn-pair .btn-icon{width:46px;padding:0;border-top-left-radius:0;border-bottom-left-radius:0;border-left:1px solid rgba(10,15,31,.28);}
+.cta-note{margin:12px 0 0;font-size:.85rem;color:#98a7bc;}
+.cta-note[hidden]{display:none;}
+/* dark bands: focus rings in amber so they stay visible */
+.hero a:focus-visible,.eco a:focus-visible,.contact a:focus-visible,.hero button:focus-visible{outline-color:var(--doc);}
+
+.portrait-wrap{position:relative;max-width:340px;margin-left:auto;}
+.portrait{position:relative;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:var(--r);border:1px solid var(--dark-line);background:#1a2238;}
+.portrait-tag{
+  position:absolute;left:-18px;bottom:22px;
+  background:var(--dark);border:1px solid var(--dark-line);color:#e6ebf3;
+  padding:10px 14px;border-radius:var(--r-sm);font-size:.8rem;font-weight:600;
+}
+.portrait-tag small{display:block;color:#9fb0c6;font-weight:500;font-size:.72rem;}
+
+.stats{display:grid;grid-template-columns:repeat(var(--cols,4),1fr);gap:1px;margin-top:64px;border:1px solid var(--dark-line);border-radius:var(--r);overflow:hidden;background:var(--dark-line);}
+.stat{background:var(--dark);padding:22px 22px 20px;}
+.stat dd{margin:0;}
+.card-cta{margin-top:18px;}
+.stat .n{display:block;font-family:var(--display);font-size:clamp(1.6rem,3vw,2.1rem);font-weight:700;color:#fff;letter-spacing:-.03em;line-height:1.1;}
+.stat-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.tag-co,.tag-st{font-size:.68rem;font-weight:700;line-height:1.4;padding:1px 7px;border-radius:4px;}
+.tag-co{background:rgba(255,255,255,.08);color:#e2e8f0;}
+.tag-direct{color:#e9d5ff;border:1px solid #a78bfa;}
+.tag-pipeline{color:#bfdbfe;border:1px solid #60a5fa;}
+.tag-production{color:#86efac;border:1px solid #16a34a;background:rgba(22,163,74,.15);}
+.stat .l{display:block;margin-top:6px;font-size:.84rem;color:#98a7bc;line-height:1.45;}
+
+/* ---------- 60-second snapshot ---------- */
+.sn-band{padding:48px 0 56px;background:var(--soft);border-bottom:1px solid var(--line);}
+.sn-band[hidden]{display:none;}
+.sn-title{font-size:1.3rem;margin-bottom:18px;}
+.sn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.sn-card{--tone:var(--muted);background:#fff;border:1px solid var(--line);border-top:4px solid var(--tone);border-radius:var(--r);padding:18px 20px 16px;}
+.sn-card[data-tone="fit"]{--tone:var(--fit);}
+.sn-card[data-tone="impact"]{--tone:var(--impact);}
+.sn-card[data-tone="logistics"]{--tone:var(--logistics);}
+.sn-card h3{font-family:var(--sans);font-size:.92rem;font-weight:700;letter-spacing:0;color:var(--tone);margin-bottom:8px;}
+.sn-card dl{margin:0;}
+.sn-item{padding:9px 0;border-top:1px solid var(--line);}
+.sn-item:first-child{border-top:0;padding-top:0;}
+.sn-item dt{font-size:.78rem;font-weight:600;color:var(--muted);}
+.sn-item dd{margin:2px 0 0;font-size:.94rem;font-weight:500;line-height:1.45;color:var(--ink);}
+.sn-item dd strong{font-weight:800;}
+.sn-item dd a{color:var(--ink);}
+
+/* ---------- about ---------- */
+.about-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:48px;align-items:start;margin-top:26px;}
+.about-body p{font-size:1.02rem;line-height:1.76;max-width:64ch;}
+.about-body p:last-child{margin-bottom:0;}
+.about-body strong{color:var(--ink);font-weight:600;}
+.facts{background:var(--soft);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0;}
+.fact{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.9rem;}
+.fact:last-child{border-bottom:none;padding-bottom:0;}
+.fact:first-child{padding-top:0;}
+.fact dt{color:var(--muted);flex:none;}
+.fact dd{margin:0;color:var(--ink);font-weight:600;text-align:right;}
+
+/* ---------- approach (process) ---------- */
+.process{list-style:none;padding:0;margin:40px 0 0;display:grid;grid-template-columns:repeat(var(--cols,6),1fr);gap:12px;counter-reset:step;}
+.step{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px 18px 18px;counter-increment:step;}
+.step::before{
+  content:counter(step);display:block;color:var(--muted);
+  font-family:var(--display);font-weight:600;font-size:.95rem;margin-bottom:8px;
+}
+.step h3{font-size:1rem;margin-bottom:6px;}
+.step p{font-size:.87rem;color:var(--body);margin:0;line-height:1.55;}
+.throughline{margin:22px 0 0;padding:16px 20px;background:#fff;border:1px solid var(--line);border-radius:var(--r);font-size:.97rem;color:var(--ink);}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;}
+.principle{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;}
+.principle h3{font-size:.98rem;margin-bottom:6px;}
+.principle p{font-size:.9rem;margin:0;}
+
+/* ---------- filters ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:34px 0 24px;}
+.chipbtn{
+  border:1px solid var(--line);background:#fff;color:var(--muted);padding:8px 16px;border-radius:var(--r-sm);
+  font:inherit;font-size:.87rem;font-weight:600;cursor:pointer;min-height:44px;transition:.18s ease;
+}
+.chipbtn:hover{color:var(--ink);border-color:#cdd5e1;}
+.chipbtn[aria-pressed="true"]{background:var(--arena,var(--ink));color:#fff;border-color:var(--arena,var(--ink));}
+.chipbtn .swatch{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;background:var(--arena,var(--ink));}
+.chipbtn[aria-pressed="true"] .swatch{background:#fff;}
+.chipbtn .ct{opacity:.65;margin-left:4px;font-weight:500;}
+
+/* ---------- accordion product cards ---------- */
+.acc{position:relative;border:1px solid var(--line);border-left:4px solid var(--arena);border-radius:var(--r);background:#fff;margin-bottom:14px;overflow:hidden;cursor:pointer;
+  transition:border-color .2s ease;}
+.acc-face{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,250px);gap:18px;align-items:start;padding:22px 26px 8px;}
+.acc-main{min-width:0;}
+.acc-result{min-width:0;}
+.acc-result .acc-outcome-l{display:block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border:0;padding:0;margin:0 0 4px;}
+.acc-result .acc-outcome{display:block;margin:0;}
+.acc-result .acc-outcome-t{font-family:var(--display);font-size:1.2rem;letter-spacing:-.02em;line-height:1.25;}
+.acc-result .acc-meta{margin-top:8px;}
+.acc-decision-l{font-weight:700;color:var(--ink);}
+.acc-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 0;}
+.acc-brief{margin:16px 0 0;font-size:.95rem;}
+.acc:hover{border-color:var(--arena);}
+.acc.open{cursor:default;border-color:#cfd7e3;border-left-color:var(--arena);}
+.acc.open .acc-head,.acc.open .acc-peek{cursor:pointer;}
+.acc[hidden]{display:none;}
+.acc-head{padding:24px 26px 0;}
+.acc-title{font-family:var(--display);font-size:1.18rem;font-weight:700;color:var(--ink);letter-spacing:-.015em;margin:0 0 6px;}
+.acc-sum{font-size:.97rem;color:var(--body);margin:0;}
+.acc-outcome{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:12px 0 0;font-size:.94rem;font-weight:600;color:var(--ink);line-height:1.45;}
+.acc-outcome-l{font-size:.74rem;font-weight:700;color:var(--arena);border:1px solid currentColor;border-radius:4px;padding:1px 6px;}
+.ev{display:inline-block;font-size:.72rem;font-weight:700;line-height:1.5;padding:1px 7px;border-radius:4px;white-space:nowrap;cursor:help;}
+.ev-modelled{color:#92400e;background:#fffbeb;border:1px dashed #b45309;}
+.ev-production{color:#166534;background:#f0fdf4;border:1px solid #16a34a;}
+.metrics-ev{margin:14px 0 0;}
+.acc-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:14px;}
+.kicker{
+  display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--defence);
+}
+.client{font-size:.85rem;font-weight:600;color:var(--ink);margin-right:6px;}
+.client i{font-style:normal;color:var(--muted);font-weight:500;}
+.tag{font-size:.77rem;border:1px solid var(--line);color:var(--muted);padding:3px 8px;border-radius:4px;}
+
+/* teaser: first lines of "Customer pain", fading out; collapses away when the card opens */
+.acc-peek{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .45s cubic-bezier(.22,.8,.3,1),opacity .3s ease;}
+.acc-peek .peek-in{min-height:0;overflow:hidden;margin:16px 26px 0;padding:14px 16px 0;border-radius:var(--r-sm);background:var(--soft);border:1px solid var(--line);
+  -webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent);max-height:92px;}
+.peek-label{display:block;font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.acc-peek p{margin:0;font-size:.9rem;line-height:1.6;color:var(--body);}
+.acc.open .acc-peek{grid-template-rows:0fr;opacity:0;}
+.acc.open .acc-peek .peek-in{margin-top:0;padding-top:0;border-width:0;}
+
+/* action row: the explicit "Explore case study" button + product links */
+.acc-links{display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:14px 0 8px;}
+.acc-toggle{
+  display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 12px 8px 16px;border-radius:var(--r-sm);cursor:pointer;
+  font:inherit;font-size:.88rem;font-weight:700;color:#fff;background:var(--ink);border:1px solid var(--ink);
+  transition:background .2s ease,border-color .2s ease;
+}
+.acc-toggle:hover,.acc:hover .acc-toggle{background:var(--arena);border-color:var(--arena);}
+.t-labels{display:grid;}
+.t-labels > span{grid-area:1/1;transition:opacity .25s ease,transform .3s cubic-bezier(.22,.8,.3,1);}
+.t-close{opacity:0;transform:translateY(6px);}
+.acc.open .t-open{opacity:0;transform:translateY(-6px);}
+.acc.open .t-close{opacity:1;transform:none;}
+.t-arrow{width:18px;height:18px;display:grid;place-items:center;transition:transform .35s cubic-bezier(.22,.8,.3,1);}
+.t-arrow svg{width:14px;height:14px;}
+.acc:hover .t-arrow,.acc-toggle:hover .t-arrow{transform:translateX(3px);}
+.acc.open .t-arrow{transform:rotate(-90deg);}
+.acc.open .acc-toggle{background:#fff;color:var(--ink);border-color:var(--line);}
+/* one-time hint: a flat outline that fades in and out (no glow) */
+.acc-toggle.hint{outline:2px solid transparent;outline-offset:3px;animation:explore-hint 1.6s ease 2;}
+@keyframes explore-hint{0%,100%{outline-color:transparent;}50%{outline-color:var(--arena);}}
+
+.acc-link{
+  display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;padding:7px 14px;border-radius:var(--r-sm);min-height:44px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  transition:border-color .16s ease;
+}
+.acc-link:hover{border-color:var(--ink);text-decoration:none;}
+.acc-link svg{width:15px;height:15px;}
+
+/* smooth open/close: animate grid rows 0fr → 1fr (exact height, no max-height guessing) */
+.acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.22,.8,.3,1);}
+.acc.open .acc-body{grid-template-rows:1fr;}
+.acc-body > .acc-inner{min-height:0;overflow:hidden;}
+.acc-inner{padding:0 26px;border-top:1px solid transparent;transition:padding .45s cubic-bezier(.22,.8,.3,1),border-color .3s ease;}
+.acc.open .acc-inner{padding:4px 26px 28px;border-top-color:var(--line);}
+/* staggered reveal of the six blocks */
+.acc .snap,.acc .decide > div,.acc .note{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .45s cubic-bezier(.22,.8,.3,1);}
+.acc.open .snap,.acc.open .decide > div,.acc.open .note{opacity:1;transform:none;transition-delay:calc(.08s + var(--i,6) * .05s);}
+.snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 18px;}
+.snap{background:var(--soft);border:1px solid var(--line);border-radius:var(--r-sm);padding:18px;}
+.snap h4{font-size:.88rem;color:var(--ink);margin-bottom:8px;font-family:var(--sans);font-weight:700;letter-spacing:0;}
+.snap p{font-size:.9rem;line-height:1.6;margin:0;}
+.decide{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.decide > div{border:1px solid var(--line);border-radius:var(--r-sm);padding:16px 18px;}
+.decide h4{font-size:.88rem;color:var(--ink);margin-bottom:8px;font-family:var(--sans);font-weight:700;letter-spacing:0;}
+.decide p{font-size:.9rem;margin:0;line-height:1.6;}
+.decide ul{margin:0;padding-left:17px;font-size:.9rem;}
+.decide li{margin-bottom:4px;}
+.decide li::marker{color:var(--muted);}
+.note{font-size:.78rem;color:var(--muted);margin:14px 0 0;}
+
+/* ---------- portfolio at a glance (summary cards) ---------- */
+.glance{margin:34px 0 8px;padding-top:28px;border-top:1px solid var(--line);}
+.glance[hidden]{display:none;}
+.glance-title{font-size:clamp(1.3rem,2.6vw,1.7rem);letter-spacing:-.02em;margin-bottom:22px;}
+.glance-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.glance-grid li{display:flex;}
+.glance-card{--arena:var(--ink);flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:22px 20px 20px;border-radius:var(--r);
+  background:#fff;border:1px solid var(--line);border-top:4px solid var(--arena);color:var(--body);transition:border-color .18s ease;}
+.glance-card:hover{border-color:var(--arena);text-decoration:none;}
+.glance-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
+.g-icon{width:24px;height:24px;color:var(--arena);margin-bottom:8px;}
+.g-icon svg{width:24px;height:24px;display:block;}
+.g-arena{font-size:.8rem;font-weight:700;color:var(--arena);}
+.glance-card h4{font-size:1.08rem;letter-spacing:-.015em;}
+.glance-card p{margin:0;font-size:.92rem;line-height:1.58;color:var(--body);}
+.glance-card p strong{color:var(--ink);}
+.g-more{margin-top:auto;padding-top:10px;font-size:.86rem;font-weight:600;color:var(--arena);}
+
+/* ---------- ecosystem spotlight ---------- */
+.eco{background:var(--dark);color:#c3cddc;overflow:hidden;}
+.eco .eyebrow{color:#9fb0c6;}
+.eco .s-title{color:#fff;}
+.eco .s-sub{color:#9fb0c6;}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;position:relative;}
+.pillar{border:1px solid var(--dark-line);border-radius:var(--r);padding:24px;}
+.pillar .ph{font-size:.85rem;font-weight:600;color:#9fb0c6;}
+.pillar h3{color:#fff;font-size:1.2rem;margin:8px 0 8px;}
+.pillar p{font-size:.92rem;color:#a8b5c8;margin:0;}
+.spine{margin:14px 0 0;padding:14px 18px;border:1px solid var(--dark-line);border-radius:var(--r);font-size:.92rem;color:#c9d3e0;}
+.eco-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.eco-col{border:1px solid var(--dark-line);border-radius:var(--r);padding:22px 24px;}
+.eco-col h3{font-size:1rem;color:#fff;margin-bottom:12px;}
+.eco-col ul{margin:0;padding-left:18px;font-size:.93rem;color:#c3cddc;}
+.eco-col li{margin-bottom:8px;}
+.eco-col li::marker{color:#9fb0c6;}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
+.metric{border:1px solid var(--dark-line);border-radius:var(--r);padding:22px;}
+.metric .n{display:block;font-family:var(--display);font-size:2rem;font-weight:700;color:#fff;letter-spacing:-.03em;line-height:1.05;}
+.metric .l{display:block;color:#e2e8f0;font-weight:600;font-size:.9rem;margin-top:6px;}
+.metric .c{display:block;color:#93a3ba;font-size:.8rem;margin-top:4px;}
+.eco .note{color:#8d9cb2;}
+
+/* ---------- experience timeline (colour = career track) ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;list-style:none;margin:24px 0 0;padding:0;font-size:.87rem;font-weight:600;color:var(--body);}
+.legend[hidden]{display:none;}
+.legend li{display:inline-flex;align-items:center;gap:8px;}
+.legend .swatch{width:12px;height:12px;border-radius:50%;background:var(--track);flex:none;}
+.timeline{list-style:none;margin:28px 0 0;padding:0;position:relative;}
+.timeline::before{content:"";position:absolute;left:127px;top:10px;bottom:10px;width:2px;background:var(--line);}
+.tl-item{--track:var(--muted);position:relative;display:grid;grid-template-columns:104px 1fr;gap:44px;padding-bottom:16px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-item::after{content:"";position:absolute;left:120px;top:24px;width:16px;height:16px;border-radius:50%;background:var(--track);box-shadow:0 0 0 4px var(--bg);}
+.tl-item[hidden]{display:none;}
+.tl-period{padding-top:19px;text-align:right;font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--ink);line-height:1.3;}
+.tl-dur{display:block;margin-top:2px;font-family:var(--sans);font-size:.78rem;font-weight:600;color:var(--muted);}
+.scope-row{margin:0 0 10px;}
+.scope{display:inline-block;font-size:.75rem;font-weight:700;color:#6d28d9;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:4px;padding:2px 8px;}
+.tl-card{min-width:0;background:#fff;border:1px solid var(--line);border-left:4px solid var(--track);border-radius:var(--r);padding:22px 26px;}
+.tl-track{display:block;font-size:.8rem;font-weight:700;color:var(--track);margin-bottom:6px;}
+.tl-card .exp-metrics{margin-bottom:0;}
+.tl-toggle{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:16px;padding:8px 14px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:#fff;color:var(--ink);font:inherit;font-size:.87rem;font-weight:700;cursor:pointer;transition:border-color .18s ease;}
+.tl-toggle:hover{border-color:var(--track);}
+.tl-toggle svg{width:16px;height:16px;stroke:currentColor;transition:transform .3s ease;}
+.tl-item.open .tl-toggle svg{transform:rotate(180deg);}
+.tl-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.22,.8,.3,1);}
+.tl-item.open .tl-body{grid-template-rows:1fr;}
+.tl-inner{min-height:0;overflow:hidden;}
+.tl-inner .exp-list{padding-top:16px;}
+.exp-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px;}
+.exp-head h3{font-size:1.32rem;}
+.exp-head h3 span{color:var(--muted);}
+.exp-org{font-size:.9rem;color:var(--muted);margin:4px 0 0;}
+.pill-date{flex:none;font-size:.88rem;color:var(--muted);white-space:nowrap;padding-top:4px;}
+.exp-summary{font-size:.98rem;max-width:70ch;margin-bottom:16px;}
+.exp-metrics{display:flex;flex-wrap:wrap;gap:4px 22px;margin:0 0 20px;padding:0;list-style:none;}
+.exp-metrics li{font-size:.9rem;font-weight:700;color:var(--ink);}
+.exp-list{margin:0;padding-left:18px;}
+.exp-list li{margin-bottom:10px;font-size:.96rem;}
+.exp-list li:last-child{margin-bottom:0;}
+.exp-list li::marker{color:var(--muted);}
+.exp-list strong{color:var(--ink);}
+.stackline{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;}
+.stackline b{color:var(--body);}
+.stackline a{display:inline-flex;align-items:center;gap:6px;}
+.stackline .swatch{width:9px;height:9px;border-radius:50%;background:var(--arena,var(--muted));flex:none;}
+
+/* ---------- skills ---------- */
+.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:36px;}
+.skill-card{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:#fff;}
+.skill-card h3{font-size:1.02rem;margin-bottom:14px;}
+.pills{display:flex;flex-wrap:wrap;gap:7px;list-style:none;margin:0;padding:0;}
+.pill{font-size:.85rem;border:1px solid var(--line);color:var(--body);padding:4px 10px;border-radius:4px;}
+.pill-more{margin-top:12px;min-height:32px;padding:4px 0;background:none;border:0;font:inherit;font-size:.86rem;font-weight:700;color:var(--ink);
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+
+/* ---------- writing + education ---------- */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px;}
+.card{border:1px solid var(--line);border-radius:var(--r);padding:26px;background:#fff;}
+.card h3{font-size:1.1rem;margin-bottom:8px;}
+.card p{font-size:.95rem;}
+.card .btn{margin-top:4px;}
+.edu-list{list-style:none;margin:0;padding:0;}
+.edu-item{display:flex;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);}
+.edu-item:last-child{border-bottom:none;padding-bottom:0;}
+.edu-item:first-child{padding-top:0;}
+.edu-mark{width:48px;height:48px;border-radius:var(--r-sm);flex:none;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:700;font-size:.78rem;}
+.edu-item h4{font-size:.98rem;font-family:var(--sans);margin-bottom:2px;}
+.edu-item p{margin:0;font-size:.86rem;color:var(--muted);}
+
+/* ---------- contact ---------- */
+.contact{background:var(--dark);color:#c3cddc;overflow:hidden;}
+.contact{border-top:1px solid var(--dark-line);}
+.contact .wrap{text-align:center;}
+.contact h2{color:#fff;font-size:clamp(2rem,5vw,3.2rem);margin-bottom:18px;}
+.contact p{color:#9aa9be;max-width:58ch;margin:0 auto 32px;font-size:1.04rem;}
+.contact-row{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;}
+.foot{
+  border-top:1px solid var(--dark-line);margin-top:64px;padding-top:24px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.83rem;color:#8a98ad;text-align:left;
+}
+.foot a{color:#c3cddc;}
+.site-foot{background:var(--dark);padding:28px 0 32px;}
+.site-foot .foot{margin-top:0;padding-top:0;border-top:0;}
+
+/* ---------- reveal ---------- */
+.js .rv{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1);}
+.js .rv.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){
+  .js .rv{opacity:1;transform:none;transition:none;}
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:1020px){
+  .process{grid-template-columns:repeat(3,1fr);}
+  .metrics{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:960px){
+  .nav-links{
+    position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);
+    flex-direction:column;align-items:stretch;padding:10px;gap:2px;display:none;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:11px 14px;}
+  .nav-links .nav-cta{justify-content:center;margin:4px 0 0;}
+  .burger{display:block;}
+  .nav-links + .nav-actions{margin-left:auto;}
+}
+@media (max-width:900px){
+  .glance-grid{grid-template-columns:repeat(2,1fr);}
+  .hero-grid{grid-template-columns:1fr;gap:40px;}
+  .portrait-wrap{margin:0;max-width:240px;order:-1;}
+  .portrait-tag{left:auto;right:-14px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .about-grid{grid-template-columns:1fr;gap:30px;}
+  .principles{grid-template-columns:1fr;}
+  .snapshot,.decide{grid-template-columns:1fr;}
+  .pillars,.eco-cols{grid-template-columns:1fr;}
+  .sn-grid{grid-template-columns:1fr 1fr;}
+  .skill-grid,.two-col{grid-template-columns:1fr;}
+  .fit-in{flex-wrap:wrap;overflow:visible;padding:8px 16px;}
+  .fit-meta{margin-left:0;flex-basis:100%;max-width:100%;white-space:normal;flex-wrap:wrap;}
+  html{scroll-padding-top:180px;}
+  .hero{padding:200px 0 72px;}
+}
+@media (max-width:760px){
+  .glance{margin-top:26px;}
+  body{font-size:16px;}
+  .wrap{padding:0 16px;}
+  .nav-in{padding:10px 16px;}
+  section{padding:72px 0;}
+  html{scroll-padding-top:230px;}
+  .hero{padding:228px 0 56px;}
+  .hero-cta{flex-direction:column;align-items:stretch;}
+  .hero-cta .btn{width:100%;}
+  .btn-pair{display:flex;}
+  .btn-pair .btn:first-child{flex:1;}
+  .hero-cta .btn-pair .btn-icon{width:46px;flex:none;}
+  .stats{margin-top:44px;}
+  .stat{padding:18px 16px;}
+  .process{grid-template-columns:1fr 1fr;}
+  .acc-face{grid-template-columns:1fr;padding:18px 18px 4px;}
+  .acc-links{padding:12px 0 8px;}
+  .acc-inner{padding:0 18px;}
+  .acc.open .acc-inner{padding:4px 18px 22px;}
+  .sn-band{padding:36px 0 40px;}
+  .sn-grid{grid-template-columns:1fr;}
+  .timeline::before{left:7px;}
+  .tl-item{grid-template-columns:1fr;gap:6px;padding-left:30px;}
+  .tl-item::after{left:0;top:3px;}
+  .tl-period{padding-top:0;text-align:left;}
+  .tl-card{padding:20px 18px;}
+  .exp-head{display:block;}
+  .pill-date{display:inline-block;margin-top:6px;padding-top:0;}
+  .metrics{grid-template-columns:1fr 1fr;}
+  .metric{padding:18px;}
+  .foot{justify-content:center;text-align:center;}
+}
+@media (max-width:560px){
+  .glance-grid{grid-template-columns:1fr;}
+}
+@media (max-width:374px){
+  .brand-name{display:none;}
+}
+@media (max-width:360px){
+  .process{grid-template-columns:1fr;}
+  .metrics{grid-template-columns:1fr;}
+}
+
+/* ---------- print (Print / Save as PDF gives a clean, forwardable document) ---------- */
+@media print{
+  @page{margin:14mm;}
+  *,*::before,*::after{transition:none!important;animation:none!important;}
+  body{font-size:11pt;}
+  .nav,.burger,.filters,.hero-cta,.cta-note,.contact-row,.acc-links,.acc-peek,.tl-toggle,.pill-more,.portrait-wrap,.skip,.preview-bar{display:none!important;}
+  section,.hero{padding:22px 0!important;}
+  .hero,.eco,.contact,.sn-band,.alt{background:#fff!important;border-color:#ddd!important;}
+  .hero *,.eco *,.contact *{color:#000!important;}
+  .stats,.stat{background:#fff!important;}
+  .hero-grid{grid-template-columns:1fr;}
+  .acc-body,.tl-body{grid-template-rows:1fr!important;}
+  .acc .snap,.acc .decide > div,.acc .note{opacity:1!important;transform:none!important;}
+  .pill-extra[hidden]{display:block!important;}
+  .acc,.tl-item,.sn-card,.skill-card,.card,.pillar,.metric,.eco-col,.step,.principle,.glance-card{break-inside:avoid;}
+  h2,h3{break-after:avoid;}
+  .js .rv{opacity:1;transform:none;}
+}
+
+/* ---------- misc: preview banner, load error ---------- */
+.load-error{max-width:640px;margin:120px auto;padding:24px;text-align:center;border:1px solid var(--line);border-radius:var(--r);}
+.preview-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:150;background:#b45309;color:#fff;
+  padding:10px 16px;border-radius:var(--r-sm);font-size:.85rem;font-weight:600;display:flex;gap:12px;align-items:center;}
+.preview-bar a{color:#fff;text-decoration:underline;}
+.acc{--arena:var(--accent);}
+.acc .kicker{color:var(--arena);}
+
+/* links inside running text are underlined, not colour-only (WCAG 1.4.1) */
+.foot a,.stackline a,.sn-item a,.about-body a,.hero-lede a,.snap a,.decide a,.exp-list a,.card p a,.contact p a,.spine a,.note a{text-decoration:underline;text-underline-offset:3px;}
+
+</style>
+<script>document.documentElement.classList.add('js');</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Mayukh Ghosh",
+  "url": "https://mayukhg.github.io/",
+  "image": "https://mayukhg.github.io/assets/mayukh.jpg",
+  "jobTitle": "Director of Product Management",
+  "worksFor": {"@type": "Organization", "name": "Qualys"},
+  "address": {"@type": "PostalAddress", "addressLocality": "Pune", "addressCountry": "IN"},
+  "email": "mailto:mayukhg@gmail.com",
+  "alumniOf": [
+    {"@type": "CollegeOrUniversity", "name": "Indian Institute of Management Kozhikode"},
+    {"@type": "CollegeOrUniversity", "name": "Symbiosis International University"},
+    {"@type": "CollegeOrUniversity", "name": "Bangalore University"}
+  ],
+  "knowsAbout": ["Product Management", "Agentic AI", "Multi-Agent Systems", "Model Context Protocol", "Cloud Security", "AI Governance", "LLMs", "RAG"],
+  "sameAs": [
+    "https://www.linkedin.com/in/mayukh-ghosh-310a327",
+    "https://github.com/mayukhg"
+  ]
+}
+</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm-1 1 9 7 9-7"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Zm0 0v5h5M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="g-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19 6v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="g-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+  <symbol id="g-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><rect x="10" y="10" width="4" height="4"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+  <symbol id="g-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3.5 17.5l3 3 5.3-5.3a4.5 4.5 0 0 0 5.9-5.9l-2.6 2.6-2.5-.5-.5-2.5 2.6-2.6Z"/></symbol>
+  <symbol id="g-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></symbol>
+  <symbol id="g-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="g-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.5 20h19L12 3.5Z"/><path d="M12 10v4.5M12 17.5h.01"/></symbol>
+  <symbol id="g-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></symbol>
+  <symbol id="g-bank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9.5 9-5.5 9 5.5M5 10v8M9.7 10v8M14.3 10v8M19 10v8M3 20.5h18"/></symbol>
+  <symbol id="g-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5h6.5l-1 8 8.5-11h-6.5l1-8Z"/></symbol>
+  <symbol id="g-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="g-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"/><path d="M8.5 12.5h2l1-2 1.5 4 1-2h1.5"/></symbol>
+  <symbol id="g-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Primary">
+  <div class="nav-in">
+    <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span><span class="brand-name">Mayukh Ghosh</span></a>
+    <div class="nav-links" id="navlinks">
+      <a href="#products">Portfolio</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <span data-slot="nav-resume"></span>
+      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="fit" data-slot="fit" hidden></div>
+</nav>
+
+<main id="main" aria-busy="true">
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="badge"><span class="dot" aria-hidden="true"></span><span data-slot="badge"></span></p>
+        <h1 data-slot="name">Mayukh Ghosh</h1>
+        <p class="hero-role" data-slot="role"></p>
+        <p class="hero-lede" data-slot="lede"></p>
+        <div class="hero-cta" data-slot="hero-cta"></div>
+        <p class="cta-note" data-slot="cta-note"></p>
+      </div>
+      <div class="portrait-wrap" data-slot="portrait"></div>
+    </div>
+    <dl class="stats" data-slot="stats"></dl>
+  </div>
+</header>
+
+<section id="snapshot" class="sn-band" aria-labelledby="snapshot-title">
+  <div class="wrap">
+    <h2 class="sn-title" id="snapshot-title" data-slot="snapshot-title"></h2>
+    <div class="sn-grid" data-slot="snapshot"></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="exp-title"></h2>
+    <p class="s-sub" data-slot="exp-sub"></p>
+    <div class="filters" role="group" aria-label="Filter experience by domain" data-slot="exp-filters"></div>
+    <ul class="legend" aria-label="Career tracks" data-slot="exp-legend"></ul>
+    <ol class="timeline" data-slot="exp-timeline"></ol>
+  </div>
+</section>
+
+<section id="products" class="alt">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="products-title"></h2>
+    <p class="s-sub" data-slot="products-sub"></p>
+    <div class="glance" data-slot="glance" hidden></div>
+    <div class="filters" role="group" aria-label="Filter by domain" data-slot="filters"></div>
+    <div id="product-list" data-slot="products"></div>
+  </div>
+</section>
+
+<section id="ecosystem" class="eco" data-slot="ecosystem" hidden></section>
+
+<section id="education">
+  <div class="wrap">
+    <h2 class="s-title">Education &amp; writing</h2>
+    <div class="two-col">
+      <div class="card"><h3>Education</h3><ul class="edu-list" data-slot="education"></ul></div>
+      <div class="card" data-slot="writing"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2 data-slot="contact-title"></h2>
+    <p data-slot="contact-text"></p>
+    <div class="contact-row" data-slot="contact-links"></div>
+  </div>
+</section>
+
+<section id="about" class="alt">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="about-title"></h2>
+    <div class="about-grid">
+      <div class="about-body" data-slot="about-body"></div>
+      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
+    </div>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap">
+    <p class="eyebrow">How I build an AI product</p>
+    <h2 class="s-title" data-slot="approach-title"></h2>
+    <p class="s-sub" data-slot="approach-sub"></p>
+    <ol class="process" data-slot="steps"></ol>
+    <p class="throughline" data-slot="throughline"></p>
+    <div class="principles" data-slot="principles"></div>
+  </div>
+</section>
+
+<section id="skills" class="alt">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="skills-title"></h2>
+    <div class="skill-grid" data-slot="skills"></div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap foot">
+    <span>© <span id="year">2026</span> <span data-slot="foot-name">Mayukh Ghosh</span></span>
+    <span>Built with plain HTML, CSS &amp; JS · <a href="#top">Back to top ↑</a></span>
+  </div>
+</footer>
+
+<noscript>
+  <p style="padding:24px;text-align:center">This portfolio needs JavaScript to display. You can still <a href="resume.pdf">download the résumé (PDF)</a>, the <a href="assets/portfolio.pdf">product portfolio (PDF)</a>, or email <a href="mailto:mayukhg@gmail.com">mayukhg@gmail.com</a>.</p>
+</noscript>
+<div class="load-error" id="load-error" hidden role="alert">
+  <p>Sorry, the portfolio content couldn't be loaded. Please refresh, or <a href="resume.pdf">download the résumé (PDF)</a>.</p>
+</div>
+
+</main>
+
+<script>window.PORTFOLIO_CONTENT={"profile":{"meta":{"title":"Mayukh Ghosh · Product Leader, Agentic AI & Cybersecurity","description":"Director of Product Management with 20+ years across AI-enabled analytics, payments and enterprise security. Eight AI products built from real customer problems across security, trade, finance and healthcare."},"person":{"name":"Mayukh Ghosh","headline":"Director of Product Management","tags":["Agentic AI","Cybersecurity"],"badge":"Director-level AI product leadership","lede":"I build AI products from real customer problems, and use AI only where it beats a simpler option. At **Qualys** I lead and coach a team of **3 PMs** that took our Agentic AI security suite from pilots to general availability, building a **$1.5M POC pipeline**. Before that, at **BP**, I secured **$2M+** for enterprise AI and built the “AI Defense Ecosystem” used across **15+ business units**.","location":"Pune, India","portraitCaption":"20+ years · Product & Platform","photo":"assets/mayukh.jpg","photoAlt":"Portrait of Mayukh Ghosh"},"links":{"email":"mayukhg@gmail.com","linkedin":"https://www.linkedin.com/in/mayukh-ghosh-310a327","github":"https://github.com/mayukhg","resume":"resume.pdf","resumeUpdated":"Sep 2026","portfolio":"assets/portfolio.pdf"},"fit":{"open":"Open to","level":"Director of Product","domains":[{"id":"security","label":"Security"},{"id":"payments","label":"Payments"},{"id":"analytics","label":"Analytics"}],"mode":"Remote / Hybrid","notice":"30-day notice"},"stats":[{"value":"3 PMs","label":"Team led and coached now","company":"Qualys","status":"direct","statusLabel":"Direct"},{"value":"$1.5M","label":"POC pipeline, not booked revenue","company":"Qualys","status":"pipeline","statusLabel":"Pipeline"},{"value":"$2.4M","label":"Annual savings, policy automation","company":"BP","status":"production","statusLabel":"In production"},{"value":"15+","label":"Enterprise pilots in two quarters","company":"Qualys","status":"pipeline","statusLabel":"Pilots"}],"snapshot":{"title":"The 60-second fit","groups":[{"name":"Role fit","tone":"fit","items":[{"label":"Now","value":"Director of PM, Qualys"},{"label":"Open to","value":"Director, AI product"},{"label":"Domains","value":"Security · Payments · Analytics · Healthcare"},{"label":"Markets","value":"B2B enterprise and B2C"},{"label":"Edge","value":"Architect who still prototypes. NIST and EU AI Act built in."}]},{"name":"Proof","tone":"impact","items":[{"label":"Savings","value":"**$2.4M** / year · BP · In production"},{"label":"Pipeline","value":"**$1.5M** POC · Qualys · Pipeline"},{"label":"Traction","value":"15+ pilots, 40% became paid POCs"},{"label":"Investment","value":"**$2M+** won from the C-suite at BP"},{"label":"Scope","value":"3 PMs direct · 25 people matrix at BP"}]},{"name":"Logistics","tone":"logistics","items":[{"label":"Based","value":"Pune, India"},{"label":"Mode","value":"Remote / Hybrid"},{"label":"Notice","value":"30 days, negotiable"},{"label":"Documents","value":"[Résumé PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf)"}]}]},"about":{"title":"A product leader for the agentic-AI era.","paragraphs":["I've spent **20+ years across AI-enabled analytics, payments and enterprise security**, building for both **B2B enterprise and B2C consumer** markets. A hands-on cloud engineering and systems-architecture background lets me evaluate platform trade-offs and win CXO-level buy-in, not just spec features.","My career started in **test and quality**: risk-based test frameworks, automated execution and API-level verification. That shows up today in how I run **AI evaluation, success metrics and production monitoring**: golden datasets, guardrails and pass/fail thresholds before anything goes GA.","Today I'm **Director of Product Management at Qualys**, leading a team of 3 PMs that took its Agentic AI security platform to general availability. We expose agents through MCP, CLI and Slack / Teams, so engineers can use them without opening a dashboard. I also write about Agentic AI and enterprise product strategy, and publish my AI builds on GitHub."],"facts":[{"label":"Focus","value":"Agentic AI & security platforms"},{"label":"Currently","value":"Director of PM, Qualys"},{"label":"Team","value":"3 PMs, Qualys"},{"label":"Based in","value":"Pune, India"},{"label":"Work mode","value":"Remote / Hybrid"},{"label":"Experience","value":"20+ years"},{"label":"Education","value":"MBA (IT), Symbiosis · IIM Kozhikode (DS & AI)"},{"label":"Certified","value":"AWS SA · AWS Security"}]},"approach":{"title":"From ideation to business & user value.","subtitle":"The process I run on every product. It starts from the customer's problem, not the technology.","steps":[{"title":"Ideate & Frame","text":"Anchor on the customer's real pain."},{"title":"Discover & Validate","text":"Test the pain; size impact & fit."},{"title":"Decide on AI","text":"LLM, classic ML or governance, sized to the problem."},{"title":"Architect & Build","text":"Agents, RAG, MCP + a trust layer."},{"title":"Demo & Iterate","text":"Ship a zero-install demo; evaluate."},{"title":"Deliver Value","text":"Measurable business & user value."}],"throughline":"**The through-line:** I start from the customer's problem and use AI only where it beats a simpler option.","principles":[{"title":"Judgment over hype","text":"LLMs where reasoning matters, classic ML where it's cheaper, governance where users need to trust the output before they adopt it."},{"title":"Value-obsessed","text":"Every product ties to business value (cost, risk, new channels) and user value (their own tools, hours-to-minutes, trust built in)."},{"title":"Ship, don't slideware","text":"Every product has a working, zero-install way to see it run. Metrics that are modelled targets are labelled as such."}]},"experience":{"title":"Experience","subtitle":"The Director seat is eight months. The four and a half years at BP are the depth behind it. Scope is marked direct, matrix, or part-time.","tracks":[{"id":"product","label":"Product leadership","color":"#6d28d9"},{"id":"architecture","label":"Architecture & consulting","color":"#475569"},{"id":"quality","label":"Quality foundation","color":"#a16207"}],"roles":[{"tab":"Qualys","track":"product","period":"2026 – now","title":"Director of Product Management","company":"Qualys","org":"Enterprise Cybersecurity · Agentic AI · Pune","dates":"Feb 2026 – Present","duration":"8 months","scope":"Direct · 3 PMs","domains":["security"],"summary":"Leading 3 PMs taking the Agentic AI security suite from pilots to general availability: multi-agent orchestration, tool use and evaluation.","metrics":["15+ enterprise pilots","40% pilot → paid PoC","$1.5M POC pipeline","Shipped to GA"],"bullets":["Lead and coach a team of **3 Product Managers** owning vision and roadmap for the Agentic AI security platform, identifying high-value AI use cases and translating multi-agent and LLM capabilities into a GTM strategy.","Ran **15+ enterprise pilots** in the first two quarters against defined success criteria (agentic flow correctness, result accuracy); CXO-level evangelism converted **40%** into paid proof-of-concepts, building a **$1.5M POC pipeline**.","Exposed agentic capabilities through API-first, tool-based surfaces (**Model Context Protocol (MCP), CLI and Slack / Microsoft Teams**), so developers use security agents in their own workflows.","Designed agent action interfaces and tool integrations so agents take real actions, such as exploit validation and remediation orchestration, instead of only answering in a chat.","Built the requirements, evaluation and success metrics framework for multi-agent orchestration (accuracy criteria, response-safety guardrails and pass/fail thresholds) for features that shipped in the **GA release**.","Prioritise the roadmap on strategic fit, user value and business value, refined with **Cost of Delay**; partner with Engineering, Platform, UX and Data Science, cutting feature scoping cycle time by **15%**.","Co-design go-to-market with Sales and Marketing, run **quarterly roadmap reviews** with leadership and Sales, and lead customer calls on product capabilities and fitment."],"related":["mcp","copilot"]},{"tab":"Fractional CPO","track":"product","period":"2024 – now","title":"Fractional CPO","company":"Independent","org":"AI Product & Strategy · Part-time advisory · B2B & B2C · Remote","dates":"Jul 2024 – Present","duration":"2+ years","scope":"Part-time","domains":["healthcare"],"summary":"Part-time. Shipped a B2C healthtech conversational AI chatbot alongside B2B AI advisory for early-stage founders.","metrics":["3+ 0→1 in \u003c4 months","+24% engagement","−35% cost / query","50K+ queries / month"],"bullets":["Defined product strategy for a consumer healthtech **conversational AI chatbot** answering users' medical queries in real time, owning the **query-accuracy and response-safety evaluation framework** from discovery through launch.","Served as Fractional CPO for early-stage AI founders, identifying high-value AI use cases and defining roadmaps and personas that took **3+ 0-to-1 concepts** from raw idea to market-ready SaaS in under 4 months each.","Architected a computer-vision MVP for a Digital Wellness startup; rapid A/B loops lifted user engagement by **24%** within 6 weeks of launch.","Advised a B2B AgriTech & Crop Insurance platform on the LLM and RAG architecture behind its self-service farmer query product, cutting cost per query by **35%** while scaling to **50K+** queries monthly.","Designed responsible AI compliance protocols aligned to NIST and the EU AI Act, institutionalising a “Trust by Design” framework across 2 client engagements."],"related":["ellyra-pulse"]},{"tab":"BP","track":"product","period":"2021 – 2026","title":"Principal Product Manager","company":"BP","org":"Global GenAI & Cloud Security · Pune","dates":"Jul 2021 – Jan 2026","duration":"4.5 years","scope":"Matrix · 25 people","domains":["security"],"summary":"Product owner for enterprise GenAI and AI security, run as an internal platform serving 15+ global business units.","metrics":["$2M+ AI investment","$2.4M annual savings","60%+ faster SOC triage","20% faster time-to-market"],"bullets":["Owned GenAI and cloud security product strategy across 15+ business units, aligning Security, Engineering, Platform and Compliance stakeholders on a shared roadmap.","**AI Defense Ecosystem:** established standardised AI eval harnesses and end-to-end auditability on a unified Agentic AI trust platform (Prevent, Protect, Detect & Respond), securing **$2M+** in C-suite investment and mitigating **$10M+** risk exposure.","**AI Policy Foundry:** cut policy review cycles from 1–3 weeks to **30 minutes** with 95%+ policy accuracy and **$2.4M** annual savings, using a 5-agent GPT-4 product with full clause-level auditability.","**AI SOC Portal:** reduced Mean Time to Triage by **more than 60%** and executive reporting overhead by ~50%, sustaining an **85%+** analyst action rate (RAGAS groundedness above 0.90).","**AI-SPM:** delivered sub-second threat blocking and predictive drift and anomaly detection across 6 data quality dimensions, flagging issues before business impact and automating NIST & EU AI Act compliance evidence.","Led a 25-person product team without direct reporting lines, setting its vision, goals and priorities; built organisational AI capability through the corporate **AI Maturity Index**, accelerating cloud time-to-market by **20%**."],"related":["policy-foundry","soc-portal","ai-spm"]},{"tab":"Amdocs","track":"architecture","period":"2020 – 2021","title":"Lead Principal Consultant","company":"Amdocs","org":"Cloud Modernization · Pune","dates":"Jan 2020 – Jul 2021","duration":"1.5 years","scope":"","domains":[],"summary":"Secured multi-million dollar contracts through technical RFPs and built the Cloud Transformation CoE.","metrics":["Multi-million $ contracts","10+ engagements","−25% migration risk incidents"],"bullets":["Authored technical product proposals and RFP responses that directly secured **multi-million dollar** cloud modernization contracts.","Founded the **Cloud Transformation Center of Excellence**, standardising multi-tenant data migration playbooks adopted across 10+ client engagements.","Led modernization projects that added analytics to legacy enterprise systems for 3 major telecom clients.","Translated modernization roadmaps into phased delivery plans, reducing migration risk incidents by **25%**."],"related":[]},{"tab":"Western Union","track":"architecture","period":"2018 – 2020","title":"Technical Architect, Payments Products","company":"Western Union","org":"Western Union Business Solutions · Pune","dates":"Jan 2018 – Jan 2020","duration":"2 years","scope":"","domains":["payments"],"summary":"Launched NLP voice payments and cut infrastructure costs 70% via a serverless, event-driven re-architecture.","metrics":["−70% infra cost","NLP voice payments launched","Blockchain KYC"],"bullets":["Owned product discovery through launch for **NLP-powered voice payment** features, translating customer needs into technical requirements.","Designed a blockchain-integrated **KYC-as-a-Service** and compliance platform, validated through executive sign-off and targeted for launch in select markets.","Slashed core cloud infrastructure costs by **70%** by re-architecting legacy payment processing systems into serverless, event-driven, cloud-native frameworks."],"related":["kyc"]},{"tab":"Pitney Bowes","track":"architecture","period":"2013 – 2018","title":"Software Architect","company":"Pitney Bowes","org":"Global e-commerce & shipping · Pune","dates":"Dec 2013 – Jan 2018","duration":"4 years","scope":"","domains":["trade"],"summary":"Cut engineering onboarding time 20% via a microservices migration.","metrics":["20% faster onboarding","DDD microservices"],"bullets":["Transitioned a monolithic architecture to microservices via Domain-Driven Design, accelerating engineering onboarding efficiency by **20%**.","Optimised high-volume order search with tailored Elasticsearch layers, measurably improving platform performance and user satisfaction."],"related":["hscode"]},{"tab":"Early career","track":"quality","period":"2005 – 2013","title":"Quality & test foundation","company":"","org":"Principal Financial Group · PTC | Cybage","dates":"2005 – 2013","duration":"8 years","scope":"","domains":[],"summary":"The rigour that now shapes how I evaluate AI: risk-based testing, automation and API-level verification.","metrics":[],"bullets":["**Principal Financial Group, System Test Lead (2007–2013):** designed risk-based test frameworks, automated script execution and resource plans.","**PTC | Cybage, Test Engineer (2005–2007):** built multi-OS functional verification and API-level automated testing infrastructure."],"related":[]}]},"skills":{"title":"What I work with.","groups":[{"name":"Product Management","items":["AI product strategy & roadmaps","Discovery through launch","Strategic fit & Cost of Delay prioritisation","Success metrics & KPIs","Go-to-market (GTM)","Senior stakeholder alignment"]},{"name":"AI & Product","items":["Agentic AI strategy & roadmaps","Multi-agent orchestration","Platform product management","AI evaluation & governance","Golden datasets & regression testing","Human-in-the-loop","LLMs & RAG","CXO-level evangelism"]},{"name":"Platform & Developer Experience","items":["API-first design","Developer experience","Internal developer portals","Tool use / action interfaces (MCP)","Event-driven architecture","Observability","Serverless","Microservices & DDD"]},{"name":"Cloud & Security","items":["Enterprise cloud platforms (AWS)","Cybersecurity architecture","Governance architecture","Risk & compliance","NIST AI RMF","EU AI Act","AI security posture"]},{"name":"Payments & Fintech","items":["Cross-border B2B payments","KYC & compliance platforms","Payments cost optimisation"]},{"name":"Certifications","items":["AWS Certified Solutions Architect","AWS Certified Security – Specialty","Machine Learning in Production (DeepLearning.AI)","Data Science & AI, IIM Kozhikode"]}]},"writing":{"title":"Writing & open-source builds","text":"Published **15+ articles on LinkedIn** on Agentic AI, enterprise product strategy and cloud security. I ship and open-source hands-on AI builds, each documented with problem framing, trade-offs and evaluation results."},"education":[{"mark":"IIMK","degree":"Professional Certificate, Data Science & AI","school":"Indian Institute of Management, Kozhikode · 2024"},{"mark":"SIU","degree":"MBA (IT)","school":"Symbiosis International University · 2003–2005"},{"mark":"BU","degree":"Bachelor of Computer Science","school":"Bangalore University · 2000–2003"}],"contact":{"title":"Let's build AI that earns trust.","text":"I'm interested in Director-level AI product leadership roles in enterprise security, payments and analytics, where the hard problems are trust, adoption and turning capability into outcomes."}},"products":{"title":"Product portfolio","subtitle":"Filter by the domain on the requisition. Each card leads with the outcome and the decision. Stack and GitHub stay inside the case.","overview":{"show":false,"eyebrow":"Portfolio at a glance","title":"From customer pain to shipped AI product"},"arenas":[{"id":"defence","label":"AI Defense Ecosystem","color":"#4338ca"},{"id":"agentic","label":"Agentic Platform","color":"#0f766e"},{"id":"applied","label":"Applied AI","color":"#be123c"}],"domains":[{"id":"security","label":"Security","color":"#4338ca"},{"id":"payments","label":"Payments","color":"#be123c"},{"id":"healthcare","label":"Healthcare","color":"#0f766e"},{"id":"trade","label":"Trade","color":"#a16207"}],"products":[{"id":"policy-foundry","name":"AI Policy Foundry","arena":"defence","domain":"security","kicker":"AI Defense Ecosystem · Prevent","icon":"shield","tagline":"Autonomous cloud-security policy from live threat intel and your own risk register.","summary":"Generates cloud-security policy from the organisation's own risk register. Audit-ready in minutes, not weeks.","headline":"Policy review cycles cut from 1–3 weeks to 30 minutes","evidence":"production","client":"BP","stack":["GPT-4 multi-agent","React + TypeScript","Node / Express","PostgreSQL · Redis"],"github":"https://github.com/mayukhg/ai-policy-foundry","demo":"","pain":"Cloud security policy is written by hand: 1–3 weeks per policy, 60–75% coverage. Providers ship new services faster than policy keeps up, so gaps (and risk) accumulate.","bet":"A multi-agent system that generates, validates and continuously updates policy from live threat intel **and** the organisation's own uploaded risk/control docs.","whyLabel":"Why AI is the right call","why":"Inputs are unstructured (threat feeds, regulations, risk registers) and the mapping is non-deterministic. Templates can't do that; it needs language understanding and reasoning. Grounding in the organisation's own documents lifts accuracy from ~65% to ~95%.","tradeoff":"Deprioritised multi-cloud breadth to first get per-clause traceability right. An auditor won't trust a policy they can't trace back to a specific control.","validated":"BP's cloud-security policy-management team. Their weeks-long manual cycles and creeping coverage gaps drove risk-register grounding + continuous auto-update.","outcomes":["Policy review cycles cut from 1–3 weeks to 30 minutes","95%+ policy accuracy and $2.4M annual savings","Roadmap: threat correlation, batch docs, OCR"],"note":""},{"id":"soc-portal","name":"AI SOC Portal","arena":"defence","domain":"security","kicker":"AI Defense Ecosystem · Detect & Respond","icon":"target","tagline":"Auditable, AI-native SOC triage and threat hunting. Every verdict can be replayed.","summary":"An AI-native SOC workspace where every machine verdict can be traced, evaluated and audited. Trust is a product requirement.","headline":"Mean Time to Triage cut by more than 60%","evidence":"production","client":"BP","stack":["LangChain / LangGraph","AWS Lambda (Python)","Pinecone","LangSmith + RAGAS"],"github":"https://github.com/mayukhg/ai-soc-portal","demo":"","pain":"Most “AI for SOC” just wires an LLM to the alert queue. But a Tier-1 analyst won't act on a verdict they can't interrogate, and a CISO won't sign off on a control they can't evidence. Trust, not capability, blocks adoption.","bet":"Agentic triage, threat hunting and incident response over live telemetry, built so every conclusion is replayable. ~Half the repo is reasoning, evaluation and audit infrastructure.","whyLabel":"Why AI is the right call","why":"Yes for triage, correlation and natural-language hunting, where LLM + RAG work well. But only when paired with an explainability, evaluation and audit layer. Raw AI alone is a non-starter in a regulated SOC.","tradeoff":"Spent the build on trust infrastructure over more raw detection features. In a regulated SOC, trust is what gates adoption.","validated":"Multiple interview rounds across all levels of BP's SOC team. Analysts won't act on a verdict they can't interrogate, so ~half the build is eval, explainability and audit.","outcomes":["Mean Time to Triage cut by more than 60%; executive reporting overhead ~50% lower","85%+ analyst action rate at RAGAS groundedness above 0.90","Roadmap: SIEM/EDR ingest"],"note":""},{"id":"ai-spm","name":"AI Security Posture Management (AI-SPM)","arena":"defence","domain":"security","kicker":"AI Defense Ecosystem · Protect","icon":"chip","tagline":"Posture management for your own AI/ML assets, drift and compliance evidence.","summary":"Governs and secures the organisation's own AI/ML assets across their lifecycle. Built with applied ML, not an LLM.","headline":"Sub-second threat blocking; drift detection across 6 data quality dimensions","evidence":"production","client":"BP","stack":["Python FastAPI","Istio mTLS","React","PostgreSQL"],"github":"https://github.com/mayukhg/ai-spm","demo":"","pain":"Enterprises ship AI into production, but models, datasets, pipelines and endpoints are an unmanaged attack surface. There is no inventory, no adversarial detection and no drift monitoring, under rising NIST AI RMF / EU AI Act / GDPR pressure.","bet":"Posture management for AI itself: inventory + lineage, adversarial-attack detection, data-quality & drift monitoring, and automated compliance evidence. One governed view for analyst, ML engineer, compliance and CISO.","whyLabel":"Why not an LLM","why":"Adversarial (FGSM/PGD/C&W), drift (KS, Chi-sq, Wasserstein) and anomaly (Isolation Forest/LOF/DBSCAN) problems are statistical, so the tooling is statistical too.","tradeoff":"Chose applied ML/statistics over an LLM. An LLM would add cost and risk, not accuracy.","validated":"BP's cloud-security team on how they plan to secure the org's AI initiatives. The absence of any AI-asset inventory scoped this to posture management for AI itself.","outcomes":["Sub-second threat blocking; drift detection across 6 data quality dimensions","Automated compliance evidence, Wiz-native","Roadmap: broader frameworks & integrations"],"note":""},{"id":"mcp","name":"Exploit Validation & Remediation MCP Server","arena":"agentic","domain":"security","kicker":"Agentic Platform Extension","icon":"wrench","tagline":"A governed MCP server for the validate → approve → remediate loop.","summary":"A governed MCP bridge that lets AI agents run the validate → approve → remediate → re-verify loop, with a human approving each fix.","headline":"Cuts mean-time-to-remediate","evidence":"pipeline","client":"Qualys","stack":["Python FastMCP","MCP tools / resources / prompts","Claude Desktop"],"github":"https://github.com/mayukhg/ai-agent-mcp","demo":"","pain":"Vulnerability management is a broken loop. An alert fires, but proving the CVE is exploitable, getting approval, patching and re-verifying happen manually across tools. And no one lets AI touch remediation without guardrails.","bet":"A standard MCP server so a conversational AI can safely drive a closed-loop workflow. Engineers reach it from their chat and IDE.","whyLabel":"Why AI is the right call","why":"AI handles the natural-language request and the orchestration, turning “verify this CVE and patch if real” into safe, stateful tool calls. Validation & remediation stay deterministic; approval stays human. AI orchestrates, it doesn't decide.","tradeoff":"Kept validation and remediation deterministic and left approval to a human. Deprioritised full autonomy so security teams can actually adopt it.","validated":"Direct Qualys customer feedback asking to stay flexible across their own and 3rd-party tooling. That drove an open, standard MCP design over a closed, one-off integration.","outcomes":["Extends the risk platform to safe AI agents","Cuts mean-time-to-remediate","Roadmap: live-API mode, deeper autonomy matrix"],"note":""},{"id":"copilot","name":"Unified Risk Copilot","arena":"agentic","domain":"security","kicker":"Agentic Platform Extension","icon":"grid","tagline":"Conversational risk triage across 8 security modules, fully audited.","summary":"One conversation that joins 8 security modules into a ranked, evidence-backed, auditable remediation plan.","headline":"Weekly risk report: hours → minutes","evidence":"pipeline","client":"Qualys","stack":["qualys-cli-mcp","Node full-stack","Module allow-listing","JSONL audit"],"github":"https://github.com/mayukhg/unified-risk-copilot","demo":"","pain":"Teams run 8+ modules (VM, WAS, PC, TotalCloud, Container, Cloud Agent, Patch, CSAM) in separate UIs. No single “what to fix first” view, the CISO's weekly report is a manual spreadsheet, and managers want data without write access.","bet":"A “Weekly Risk Copilot” on the official MCP server: an LLM joins all 8 modules into one ranked narrative, with allow-listing, read-only mode, audit logging and approval-gated remediation built in.","whyLabel":"Why AI is the right call","why":"Cross-domain correlation, natural-language querying and report writing suit an LLM: the join logic is fuzzy and the output is prose. Governance is deterministic guardrails; remediation is human-approved.","tradeoff":"Shipped read-only + approval-gated first. Deprioritised write/automation to earn trust before letting AI act across 8 modules.","validated":"The same Qualys customer signal (stay flexible across the stack) led to wrapping the official MCP server, not building yet another siloed console.","outcomes":["Weekly risk report: hours → minutes","Defensible, fully audited, safe self-service","Roadmap: live qualys-cli, more agent actions"],"note":""},{"id":"hscode","name":"HS Code Prediction API","arena":"applied","domain":"trade","kicker":"Applied AI · Trade & Customs","icon":"globe","tagline":"Customs classification with classic ML, not an LLM.","summary":"Predicts customs codes from a plain-text product description, using classic ML instead of an LLM.","headline":"Accurate landed cost at checkout; less manual work","evidence":"","client":"Pitney Bowes","stack":["FastAPI","scikit-learn TF-IDF + LR","Docker"],"github":"https://github.com/mayukhg/predict-hscode","demo":"","pain":"Customs classification (assigning HS codes) is manual, slow and error-prone. A wrong code means fines, shipment delays and compliance risk, and trade teams still look codes up by hand, item by item.","bet":"A production-shaped microservice that predicts an HS code from free text, with chapter / heading / subheading breakdown and confidence. Drops into a trade pipeline as a cheap-to-serve API.","whyLabel":"Why not an LLM","why":"This is a standard supervised text-classification task, so classic ML (TF-IDF + logistic regression) fits. It is lightweight, explainable and cheap. Matching model complexity to the problem is the product decision.","tradeoff":"Shipped classic ML at ~55% rather than chase an LLM. For this buyer, a cheap, explainable, deployable pipeline mattered more than top accuracy.","validated":"eBay's need to show an accurate total landed cost at checkout; validated with customs domain experts on how HS codes are really assigned.","outcomes":["Accurate landed cost at checkout; less manual work","Ship-ready, cheap-to-serve ML packaging","Roadmap: transformer models, batch predict, caching"],"note":""},{"id":"kyc","name":"KYC-as-a-Service","arena":"applied","domain":"payments","kicker":"Applied AI · Financial Services","icon":"bank","tagline":"Verifiable, privacy-preserving credit scoring, with AI on a blockchain.","summary":"Verifiable, privacy-preserving credit-risk scoring: AI wrapped in blockchain provenance and federated learning.","headline":"Adoptable AI scoring for regulated finance","evidence":"","client":"Western Union","stack":["XGBoost / LightGBM","Permissioned blockchain","Federated learning","OAuth2"],"github":"https://github.com/mayukhg/kyc-as-a-service","demo":"","pain":"Banks need real-time, auditable credit-risk scores, but regulators distrust black-box AI scoring. And institutions can't pool data to improve models without exposing customer PII.","bet":"A three-layer hybrid: blockchain as immutable source-of-truth & model provenance, off-chain AI for scoring, and a signed API. Federated learning lets institutions improve the model without sharing raw data.","whyLabel":"Why this kind of AI","why":"Credit scoring on tabular/behavioural features is supervised ML, so GBM, not an LLM. The hard part is making the AI verifiable and private; those are the barriers, not the maths.","tradeoff":"Invested in verifiability (blockchain) and privacy (federated learning) over model sophistication. Those were the real barriers to adoption.","validated":"Western Union customers couldn't get credit in a new country without history or documents; KYC requirements validated with multiple financial institutions.","outcomes":["Adoptable AI scoring for regulated finance","Multi-institution collaboration, GDPR-aware","Solves thin-file cold-start via shared learning"],"note":"Status: targeted for launch in select markets."},{"id":"ellyra-pulse","name":"Ellyra Pulse","arena":"applied","domain":"healthcare","kicker":"Applied AI · Healthcare","icon":"heart","tagline":"Safety-gated patient sentiment for a medical AI: PHI-safe, clinical trust first.","summary":"Safety-gated NPS and sentiment intelligence for a medical AI companion. Safety signals reach a clinician in minutes, not a weekly report.","headline":"Safety-flagged detractors: 15-min SLA vs. 24h, with automatic clinical on-call paging","evidence":"","client":"Ellyra Health","stack":["React 19 + TypeScript","TanStack Start","PostgreSQL","JWT + HMAC-signed ingest","PagerDuty webhook","Vitest"],"github":"https://github.com/mayukhg/ellyra-pulse","demo":"","pain":"One aggregate NPS hides three very different failures: a UI annoyance, a cold tone, or an AI answer that broke someone's trust in their own care. Verbatims routinely carry PHI, and a genuine safety miss (a misread decimal on a blood panel) sits in a weekly report instead of reaching a clinician in minutes.","bet":"A feedback pipeline where a clinical risk gate runs before any survey fires, PHI is redacted before storage or any model call, and aspect-level sentiment separates detractor volume from detractor severity. Safety signals page clinical on-call instead of becoming one more dashboard row.","whyLabel":"Why AI is the right call","why":"Medical verbatims are unstructured and multi-aspect: “accurate, but felt cold” is two signals. Aspect-based sentiment across clinical trust, tone, OCR quality and actionability surfaces the rare, trust-breaking failures a theme-frequency count buries. Safety routing stays deterministic: models add evidence, never gate a P0.","tradeoff":"Chose an auditable, rule-based safety gate over a smarter LLM classifier, and shipped schema, routing and dashboard before deeper analysis (SHAP drivers, root-cause quadrant). A clinician must be able to see exactly why a case was paged.","validated":"Ellyra's clinical and product teams. An NPS score that can't tell a UI gripe from a broken-trust safety miss, plus PHI in free-text feedback, drove the pre-survey risk gate and redact-before-storage design.","outcomes":["Safety-flagged detractors: 15-min SLA vs. 24h, with automatic clinical on-call paging","Targets: anxiety relief >75%, comprehension >85%, inaccuracy flags \u003c0.2%","Roadmap: medical NER redaction, live UI-to-API wiring, SHAP driver analysis"],"note":""}],"ecosystem":{"show":true,"eyebrow":"Spotlight: the platform","title":"The AI Defense Ecosystem.","subtitle":"Three products, one platform, covering the full lifecycle. AI both defends the enterprise and is something the enterprise must defend.","pillars":[{"phase":"Prevent","name":"AI Policy Foundry","text":"Generate & maintain cloud-security policy from live intel + the org's risk register."},{"phase":"Protect","name":"AI-SPM","text":"Governs the org's own AI/ML assets: adversarial defense, drift, compliance evidence."},{"phase":"Detect & Respond","name":"AI SOC Portal","text":"Auditable, AI-native triage, hunting & response over live security telemetry."}],"spine":"**One trust layer across all three.** Every AI decision is explainable, evaluated and logged. Gaps found in Detect feed back to Prevent; assets in Protect are watched by Detect.","evidence":"","opportunity":["AI-security spend is growing but split across point tools. No one owns the whole lifecycle.","Regulation (EU AI Act, NIST AI RMF) requires every enterprise to govern its AI. That buyer need is mandatory and growing.","“AI as defender” and “AI as attack surface” treated as one problem. Few competitors frame it this way."],"differentiator":["Full-lifecycle coverage (prevent → protect → detect & respond) vs. single-point competitors.","Trust as a first-class product layer, grounded in the customer's own risk register and AI assets.","Agentic actions are governed and approved by a human, never an autonomous black box. Land in one pillar, expand across the loop."],"metrics":[{"value":"30 min","label":"policy review cycle","caption":"down from 1–3 weeks (AI Policy Foundry)"},{"value":"$2.4M","label":"annual savings","caption":"from AI policy automation"},{"value":">60%","label":"faster SOC triage","caption":"Mean Time to Triage (AI SOC Portal)"},{"value":"$10M+","label":"risk exposure mitigated","caption":"across 15+ business units"}],"note":""}}};</script>
+<script>
+/* Mayukh Ghosh — portfolio renderer + interactions (vanilla JS, no dependencies)
+ *
+ * All copy lives in content/profile.json and content/products.json and is edited
+ * through /admin. This file only turns that data into markup.
+ * Text fields support **bold** and [link text](https://url) — nothing else.
+ */
+(function () {
+  'use strict';
+
+  var DRAFT_KEY = 'portfolio-admin-draft';
+
+  /* ---------- helpers ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function safeUrl(u) {
+    u = String(u || '').trim();
+    return /^(https?:|mailto:|#|\/|[\w.\-]+(\/|$|\.))/i.test(u) && !/^javascript:/i.test(u) ? u : '#';
+  }
+  // Minimal, safe inline markup: escape first, then **bold** and [text](url).
+  function md(s) {
+    return esc(s)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_, t, u) {
+        var ext = /^https?:/i.test(u);
+        return '<a href="' + esc(safeUrl(u.replace(/&amp;/g, '&'))) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' + t + '</a>';
+      });
+  }
+  function arr(a) { return Array.isArray(a) ? a.filter(function (x) { return x !== '' && x != null; }) : []; }
+  function slot(name) { return document.querySelector('[data-slot="' + name + '"]'); }
+  function set(name, html) { var el = slot(name); if (el) el.innerHTML = html; return el; }
+  function icon(id) { return '<svg aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+  function ext(href) { return /^https?:/i.test(href) ? ' target="_blank" rel="noopener"' : ''; }
+  function slug(s, i) { return (String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'item') + (i != null ? '-' + i : ''); }
+  // Inline custom property for a content-supplied colour (hex only), e.g. --arena or --track.
+  function colorVar(name, c) { return /^#[0-9a-f]{3,8}$/i.test(c || '') ? ' style="' + name + ':' + c + '"' : ''; }
+  function docLink(href, cls, label, extra) {
+    return '<a class="' + cls + '" href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (extra || '') + '>' + icon('i-file') + label + '</a>';
+  }
+
+  // How much a figure can be trusted: shown as a badge next to outcomes and metrics.
+  var EVIDENCE = {
+    modelled: ['Modelled estimate', 'Estimated on the public build; production figures are under NDA'],
+    production: ['In production', 'Measured in production'],
+    pipeline: ['Pipeline', 'Pipeline or pilots, not booked revenue']
+  };
+  function evBadge(kind) {
+    var e = EVIDENCE[kind];
+    return e ? '<span class="ev ev-' + kind + '" title="' + esc(e[1]) + '">' + esc(e[0]) + '</span>' : '';
+  }
+
+  /* ---------- data loading ---------- */
+  function loadJSON(path) {
+    return fetch(path, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error(path + ' → HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function loadContent() {
+    if (window.PORTFOLIO_CONTENT && window.PORTFOLIO_CONTENT.profile && window.PORTFOLIO_CONTENT.products) {
+      return Promise.resolve({ profile: window.PORTFOLIO_CONTENT.profile, products: window.PORTFOLIO_CONTENT.products, preview: false });
+    }
+    var preview = /[?&]preview=1\b/.test(location.search);
+    if (preview) {
+      try {
+        var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+        if (d && d.profile && d.products) return Promise.resolve({ profile: d.profile, products: d.products, preview: true });
+      } catch (e) { /* fall through to published content */ }
+    }
+    return Promise.all([loadJSON('content/profile.json'), loadJSON('content/products.json')])
+      .then(function (r) { return { profile: r[0], products: r[1], preview: false }; });
+  }
+
+  /* ---------- renderers ---------- */
+  function renderHero(p, prodCount) {
+    var person = p.person || {}, links = p.links || {};
+    var name = String(person.name || '').trim();
+    set('badge', esc(person.badge));
+    slot('badge').closest('.badge').hidden = !person.badge;
+    set('name', esc(name));
+    set('role', '<b>' + esc(person.headline) + '</b>' + (arr(person.tags).length
+      ? ' <span class="grp">' + arr(person.tags).map(function (t) { return '<span class="sep" aria-hidden="true"></span>' + esc(t); }).join('') + '</span>' : ''));
+    set('lede', md(person.lede));
+
+    // Amber = documents (résumé, portfolio) everywhere on the page, so recruiters can spot them at a glance.
+    var cta = '';
+    if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View résumé') +
+      '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download résumé (PDF)" title="Download résumé (PDF)">' + icon('i-doc') + '</a></span>';
+    if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio PDF');
+    set('hero-cta', cta);
+    set('cta-note', links.resume && links.resumeUpdated ? 'Résumé updated ' + esc(links.resumeUpdated) + ' · PDF' : '').hidden = !(links.resume && links.resumeUpdated);
+    set('nav-resume', links.resume ? docLink(links.resume, 'btn btn-doc nav-resume', 'Résumé') : '').hidden = !links.resume;
+
+    var portrait = slot('portrait');
+    if (person.photo) {
+      portrait.hidden = false;
+      portrait.innerHTML = '<img class="portrait" src="' + esc(safeUrl(person.photo)) + '" width="640" height="640" alt="' + esc(person.photoAlt || name) + '" fetchpriority="high">' +
+        (person.location || person.portraitCaption ? '<div class="portrait-tag"><span>' + esc(person.location) + '<small>' + esc(person.portraitCaption) + '</small></span></div>' : '');
+    } else { portrait.hidden = true; }
+
+    var stats = arr(p.stats);
+    var st = set('stats', stats.map(function (s) {
+      var tags = '';
+      if (s.company) tags += '<span class="tag-co">' + esc(s.company) + '</span>';
+      if (s.statusLabel) tags += '<span class="tag-st tag-' + esc(s.status || 'direct') + '">' + esc(s.statusLabel) + '</span>';
+      return '<div class="stat"><dt class="sr-only">' + esc(s.label) + '</dt><dd><span class="n">' + esc(s.value) + '</span>' +
+        (tags ? '<span class="stat-tags">' + tags + '</span>' : '') +
+        '<span class="l">' + esc(s.label) + '</span></dd></div>';
+    }).join(''));
+    st.hidden = !stats.length;
+    st.style.setProperty('--cols', Math.min(stats.length || 1, 4));
+  }
+
+  function renderFit(p) {
+    var fit = p.fit || {}, el = slot('fit');
+    if (!el) return;
+    var domains = arr(fit.domains);
+    if (!fit.level && !domains.length) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    var chips = (fit.level ? '<span class="fit-chip level">' + esc(fit.level) + '</span>' : '') +
+      domains.map(function (d) {
+        return '<span class="fit-chip" data-domain="' + esc(d.id) + '">' + esc(d.label) + '</span>';
+      }).join('');
+    var meta = [fit.mode, (p.person || {}).location, fit.notice].filter(Boolean)
+      .map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="fit-dot" aria-hidden="true"></span>');
+    el.innerHTML = '<div class="fit-in">' +
+      (fit.open ? '<span class="fit-live"><i aria-hidden="true"></i>' + esc(fit.open) + '</span>' : '') +
+      chips +
+      (meta ? '<span class="fit-meta">' + meta + '</span>' : '') +
+      '</div>';
+  }
+
+  function renderSnapshot(p) {
+    var sn = p.snapshot || {}, groups = arr(sn.groups);
+    document.getElementById('snapshot').hidden = !groups.length;
+    set('snapshot-title', esc(sn.title || 'At a glance'));
+    set('snapshot', groups.map(function (g) {
+      var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
+      return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
+        return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
+      }).join('') + '</dl></div>';
+    }).join(''));
+  }
+
+  function renderAbout(p) {
+    var a = p.about || {};
+    set('about-title', esc(a.title));
+    set('about-body', arr(a.paragraphs).map(function (t) { return '<p>' + md(t) + '</p>'; }).join(''));
+    set('facts', arr(a.facts).map(function (f) {
+      return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
+    }).join(''));
+  }
+
+  function renderApproach(p) {
+    var a = p.approach || {};
+    set('approach-title', esc(a.title));
+    set('approach-sub', esc(a.subtitle));
+    set('steps', arr(a.steps).map(function (s) { return '<li class="step"><h3>' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></li>'; }).join(''));
+    slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 6));
+    set('throughline', md(a.throughline)).hidden = !a.throughline;
+    set('principles', arr(a.principles).map(function (s) { return '<div class="principle"><h3>' + esc(s.title) + '</h3><p>' + md(s.text) + '</p></div>'; }).join(''));
+  }
+
+  function domainFilters(d) {
+    var domains = arr(d.domains), products = arr(d.products), counts = {};
+    products.forEach(function (p) { if (p.domain) counts[p.domain] = (counts[p.domain] || 0) + 1; });
+    var used = domains.filter(function (a) { return counts[a.id]; });
+    if (used.length < 2) return '';
+    return '<button type="button" class="chipbtn" data-f="all" aria-pressed="true">All <span class="ct">' + products.length + '</span></button>' +
+      used.map(function (a) {
+        return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>';
+      }).join('');
+  }
+
+  function renderProducts(d) {
+    var arenas = arr(d.arenas), products = arr(d.products);
+    var arenaById = {}, domainById = {};
+    arenas.forEach(function (a) { arenaById[a.id] = a; });
+    arr(d.domains).forEach(function (a) { domainById[a.id] = a; });
+    set('products-title', esc(d.title));
+    set('products-sub', esc(d.subtitle));
+    var bar = domainFilters(d);
+    set('filters', bar);
+    var expFilters = slot('exp-filters');
+    if (expFilters) expFilters.innerHTML = bar;
+
+    set('products', products.map(function (p) {
+      var id = slug(p.id || p.name), a = arenaById[p.arena] || {}, dom = domainById[p.domain] || {};
+      var color = colorVar('--arena', dom.color || a.color);
+      var headline = p.headline || arr(p.outcomes)[0];
+      var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+      var links = '';
+      if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
+      if (p.demo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
+      var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
+        .filter(function (x) { return x[1]; })
+        .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
+      var decide = '';
+      var n = 3;
+      if (p.tradeoff) decide += '<div style="--i:' + n++ + '"><h4>Key trade-off</h4><p>' + md(p.tradeoff) + '</p></div>';
+      if (p.validated) decide += '<div style="--i:' + n++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
+      if (arr(p.outcomes).length) decide += '<div style="--i:' + n++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
+      var face = (p.tradeoff ? '<p class="acc-sum"><span class="acc-decision-l">Decision.</span> ' + md(p.tradeoff) + '</p>' : '<p class="acc-sum">' + md(p.summary) + '</p>');
+      return '<article class="acc" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
+        '<div class="acc-face">' +
+          '<div class="acc-main">' +
+            '<span class="kicker">' + esc(p.kicker || dom.label || a.label || '') + '</span>' +
+            '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
+            face +
+            '<div class="acc-links">' +
+              '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
+                '<span class="t-labels"><span class="t-open">Read the case</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
+                '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          (headline ? '<div class="acc-result"><span class="acc-outcome-l">Outcome</span><p class="acc-outcome"><span class="acc-outcome-t">' + md(headline) + '</span>' + evBadge(p.evidence) + '</p>' +
+            (p.client ? '<div class="acc-meta"><span class="client">' + esc(p.client) + '</span></div>' : '') + '</div>' : '') +
+        '</div>' +
+        '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details" inert><div class="acc-inner">' +
+          (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
+          ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
+          (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
+          (decide ? '<div class="decide">' + decide + '</div>' : '') +
+          (p.note ? '<p class="note">' + md(p.note) + '</p>' : '') +
+        '</div></div>' +
+      '</article>';
+    }).join(''));
+  }
+
+  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers', 'heart'];
+  function renderGlance(d) {
+    var o = d.overview || {}, products = arr(d.products), el = slot('glance');
+    if (o.show === false || !products.length) { el.hidden = true; el.innerHTML = ''; return; }
+    var arenaById = {};
+    arr(d.arenas).forEach(function (a) { arenaById[a.id] = a; });
+    el.hidden = false;
+    el.innerHTML =
+      (o.eyebrow ? '<p class="eyebrow">' + esc(o.eyebrow) + '</p>' : '') +
+      (o.title ? '<h3 class="glance-title">' + esc(o.title) + '</h3>' : '') +
+      '<ul class="glance-grid">' + products.map(function (p, i) {
+        var id = slug(p.id || p.name);
+        var icon = GLANCE_ICONS.indexOf(p.icon) > -1 ? p.icon : GLANCE_ICONS[i % GLANCE_ICONS.length];
+        var a = arenaById[p.arena] || {}, arena = a.label || '';
+        return '<li><a class="glance-card" href="#p-' + esc(id) + '" data-product="' + esc(id) + '"' + colorVar('--arena', a.color) + '>' +
+          '<span class="g-icon" aria-hidden="true"><svg><use href="#g-' + icon + '"/></svg></span>' +
+          (arena ? '<span class="g-arena">' + esc(arena) + '</span>' : '') +
+          '<h4>' + esc(p.name) + '</h4>' +
+          '<p>' + md(p.tagline || p.summary) + '</p>' +
+          '<span class="g-more" aria-hidden="true">View case study →</span>' +
+        '</a></li>';
+      }).join('') + '</ul>';
+  }
+
+  function renderEcosystem(d) {
+    var e = d.ecosystem || {}, el = slot('ecosystem');
+    if (!e.show) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    function list(title, items) {
+      return arr(items).length ? '<div class="eco-col"><h3>' + esc(title) + '</h3><ul>' + arr(items).map(function (t) { return '<li>' + md(t) + '</li>'; }).join('') + '</ul></div>' : '';
+    }
+    el.innerHTML = '<div class="wrap">' +
+      '<p class="eyebrow">' + esc(e.eyebrow || 'Spotlight') + '</p>' +
+      '<h2 class="s-title">' + esc(e.title) + '</h2>' +
+      '<p class="s-sub">' + esc(e.subtitle) + '</p>' +
+      '<div class="pillars">' + arr(e.pillars).map(function (x) {
+        return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
+      }).join('') + '</div>' +
+      (e.spine ? '<p class="spine">' + md(e.spine) + '</p>' : '') +
+      '<div class="eco-cols">' + list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) + '</div>' +
+      (EVIDENCE[e.evidence] && arr(e.metrics).length ? '<p class="metrics-ev">' + evBadge(e.evidence) + '</p>' : '') +
+      '<div class="metrics">' + arr(e.metrics).map(function (m) {
+        return '<div class="metric"><span class="n">' + esc(m.value) + '</span><span class="l">' + esc(m.label) + '</span><span class="c">' + esc(m.caption) + '</span></div>';
+      }).join('') + '</div>' +
+      (e.note ? '<p class="note">' + md(e.note) + '</p>' : '') +
+      '</div>';
+  }
+
+  // Experience as a colour-coded timeline: every role's headline is visible at once (for scanning);
+  // the full achievements expand per role. The first (current) role starts open.
+  function renderExperience(p, productIndex, arenaById) {
+    var x = p.experience || {}, roles = arr(x.roles), trackById = {};
+    arr(x.tracks).forEach(function (t) { trackById[t.id] = t; });
+    set('exp-title', esc(x.title));
+    set('exp-sub', esc(x.subtitle));
+    var used = arr(x.tracks).filter(function (t) { return roles.some(function (r) { return r.track === t.id; }); });
+    set('exp-legend', used.map(function (t) {
+      return '<li' + colorVar('--track', t.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(t.label) + '</li>';
+    }).join('')).hidden = !used.length;
+    set('exp-timeline', roles.map(function (r, i) {
+      var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = i === 0;
+      var bullets = arr(r.bullets);
+      var rel = arr(r.related).map(function (id) {
+        var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
+        return prod ? '<a href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(prod.name) + '</a>' : '';
+      }).filter(Boolean);
+      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
+        '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
+        '<div class="tl-card">' +
+          (t.label ? '<span class="tl-track">' + esc(t.label) + '</span>' : '') +
+          '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
+          (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
+          (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
+          (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
+          (r.scope ? '<p class="scope-row"><span class="scope">' + esc(r.scope) + '</span></p>' : '') +
+          (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
+          (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join('') + '</p>' : '') +
+          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="' + open + '" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
+            '<span class="tl-label">' + (open ? 'Hide achievements' : 'Show ' + bullets.length + ' achievements') + '</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button>' +
+            '<div class="tl-body" id="tb-' + k + '"' + (open ? '' : ' inert') + '><div class="tl-inner"><ul class="exp-list">' +
+            bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
+        '</div>' +
+      '</li>';
+    }).join(''));
+  }
+
+  function renderRest(p) {
+    var s = p.skills || {}, links = p.links || {};
+    set('skills-title', esc(s.title));
+    // Top skills first; the rest sit behind a "+N more" toggle so each group stays scannable.
+    var TOP = 6;
+    set('skills', arr(s.groups).map(function (g, gi) {
+      var items = arr(g.items), extra = items.length - TOP;
+      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills" id="sk-' + gi + '">' + items.map(function (t, i) {
+        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + esc(t) + '</li>';
+      }).join('') + '</ul>' +
+      (extra > 0 ? '<button type="button" class="pill-more" aria-expanded="false" aria-controls="sk-' + gi + '" data-more="+' + extra + ' more">+' + extra + ' more</button>' : '') + '</div>';
+    }).join(''));
+
+    var w = p.writing || {};
+    var wl = '';
+    if (links.linkedin) wl += '<a class="btn" href="' + esc(safeUrl(links.linkedin)) + '" target="_blank" rel="noopener">' + icon('i-in') + 'Read on LinkedIn</a>';
+    if (links.github) wl += '<a class="btn" href="' + esc(safeUrl(links.github)) + '" target="_blank" rel="noopener">' + icon('i-gh') + 'Builds on GitHub</a>';
+    set('writing', '<h3>' + esc(w.title) + '</h3><p>' + md(w.text) + '</p>' + (wl ? '<div class="hero-cta card-cta">' + wl + '</div>' : ''));
+    set('education', arr(p.education).map(function (e) {
+      return '<li class="edu-item"><span class="edu-mark" aria-hidden="true">' + esc(e.mark) + '</span><div><h4>' + esc(e.degree) + '</h4><p>' + esc(e.school) + '</p></div></li>';
+    }).join(''));
+
+    var c = p.contact || {};
+    set('contact-title', esc(c.title));
+    set('contact-text', md(c.text));
+    var cl = '';
+    if (links.email) cl += '<a class="btn btn-light" href="mailto:' + esc(links.email) + '">' + icon('i-mail') + esc(links.email) + '</a>';
+    if (links.linkedin) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.linkedin)) + '" target="_blank" rel="noopener">' + icon('i-in') + 'LinkedIn</a>';
+    if (links.github) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.github)) + '" target="_blank" rel="noopener">' + icon('i-gh') + 'GitHub</a>';
+    if (links.resume) cl += docLink(links.resume, 'btn btn-doc', 'Résumé (PDF)');
+    if (links.portfolio) cl += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio (PDF)');
+    set('contact-links', cl);
+    set('foot-name', esc((p.person || {}).name) + ((p.person || {}).location ? ' · ' + esc(p.person.location) : ''));
+
+    var m = p.meta || {};
+    if (m.title) document.title = m.title;
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc && m.description) desc.setAttribute('content', m.description);
+  }
+
+  function render(c) {
+    var productIndex = {}, arenaById = {};
+    arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
+    arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
+    renderHero(c.profile, arr(c.products.products).length);
+    renderFit(c.profile);
+    renderSnapshot(c.profile);
+    renderAbout(c.profile);
+    renderApproach(c.profile);
+    renderGlance(c.products);
+    renderProducts(c.products);
+    renderEcosystem(c.products);
+    renderExperience(c.profile, productIndex, arenaById);
+    renderRest(c.profile);
+    // Reveal-on-scroll targets
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row')
+      .forEach(function (el) { el.classList.add('rv'); });
+    if (c.preview) {
+      var bar = document.createElement('div');
+      bar.className = 'preview-bar';
+      bar.setAttribute('role', 'status');
+      bar.innerHTML = 'Preview of unpublished draft <a href="./">View live site</a>';
+      document.body.appendChild(bar);
+    }
+  }
+
+  /* ---------- interactions ---------- */
+  function wire() {
+    var nav = document.getElementById('nav');
+    // Product cards: one real toggle button per card (keyboard + screen readers); the rest of the
+    // card surface is a mouse/touch shortcut. Height animates in CSS (grid rows 0fr → 1fr).
+    function setAcc(acc, open) {
+      var btn = acc.querySelector('.acc-toggle'), body = acc.querySelector('.acc-body');
+      acc.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.querySelector('.t-open').setAttribute('aria-hidden', open ? 'true' : 'false');
+      btn.querySelector('.t-close').setAttribute('aria-hidden', open ? 'false' : 'true');
+      if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
+    }
+    document.querySelectorAll('.acc').forEach(function (acc) {
+      acc.querySelector('.acc-toggle').addEventListener('click', function (e) {
+        e.stopPropagation();
+        setAcc(acc, !acc.classList.contains('open'));
+      });
+      acc.addEventListener('click', function (e) {
+        if (e.target.closest('a, button, .acc-body')) return;          // links, buttons and the open content keep their own behaviour
+        if (String(window.getSelection && window.getSelection()).length) return; // don't toggle while selecting text
+        setAcc(acc, !acc.classList.contains('open'));
+      });
+    });
+    // One-time hint: the first card's button pulses gently the first time it scrolls into view.
+    var firstToggle = document.querySelector('.acc .acc-toggle');
+    var seenHint = false;
+    try { seenHint = localStorage.getItem('portfolio-explore-hint') === '1'; } catch (e) { /* storage unavailable */ }
+    if (firstToggle && !seenHint && 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var hio = new IntersectionObserver(function (en) {
+        if (!en[0].isIntersecting) return;
+        hio.disconnect();
+        setTimeout(function () { firstToggle.classList.add('hint'); }, 500);
+        try { localStorage.setItem('portfolio-explore-hint', '1'); } catch (e) { /* ignore */ }
+      }, { threshold: 1 });
+      hio.observe(firstToggle);
+    }
+
+    var chips = document.querySelectorAll('.chipbtn');
+    function applyFilter(f) {
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.f === f ? 'true' : 'false'); });
+      document.querySelectorAll('#product-list .acc').forEach(function (card) {
+        card.hidden = !(f === 'all' || card.dataset.domain === f);
+      });
+      document.querySelectorAll('.tl-item').forEach(function (item) {
+        var domains = (item.dataset.domains || '').split(/\s+/).filter(Boolean);
+        item.hidden = !(f === 'all' || domains.indexOf(f) !== -1);
+      });
+    }
+    chips.forEach(function (c) { c.addEventListener('click', function () { applyFilter(c.dataset.f); }); });
+
+    function openProduct(id) {
+      var card = document.getElementById(id);
+      if (!card || !card.classList.contains('acc')) return false;
+      if (card.hidden) applyFilter('all');
+      card.classList.add('in');
+      setAcc(card, true);
+      // offsetTop ignores the reveal animation's transform, so the card lands exactly below the sticky nav.
+      var y = 0, el = card;
+      while (el) { y += el.offsetTop; el = el.offsetParent; }
+      window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
+      var btn = card.querySelector('.acc-toggle');
+      if (btn) btn.focus({ preventScroll: true });
+      return true;
+    }
+    function openFromHash() {
+      var id = decodeURIComponent(location.hash.slice(1));
+      if (/^p-/.test(id)) openProduct(id);
+    }
+    window.addEventListener('hashchange', openFromHash);
+    // Summary cards: open the product even when its hash is already in the URL.
+    document.querySelectorAll('.glance-card').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = 'p-' + a.dataset.product;
+        if (openProduct(id)) {
+          e.preventDefault();
+          if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+        }
+      });
+    });
+
+    // Experience timeline: each role's achievements expand in place (height animates in CSS).
+    document.querySelectorAll('.tl-toggle').forEach(function (btn) {
+      var item = btn.closest('.tl-item'), body = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.addEventListener('click', function () {
+        var open = !item.classList.contains('open');
+        item.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.querySelector('.tl-label').textContent = open ? 'Hide achievements' : 'Show ' + btn.dataset.n + ' achievements';
+        if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
+      });
+    });
+
+    // Skills: "+N more" reveals the rest of a group.
+    document.querySelectorAll('.pill-more').forEach(function (btn) {
+      var list = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') !== 'true';
+        list.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.textContent = open ? 'Show fewer' : btn.dataset.more;
+      });
+    });
+
+    var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
+    var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
+    var navMap = { ecosystem: 'products', education: 'skills' };
+    function onScroll() {
+      nav.classList.toggle('scrolled', window.scrollY > 12);
+      var pos = window.scrollY + 120, cur = '';
+      secs.forEach(function (s) { if (s.offsetTop <= pos) cur = s.id; });
+      cur = navMap[cur] || cur;
+      links.forEach(function (l) {
+        var on = l.getAttribute('href') === '#' + cur;
+        l.classList.toggle('active', on);
+        if (on) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    var burger = document.getElementById('burger'), navlinks = document.getElementById('navlinks');
+    function setMenu(open) {
+      navlinks.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    burger.addEventListener('click', function () { setMenu(!navlinks.classList.contains('open')); });
+    navlinks.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navlinks.classList.contains('open')) { setMenu(false); burger.focus(); }
+    });
+
+    var rv = document.querySelectorAll('.rv');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+      rv.forEach(function (el) { io.observe(el); });
+    } else {
+      rv.forEach(function (el) { el.classList.add('in'); });
+    }
+
+    var y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+
+    openFromHash();
+    if (location.hash && !/^#p-/.test(location.hash)) {
+      var t = document.getElementById(location.hash.slice(1));
+      if (t) t.scrollIntoView();
+    }
+  }
+
+  var main = document.getElementById('main');
+  loadContent().then(function (c) {
+    render(c);
+    wire();
+    main.removeAttribute('aria-busy');
+    document.documentElement.classList.add('ready');
+  }).catch(function (err) {
+    console.error('Portfolio content failed to load:', err);
+    main.removeAttribute('aria-busy');
+    document.querySelectorAll('main > header, main > section').forEach(function (s) { s.hidden = true; });
+    document.getElementById('load-error').hidden = false;
+  });
+})();
+
+</script>
+</body>
+</html>

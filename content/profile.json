@@ -25,87 +25,80 @@
     "resumeUpdated": "Sep 2026",
     "portfolio": "assets/portfolio.pdf"
   },
+  "fit": {
+    "open": "Open to",
+    "level": "Director of Product",
+    "domains": [
+      { "id": "security", "label": "Security" },
+      { "id": "payments", "label": "Payments" },
+      { "id": "analytics", "label": "Analytics" }
+    ],
+    "mode": "Remote / Hybrid",
+    "notice": "30-day notice"
+  },
   "stats": [
     {
       "value": "3 PMs",
-      "label": "led & coached at Qualys; 25-person team at BP"
+      "label": "Team led and coached now",
+      "company": "Qualys",
+      "status": "direct",
+      "statusLabel": "Direct"
     },
     {
       "value": "$1.5M",
-      "label": "POC pipeline for Qualys Agentic AI"
+      "label": "POC pipeline, not booked revenue",
+      "company": "Qualys",
+      "status": "pipeline",
+      "statusLabel": "Pipeline"
     },
     {
       "value": "$2.4M",
-      "label": "annual savings from AI policy automation"
+      "label": "Annual savings, policy automation",
+      "company": "BP",
+      "status": "production",
+      "statusLabel": "In production"
     },
     {
       "value": "15+",
-      "label": "enterprise pilots for Qualys Agentic AI in two quarters"
+      "label": "Enterprise pilots in two quarters",
+      "company": "Qualys",
+      "status": "pipeline",
+      "statusLabel": "Pilots"
     }
   ],
   "snapshot": {
-    "title": "The 60-second snapshot",
+    "title": "The 60-second fit",
     "groups": [
       {
         "name": "Role fit",
         "tone": "fit",
         "items": [
-          {
-            "label": "Current role",
-            "value": "Director of Product Management, Qualys: took the Agentic AI suite from pilots to GA"
-          },
-          {
-            "label": "Looking for",
-            "value": "Director-level AI product roles: GenAI & agentic products in security, payments or analytics"
-          },
-          {
-            "label": "Domains",
-            "value": "Agentic & GenAI · Enterprise security · Payments · Healthcare · B2B & B2C"
-          },
-          {
-            "label": "Edge",
-            "value": "Architect-turned-product leader: prototypes to de-risk bets; responsible AI (NIST, EU AI Act) built in"
-          }
+          { "label": "Now", "value": "Director of PM, Qualys" },
+          { "label": "Open to", "value": "Director, AI product" },
+          { "label": "Domains", "value": "Security · Payments · Analytics · Healthcare" },
+          { "label": "Markets", "value": "B2B enterprise and B2C" },
+          { "label": "Edge", "value": "Architect who still prototypes. NIST and EU AI Act built in." }
         ]
       },
       {
-        "name": "Leadership & impact",
+        "name": "Proof",
         "tone": "impact",
         "items": [
-          {
-            "label": "Track record",
-            "value": "15+ enterprise pilots, 40% converted to paid POCs, shipped to GA"
-          },
-          {
-            "label": "Teams led",
-            "value": "3 PMs at Qualys; 25-person product team at BP"
-          },
-          {
-            "label": "Business impact",
-            "value": "**$2M+** C-suite investment won; **$2.4M** annual savings; **$1.5M** POC pipeline"
-          }
+          { "label": "Savings", "value": "**$2.4M** / year · BP · In production" },
+          { "label": "Pipeline", "value": "**$1.5M** POC · Qualys · Pipeline" },
+          { "label": "Traction", "value": "15+ pilots, 40% became paid POCs" },
+          { "label": "Investment", "value": "**$2M+** won from the C-suite at BP" },
+          { "label": "Scope", "value": "3 PMs direct · 25 people matrix at BP" }
         ]
       },
       {
         "name": "Logistics",
         "tone": "logistics",
         "items": [
-          {
-            "label": "Based in",
-            "value": "Pune, India"
-          },
-          {
-            "label": "Work mode",
-            "value": "Remote / Hybrid"
-          },
-          {
-            "label": "Notice period",
-            "value": "30 days (negotiable)"
-          },
-          {
-            "label": "Documents",
-            "value": "[Résumé (PDF)](resume.pdf) · [Portfolio (PDF)](assets/portfolio.pdf)"
-          }
+          { "label": "Based", "value": "Pune, India" },
+          { "label": "Mode", "value": "Remote / Hybrid" },
+          { "label": "Notice", "value": "30 days, negotiable" },
+          { "label": "Documents", "value": "[Résumé PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf)" }
         ]
       }
     ]
@@ -198,8 +191,8 @@
     ]
   },
   "experience": {
-    "title": "Two decades behind the work.",
-    "subtitle": "From test engineering to software architecture, cloud engineering leadership and product. Each step added depth I now use in AI platform decisions.",
+    "title": "Experience",
+    "subtitle": "The Director seat is eight months. The four and a half years at BP are the depth behind it. Scope is marked direct, matrix, or part-time.",
     "tracks": [
       {
         "id": "product",
@@ -226,6 +219,9 @@
         "company": "Qualys",
         "org": "Enterprise Cybersecurity · Agentic AI · Pune",
         "dates": "Feb 2026 – Present",
+        "duration": "8 months",
+        "scope": "Direct · 3 PMs",
+        "domains": ["security"],
         "summary": "Leading 3 PMs taking the Agentic AI security suite from pilots to general availability: multi-agent orchestration, tool use and evaluation.",
         "metrics": [
           "15+ enterprise pilots",
@@ -255,7 +251,10 @@
         "company": "Independent",
         "org": "AI Product & Strategy · Part-time advisory · B2B & B2C · Remote",
         "dates": "Jul 2024 – Present",
-        "summary": "Shipped a B2C healthtech conversational AI chatbot alongside part-time B2B AI advisory for early-stage founders.",
+        "duration": "2+ years",
+        "scope": "Part-time",
+        "domains": ["healthcare"],
+        "summary": "Part-time. Shipped a B2C healthtech conversational AI chatbot alongside B2B AI advisory for early-stage founders.",
         "metrics": [
           "3+ 0→1 in <4 months",
           "+24% engagement",
@@ -281,6 +280,9 @@
         "company": "BP",
         "org": "Global GenAI & Cloud Security · Pune",
         "dates": "Jul 2021 – Jan 2026",
+        "duration": "4.5 years",
+        "scope": "Matrix · 25 people",
+        "domains": ["security"],
         "summary": "Product owner for enterprise GenAI and AI security, run as an internal platform serving 15+ global business units.",
         "metrics": [
           "$2M+ AI investment",
@@ -310,6 +312,9 @@
         "company": "Amdocs",
         "org": "Cloud Modernization · Pune",
         "dates": "Jan 2020 – Jul 2021",
+        "duration": "1.5 years",
+        "scope": "",
+        "domains": [],
         "summary": "Secured multi-million dollar contracts through technical RFPs and built the Cloud Transformation CoE.",
         "metrics": [
           "Multi-million $ contracts",
@@ -332,6 +337,9 @@
         "company": "Western Union",
         "org": "Western Union Business Solutions · Pune",
         "dates": "Jan 2018 – Jan 2020",
+        "duration": "2 years",
+        "scope": "",
+        "domains": ["payments"],
         "summary": "Launched NLP voice payments and cut infrastructure costs 70% via a serverless, event-driven re-architecture.",
         "metrics": [
           "−70% infra cost",
@@ -355,6 +363,9 @@
         "company": "Pitney Bowes",
         "org": "Global e-commerce & shipping · Pune",
         "dates": "Dec 2013 – Jan 2018",
+        "duration": "4 years",
+        "scope": "",
+        "domains": ["trade"],
         "summary": "Cut engineering onboarding time 20% via a microservices migration.",
         "metrics": [
           "20% faster onboarding",
@@ -376,6 +387,9 @@
         "company": "",
         "org": "Principal Financial Group · PTC | Cybage",
         "dates": "2005 – 2013",
+        "duration": "8 years",
+        "scope": "",
+        "domains": [],
         "summary": "The rigour that now shapes how I evaluate AI: risk-based testing, automation and API-level verification.",
         "metrics": [],
         "bullets": [
