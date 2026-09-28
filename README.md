@@ -2,9 +2,12 @@
 
 A fast, accessible, single-page portfolio for **Mayukh Ghosh**, Director of Product Management (Agentic AI & Cybersecurity). It covers:
 
+- a "60-second snapshot" for recruiters, with the résumé and portfolio one click away from anywhere on the page
 - seven AI product case studies
 - the AI Defence Ecosystem platform story
-- two decades of experience
+- two decades of experience on a colour-coded career timeline
+
+**Colour coding.** Amber always means a document (résumé, portfolio). Each product arena, career track and snapshot group has its own colour, which you can change in the editor, and every colour appears with a text label.
 
 All content is editable **without touching code** through a built-in editor at **`/admin`**.
 
@@ -20,7 +23,7 @@ Hosted on [GitHub Pages](https://pages.github.com/) → `https://mayukhg.github.
    - *Permissions:* **Contents → Read and write**
 
    Paste it into the Connect tab. The token stays in your browser and is sent only to `api.github.com`.
-3. **Edit** any section: profile, headline numbers, experience, skills, education, products, arenas, spotlight. You can add, reorder, duplicate or delete items with the buttons on each row. Drafts save automatically in your browser.
+3. **Edit** any section: profile, headline numbers, 60-second snapshot, experience (including career tracks), skills, education, products, arenas, spotlight. You can add, reorder, duplicate or delete items with the buttons on each row. Drafts save automatically in your browser.
 4. Click **Preview draft** to see the real site with your unpublished changes.
 5. Click **Publish changes**. Each publish is a normal Git commit, and the live site updates in about a minute.
 6. **Files tab:** upload a new résumé PDF, a portfolio PDF or a headshot. PDFs are public, so remove private details such as your phone number first.
@@ -56,7 +59,7 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 
 - **No build step, no framework:** semantic HTML5, modern CSS and vanilla JS. The content is plain JSON.
 - **Fast:** self-hosted variable fonts (latin subset, ~50 KB) and no third-party runtime requests.
-- **Accessible:** WCAG 2.1 AA, audited with axe-core. Tabs follow the WAI-ARIA pattern with arrow-key support, and there's a skip link, visible focus and reduced-motion support.
+- **Accessible:** WCAG 2.1 AA, audited with axe-core. Expandable sections are real buttons with `aria-expanded`, and there's a skip link, visible focus and reduced-motion support. **Print / Save as PDF** produces a clean, complete document.
 - **Safe rendering:** content is HTML-escaped. Only `**bold**` and `http(s)` / relative links are turned into markup.
 - **Editor security:** strict Content-Security-Policy, least-privilege fine-grained token, `noindex`, and blocked in `robots.txt`.
 
@@ -74,7 +77,8 @@ The page loads its content with `fetch`, so open it through a local server rathe
 
 - static integrity and privacy (for example, no phone number published)
 - rendering and content accuracy
-- every interaction: summary cards, accordions, filters, tabs, deep links and nav
+- every interaction: summary cards, accordions, filters, the experience timeline, deep links, nav and the print layout
+- the colour coding and the recruiter essentials (résumé in the sticky nav at every width, the snapshot)
 - five viewport sizes
 - WCAG 2.1 AA accessibility
 - resilience and XSS safety

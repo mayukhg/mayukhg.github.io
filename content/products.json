@@ -20,7 +20,7 @@
     {
       "id": "applied",
       "label": "Applied AI",
-      "color": "#92400e"
+      "color": "#be123c"
     }
   ],
   "products": [
@@ -32,6 +32,8 @@
       "icon": "shield",
       "tagline": "Autonomous cloud-security policy from live threat intel and your own risk register.",
       "summary": "Generates cloud-security policy from the organisation's own risk register. Audit-ready in minutes, not weeks.",
+      "headline": "~70% faster policy, ~94% coverage",
+      "evidence": "modelled",
       "client": "British Petroleum",
       "stack": [
         "GPT-4 multi-agent",
@@ -62,6 +64,8 @@
       "icon": "target",
       "tagline": "Auditable, AI-native SOC triage and threat hunting. Every verdict can be replayed.",
       "summary": "An AI-native SOC workspace where every machine verdict can be traced, evaluated and audited. Trust is a product requirement.",
+      "headline": "Analysts can check every AI verdict before acting on it",
+      "evidence": "",
       "client": "British Petroleum",
       "stack": [
         "LangChain / LangGraph",
@@ -92,6 +96,8 @@
       "icon": "chip",
       "tagline": "Posture management for your own AI/ML assets, drift and compliance evidence.",
       "summary": "Governs and secures the organisation's own AI/ML assets across their lifecycle. Built with applied ML, not an LLM.",
+      "headline": "Makes AI adoption governable & auditable",
+      "evidence": "",
       "client": "British Petroleum",
       "stack": [
         "Python FastAPI",
@@ -122,6 +128,8 @@
       "icon": "wrench",
       "tagline": "A governed MCP server for the validate → approve → remediate loop.",
       "summary": "A governed MCP bridge that lets AI agents run the validate → approve → remediate → re-verify loop, with a human approving each fix.",
+      "headline": "Cuts mean-time-to-remediate",
+      "evidence": "",
       "client": "Qualys",
       "stack": [
         "Python FastMCP",
@@ -151,6 +159,8 @@
       "icon": "grid",
       "tagline": "Conversational risk triage across 8 security modules, fully audited.",
       "summary": "One conversation that joins 8 security modules into a ranked, evidence-backed, auditable remediation plan.",
+      "headline": "Weekly risk report: hours → minutes",
+      "evidence": "",
       "client": "Qualys",
       "stack": [
         "qualys-cli-mcp",
@@ -181,6 +191,8 @@
       "icon": "globe",
       "tagline": "Customs classification with classic ML, not an LLM.",
       "summary": "Predicts customs codes from a plain-text product description, using classic ML instead of an LLM.",
+      "headline": "Accurate landed cost at checkout; less manual work",
+      "evidence": "",
       "client": "Pitney Bowes",
       "stack": [
         "FastAPI",
@@ -210,6 +222,8 @@
       "icon": "bank",
       "tagline": "Verifiable, privacy-preserving credit scoring, with AI on a blockchain.",
       "summary": "Verifiable, privacy-preserving credit-risk scoring: AI wrapped in blockchain provenance and federated learning.",
+      "headline": "Adoptable AI scoring for regulated finance",
+      "evidence": "",
       "client": "Western Union",
       "stack": [
         "XGBoost / LightGBM",
@@ -288,6 +302,7 @@
         "caption": "one governed platform loop"
       }
     ],
+    "evidence": "modelled",
     "note": "Success metrics modelled on the public builds; production figures under NDA."
   }
 }

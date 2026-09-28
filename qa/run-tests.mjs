@@ -182,7 +182,7 @@ async function connectAdmin(page, token = 'good-token', remember = false) {
 /* =================================================================== A. Static integrity */
 await test('A. Static integrity', 'A1', 'All required files exist', async () => {
   const req = ['index.html', 'styles.css', 'script.js', '404.html', '.nojekyll', 'robots.txt', 'sitemap.xml', 'resume.pdf',
-    'assets/mayukh.jpg', 'assets/og-card.jpg', 'content/profile.json', 'content/products.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
+    'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'content/profile.json', 'content/products.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
   const missing = req.filter((f) => !fs.existsSync(path.join(ROOT, f)));
   eq(missing.length, 0, `Missing files: ${missing.join(', ')}`);
   note(`${req.length} files checked`);
@@ -197,6 +197,8 @@ await test('A. Static integrity', 'A2', 'Content JSON is valid and internally co
     ['name', 'summary', 'pain', 'bet', 'why', 'tradeoff', 'validated'].forEach((k) => assert(p[k], `Product ${p.id} missing ${k}`));
   });
   profileJSON.experience.roles.forEach((r) => (r.related || []).forEach((id) => assert(ids.includes(id), `Role ${r.tab} links unknown product ${id}`)));
+  const tracks = (profileJSON.experience.tracks || []).map((t) => t.id);
+  profileJSON.experience.roles.forEach((r) => assert(!r.track || tracks.includes(r.track), `Role ${r.tab} uses unknown track ${r.track}`));
   assert(profileJSON.person.name && profileJSON.links.email, 'Name and email required');
   note(`${ids.length} products, ${arenas.length} arenas, ${profileJSON.experience.roles.length} roles`);
 });
@@ -225,7 +227,7 @@ await test('A. Static integrity', 'A4', 'Every local URL referenced by pages and
     }
   }
   const json = JSON.stringify(profileJSON) + JSON.stringify(productsJSON);
-  for (const m of json.matchAll(/"((?:assets\/|resume)[^"]+)"/g)) refs.add('/' + m[1]);
+  for (const m of json.matchAll(/:"((?:assets\/|resume)[^"]+)"/g)) refs.add('/' + m[1]);  // values only, not keys like "resumeUpdated"
   const bad = [];
   for (const r of refs) { const res = await fetch(BASE + r); if (res.status !== 200) bad.push(`${r} → ${res.status}`); }
   eq(bad.length, 0, `Broken: ${bad.join(', ')}`);
@@ -275,8 +277,13 @@ await test('B. Rendering', 'B2', 'Hero renders name, title, badge, intro (with b
   eq(await page.locator('.badge').innerText(), profileJSON.person.badge, 'badge');
   assert(await page.locator('.hero-lede strong').count() >= 3, 'bold markup in lede');
   eq(await page.locator('.stat').count(), profileJSON.stats.length, 'stat count');
-  const ctas = await page.locator('.hero-cta a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-  assert(ctas.includes('#products') && ctas.includes('resume.pdf') && ctas.includes(profileJSON.links.github), `CTAs ${ctas}`);
+  const ctas = await page.locator('.hero-cta a').evaluateAll((as) => as.map((a) => ({ h: a.getAttribute('href'), c: a.className, d: a.hasAttribute('download') })));
+  eq(ctas[0].h, profileJSON.links.resume, 'résumé is the first hero button');
+  assert(/btn-doc/.test(ctas[0].c), 'résumé button uses the document (amber) style');
+  assert(ctas.some((a) => a.h === profileJSON.links.resume && a.d), 'résumé download button');
+  assert(ctas.some((a) => a.h === profileJSON.links.portfolio), 'portfolio button');
+  assert(ctas.some((a) => a.h === '#products'), 'products button');
+  eq(await page.locator('.cta-note').innerText(), `Résumé updated ${profileJSON.links.resumeUpdated} · PDF`, 'résumé date note');
   const img = await page.locator('img.portrait').evaluate((i) => ({ w: i.naturalWidth, alt: i.alt, ratio: i.getBoundingClientRect().width / i.getBoundingClientRect().height }));
   assert(img.w > 0, 'photo loaded'); assert(img.alt.length > 5, 'photo alt');
   assert(Math.abs(img.ratio - 1) < 0.02, `photo should be square, ratio ${img.ratio.toFixed(2)}`);
@@ -292,12 +299,15 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
     principles: document.querySelectorAll('.principle').length, products: document.querySelectorAll('#product-list .acc').length,
     glance: document.querySelectorAll('.glance-card').length,
     pillars: document.querySelectorAll('.pillar').length, metrics: document.querySelectorAll('.metric').length,
-    roles: document.querySelectorAll('.exp-tab').length, panels: document.querySelectorAll('.exp-panel').length,
+    roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.legend li').length,
+    snapshot: document.querySelectorAll('.sn-card').length, snapItems: document.querySelectorAll('.sn-item').length,
     skills: document.querySelectorAll('.skill-card').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
     products: productsJSON.products.length, glance: productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
-    roles: profileJSON.experience.roles.length, panels: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
+    roles: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
+    legend: profileJSON.experience.tracks.filter((t) => profileJSON.experience.roles.some((r) => r.track === t.id)).length,
+    snapshot: profileJSON.snapshot.groups.length, snapItems: profileJSON.snapshot.groups.reduce((n, g) => n + g.items.length, 0),
     edu: profileJSON.education.length,
     contact: 1 + ['linkedin', 'github', 'resume', 'portfolio'].filter((k) => profileJSON.links[k]).length };
   for (const k in exp) eq(counts[k], exp[k], `${k} count`);
@@ -328,6 +338,7 @@ await test('B. Rendering', 'B5', 'Section headings and sub-headings render exact
     'about-title': profileJSON.about.title, 'approach-title': profileJSON.approach.title, 'approach-sub': profileJSON.approach.subtitle,
     'products-title': productsJSON.title, 'products-sub': productsJSON.subtitle, 'exp-title': profileJSON.experience.title,
     'exp-sub': profileJSON.experience.subtitle, 'skills-title': profileJSON.skills.title, 'contact-title': profileJSON.contact.title,
+    'snapshot-title': profileJSON.snapshot.title,
   };
   for (const [s, v] of Object.entries(expect)) eq((await page.locator(`[data-slot="${s}"]`).innerText()).trim(), v, `${s}`);
   if (productsJSON.overview?.show !== false) eq(await page.locator('.glance-title').innerText(), productsJSON.overview.title, 'summary panel title');
@@ -453,37 +464,66 @@ await test('C. Interactions', 'C2', 'Arena filter chips show the right products 
   await context.close();
 });
 
-await test('C. Interactions', 'C3', 'Experience tabs: clicking each tab shows exactly its panel', async () => {
+await test('C. Interactions', 'C3', 'Experience timeline: every role visible at once; each role expands/collapses its achievements', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  const tabs = page.locator('.exp-tab');
-  const n = await tabs.count();
-  for (let i = 0; i < n; i++) {
-    await tabs.nth(i).click();
-    eq(await tabs.nth(i).getAttribute('aria-selected'), 'true', `tab ${i} selected`);
-    eq(await page.locator('.exp-panel:not([hidden])').count(), 1, 'one visible panel');
-    const panelId = await tabs.nth(i).getAttribute('aria-controls');
-    assert(await page.locator('#' + panelId).isVisible(), `panel ${panelId} visible`);
-  }
-  await tabs.nth(2).click(); await revealAll(page);
-  await shot(page.locator('#experience'), 'experience-bp-tab');
-  note(`${n} tabs exercised`);
+  const items = page.locator('.tl-item');
+  const n = await items.count();
+  eq(n, profileJSON.experience.roles.length, 'one timeline entry per role');
+  for (let i = 0; i < n; i++) assert(await items.nth(i).locator('h3').isVisible(), `role ${i} headline visible without clicking`);
+  // First (current) role starts open; the rest start closed with inert bodies.
+  eq(await items.nth(0).locator('.tl-toggle').getAttribute('aria-expanded'), 'true', 'current role open');
+  eq(await items.nth(1).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'others closed');
+  eq(await items.nth(1).locator('.tl-body').getAttribute('inert'), '', 'closed body is inert');
+  const t = items.nth(2).locator('.tl-toggle');
+  await t.click(); await page.waitForTimeout(500);
+  eq(await t.getAttribute('aria-expanded'), 'true', 'expands');
+  eq(await t.innerText(), 'Hide achievements', 'label switches');
+  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) > 60, 'achievements visible');
+  await revealAll(page);
+  await shot(page.locator('#experience'), 'experience-timeline');
+  await t.click(); await page.waitForTimeout(500);
+  eq(await t.getAttribute('aria-expanded'), 'false', 'collapses');
+  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) <= 1, 'achievements hidden');
+  // Keyboard: the toggle is a real button.
+  await t.focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(100);
+  eq(await t.getAttribute('aria-expanded'), 'true', 'Enter expands');
+  note(`${n} roles on the timeline`);
   await context.close();
 });
 
-await test('C. Interactions', 'C4', 'Experience tabs support keyboard (Arrow keys, Home, End) with roving tabindex', async () => {
+await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arenas, snapshot groups and documents each use their own labelled colour', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  await page.locator('.exp-tab').first().focus();
-  await page.keyboard.press('ArrowDown');
-  eq(await page.evaluate(() => document.activeElement.id), await page.locator('.exp-tab').nth(1).getAttribute('id'), 'ArrowDown moves focus');
-  eq(await page.locator('.exp-tab').nth(1).getAttribute('aria-selected'), 'true', 'ArrowDown selects');
-  await page.keyboard.press('End');
-  eq(await page.locator('.exp-tab').last().getAttribute('aria-selected'), 'true', 'End selects last');
-  await page.keyboard.press('ArrowDown');
-  eq(await page.locator('.exp-tab').first().getAttribute('aria-selected'), 'true', 'wraps to first');
-  await page.keyboard.press('Home');
-  eq(await page.locator('.exp-tab[tabindex="0"]').count(), 1, 'exactly one tabbable tab');
+  await revealAll(page);
+  const rgb = (hex) => { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`; };
+  // Timeline: each role's card edge uses its track colour, and the legend names every track in use.
+  for (const [i, r] of profileJSON.experience.roles.entries()) {
+    const tr = profileJSON.experience.tracks.find((t) => t.id === r.track);
+    eq(await page.locator('.tl-card').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
+    assert((await page.locator('.tl-item').nth(i).locator('.tl-track').innerText()) === tr.label, `${r.tab} track label`);
+  }
+  // Products: summary cards and product cards carry their arena colour; filter chips show a swatch.
+  for (const p of productsJSON.products) {
+    const col = rgb(productsJSON.arenas.find((a) => a.id === p.arena).color);
+    eq(await page.locator(`.glance-card[data-product="${p.id}"]`).evaluate((c) => getComputedStyle(c).borderTopColor), col, `${p.id} summary card colour`);
+    eq(await page.locator('#p-' + p.id).evaluate((c) => getComputedStyle(c).borderLeftColor), col, `${p.id} card colour`);
+  }
+  const arenaColours = new Set(productsJSON.arenas.map((a) => a.color.toLowerCase()));
+  eq(arenaColours.size, productsJSON.arenas.length, 'every arena has a distinct colour');
+  const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase());
+  assert(!arenaColours.has(accent), 'link/focus accent is not reused as an arena colour');
+  eq(await page.locator('.chipbtn[data-f] .swatch').count(), productsJSON.arenas.length, 'filter chips show arena swatches');
+  // Snapshot groups: one colour per group.
+  const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
+  eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
+  // Documents are amber everywhere (nav, hero, contact).
+  const docs = await page.locator(`a.btn-doc[href="${profileJSON.links.resume}"]`).evaluateAll((as) => as.map((a) => getComputedStyle(a).backgroundColor));
+  assert(docs.length >= 3 && docs.every((c) => c === 'rgb(251, 191, 36)'), `résumé buttons amber: ${docs}`);
+  // Evidence badges follow the content flags.
+  for (const p of productsJSON.products) eq(await page.locator(`#p-${p.id} .acc-outcome .ev`).count(), p.evidence ? 1 : 0, `${p.id} evidence badge`);
+  if (productsJSON.ecosystem.evidence) eq(await page.locator('.metrics-ev .ev').count(), 1, 'ecosystem metrics badge');
+  await shot(page.locator('.glance'), 'colour-coded-summary-cards');
   await context.close();
 });
 
@@ -495,8 +535,7 @@ await test('C. Interactions', 'C5', 'Deep links open products (URL hash, filtere
   await page.close();
   page = await open(context, '/');
   await page.locator('.chipbtn[data-f="agentic"]').click();
-  await page.locator('.exp-tab', { hasText: 'Western Union' }).click();
-  await page.locator('.exp-panel:not([hidden]) .stackline a').first().click();
+  await page.locator('.tl-item', { hasText: 'Western Union' }).locator('.stackline a').first().click();
   await page.waitForTimeout(600);
   assert(await page.locator('#p-kyc').isVisible(), 'filtered-out card is revealed');
   eq(await page.locator('#p-kyc .acc-toggle').getAttribute('aria-expanded'), 'true', 'related link opens card');
@@ -559,6 +598,71 @@ await test('C. Interactions', 'C6', 'Nav links scroll to sections; active link a
   await context.close();
 });
 
+await test('C. Interactions', 'C10', 'Recruiter essentials: résumé always one click away (sticky nav, all widths); 60-second snapshot; skills “+N more”', async () => {
+  for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
+    const { context } = await ctx({ viewport: vp, isMobile: vp.width < 800, hasTouch: vp.width < 800 });
+    const page = await open(context, '/');
+    if (vp.width === 390) await shot(page, 'mobile-nav-resume', { clip: { x: 0, y: 0, width: 390, height: 80 } });
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await page.waitForTimeout(200);
+    const r = page.locator('#nav .nav-resume');
+    assert(await r.isVisible(), `nav résumé visible mid-page at ${vp.width}px`);
+    eq(await r.getAttribute('href'), profileJSON.links.resume, 'nav résumé link');
+    const box = await r.boundingBox();
+    assert(box.x + box.width <= vp.width, `nav résumé fits at ${vp.width}px`);
+    await context.close();
+  }
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  // Snapshot sits directly under the hero.
+  eq(await page.evaluate(() => document.querySelector('header.hero').nextElementSibling.id), 'snapshot', 'snapshot follows hero');
+  const snapText = await page.locator('#snapshot').innerText();
+  profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
+  const docLinks = await page.locator('#snapshot a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  assert(docLinks.includes(profileJSON.links.resume) && docLinks.includes(profileJSON.links.portfolio), `snapshot document links: ${docLinks}`);
+  await revealAll(page);
+  await shot(page.locator('#snapshot'), 'snapshot-panel');
+  // Skills: top 6 shown, the rest behind "+N more".
+  for (const [gi, g] of profileJSON.skills.groups.entries()) {
+    const card = page.locator('.skill-card').nth(gi);
+    eq(await card.locator('.pill:visible').count(), Math.min(6, g.items.length), `${g.name} top skills`);
+    const more = card.locator('.pill-more');
+    if (g.items.length > 6) {
+      eq(await more.innerText(), `+${g.items.length - 6} more`, `${g.name} more label`);
+      await more.click();
+      eq(await card.locator('.pill:visible').count(), g.items.length, `${g.name} all skills after expand`);
+      eq(await more.getAttribute('aria-expanded'), 'true', 'aria-expanded');
+      await more.click();
+      eq(await card.locator('.pill:visible').count(), 6, `${g.name} collapses again`);
+    } else eq(await more.count(), 0, `${g.name} has no more button`);
+  }
+  // Section order puts what recruiters need first.
+  const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
+  eq(order.slice(0, 4).join(','), 'top,snapshot,products,experience', 'recruiter-first order');
+  await context.close();
+});
+
+await test('C. Interactions', 'C11', 'Print / Save as PDF: navigation and buttons hidden, every case study, role and skill included', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  await page.emulateMedia({ media: 'print' });
+  const r = await page.evaluate(() => ({
+    nav: getComputedStyle(document.getElementById('nav')).display,
+    cta: getComputedStyle(document.querySelector('.hero-cta')).display,
+    h1: getComputedStyle(document.querySelector('h1')).color,
+    bodies: [...document.querySelectorAll('.acc-body, .tl-body')].map((b) => b.getBoundingClientRect().height),
+    hiddenPills: [...document.querySelectorAll('.pill')].filter((p) => getComputedStyle(p).display === 'none').length,
+  }));
+  eq(r.nav, 'none', 'nav hidden'); eq(r.cta, 'none', 'buttons hidden');
+  eq(r.h1, 'rgb(0, 0, 0)', 'hero text printable (black on white)');
+  assert(r.bodies.every((h) => h > 20), 'every case study and role expanded');
+  eq(r.hiddenPills, 0, 'all skills printed');
+  const pdf = await page.pdf({ format: 'A4' });
+  assert(pdf.subarray(0, 4).toString() === '%PDF' && pdf.length > 50000, 'page prints to PDF');
+  note(`Print-to-PDF: ${Math.round(pdf.length / 1024)} KB`);
+  await context.close();
+});
+
 await test('C. Interactions', 'C7', 'Links: external open safely in new tab, mailto correct, résumé PDF served', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
@@ -570,6 +674,10 @@ await test('C. Interactions', 'C7', 'Links: external open safely in new tab, mai
   eq(res.status(), 200, 'résumé status');
   assert(res.headers()['content-type'].includes('pdf'), 'résumé content-type');
   assert((await res.body()).subarray(0, 4).toString() === '%PDF', 'résumé is a PDF');
+  const pf = await page.request.get(BASE + '/' + profileJSON.links.portfolio);
+  eq(pf.status(), 200, 'portfolio status');
+  assert((await pf.body()).subarray(0, 4).toString() === '%PDF', 'portfolio is a PDF');
+  assert(!(await pf.body()).includes('9860345364'), 'no phone digits in portfolio PDF');
   const gh = await page.locator('.acc-link').evaluateAll((as) => as.map((a) => a.href));
   assert(gh.every((u) => /^https:\/\/github\.com\/mayukhg\//.test(u)), 'GitHub product links');
   note(`${ext.length} external links, ${gh.length} product GitHub links`);
@@ -589,7 +697,7 @@ for (const [w, hgt, label] of VIEWPORTS) {
       const vw = document.documentElement.clientWidth;
       const wide = [...document.querySelectorAll('body *')].filter((el) => {
         const r = el.getBoundingClientRect();
-        return r.width && r.right > vw + 1 && !el.closest('.exp-tabs') && getComputedStyle(el).position !== 'fixed';
+        return r.width && r.right > vw + 1 && getComputedStyle(el).position !== 'fixed';
       }).slice(0, 3).map((el) => el.className || el.tagName);
       return { sw: document.documentElement.scrollWidth, vw, wide };
     });
@@ -624,7 +732,7 @@ await test('D. Responsive', 'D-touch', 'Touch targets are at least 44×44px on m
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await open(context, '/');
   await page.locator('#burger').click();
-  const small = await page.evaluate(() => [...document.querySelectorAll('#burger, .nav-links a, .btn, .chipbtn, .acc-link, .exp-tab, .acc-toggle, .glance-card')]
+  const small = await page.evaluate(() => [...document.querySelectorAll('#burger, .nav-links a, .btn, .chipbtn, .acc-link, .tl-toggle, .acc-toggle, .glance-card')]
     .filter((el) => el.offsetParent !== null)
     .map((el) => { const r = el.getBoundingClientRect(); return { n: el.textContent.trim().slice(0, 30), w: r.width, h: r.height }; })
     .filter((r) => r.h < 44 || r.w < 44));
@@ -1122,18 +1230,23 @@ for (const a of productsJSON.arenas) {
   const { context } = await ctx();
   const page = await open(context, '/');
   for (const [i, r] of roles.entries()) {
-    await test(R, `R-role-${i + 1}`, `Experience “${r.tab}”: tab shows title, dates, metrics and all ${r.bullets.length} achievements`, async () => {
-      await page.locator('.exp-tab').nth(i).click();
-      const panel = page.locator('.exp-panel:not([hidden])');
-      eq(await panel.count(), 1, 'one visible panel');
-      const txt = await panel.innerText();
-      assert(txt.includes(r.title), 'title'); if (r.dates) assert(txt.includes(r.dates), 'dates');
-      eq(await panel.locator('.exp-list li').count(), r.bullets.length, 'bullet count');
-      eq(await panel.locator('.exp-metrics li').count(), r.metrics.length, 'metric chips');
+    await test(R, `R-role-${i + 1}`, `Experience “${r.tab}”: timeline shows title, dates, track, metrics and all ${r.bullets.length} achievements`, async () => {
+      const item = page.locator('.tl-item').nth(i);
+      const txt = await item.innerText();
+      assert(txt.includes(r.title), 'title'); if (r.dates) assert(txt.includes(r.dates), 'dates'); if (r.period) assert(txt.includes(r.period), 'period');
+      const track = profileJSON.experience.tracks.find((t) => t.id === r.track);
+      if (track) eq(await item.locator('.tl-track').innerText(), track.label, 'track label');
+      eq(await item.locator('.exp-list li').count(), r.bullets.length, 'bullet count');
+      eq(await item.locator('.exp-metrics li').count(), r.metrics.length, 'metric chips');
+      if (r.bullets.length) {
+        const btn = item.locator('.tl-toggle');
+        if ((await btn.getAttribute('aria-expanded')) !== 'true') await btn.click();
+        await page.waitForTimeout(450);
+        assert(await item.locator('.exp-list li').last().isVisible(), 'achievements visible when expanded');
+      }
       for (const id of r.related || []) {
-        await panel.locator(`a[href="#p-${id}"]`).click();
+        await item.locator(`a[href="#p-${id}"]`).click();
         await page.waitForFunction((x) => document.querySelector(`#${x} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + id);
-        await page.locator('.exp-tab').nth(i).click();
       }
     });
   }

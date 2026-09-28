@@ -58,6 +58,7 @@
   <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm-1 1 9 7 9-7"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Zm0 0v5h5M9 13h6M9 17h4"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
   <symbol id="g-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19 6v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
@@ -78,17 +79,20 @@
 
 <nav class="nav" id="nav" aria-label="Primary">
   <div class="nav-in">
-    <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span>Mayukh Ghosh</a>
-    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
-      <span></span><span></span><span></span>
-    </button>
+    <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span><span class="brand-name">Mayukh Ghosh</span></a>
     <div class="nav-links" id="navlinks">
-      <a href="#about">About</a>
-      <a href="#approach">Approach</a>
       <a href="#products">AI Products</a>
       <a href="#experience">Experience</a>
+      <a href="#about">About</a>
+      <a href="#approach">Approach</a>
       <a href="#skills">Skills</a>
       <a href="#contact" class="nav-cta">Get in touch</a>
+    </div>
+    <div class="nav-actions">
+      <span data-slot="nav-resume"></span>
+      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
@@ -104,6 +108,7 @@
         <p class="hero-role" data-slot="role"></p>
         <p class="hero-lede" data-slot="lede"></p>
         <div class="hero-cta" data-slot="hero-cta"></div>
+        <p class="cta-note" data-slot="cta-note"></p>
       </div>
       <div class="portrait-wrap" data-slot="portrait"></div>
     </div>
@@ -111,24 +116,10 @@
   </div>
 </header>
 
-<section id="about">
+<section id="snapshot" class="sn-band" aria-labelledby="snapshot-title">
   <div class="wrap">
-    <h2 class="s-title" data-slot="about-title"></h2>
-    <div class="about-grid">
-      <div class="about-body" data-slot="about-body"></div>
-      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
-    </div>
-  </div>
-</section>
-
-<section id="approach" class="alt">
-  <div class="wrap">
-    <p class="eyebrow">How I build an AI product</p>
-    <h2 class="s-title" data-slot="approach-title"></h2>
-    <p class="s-sub" data-slot="approach-sub"></p>
-    <ol class="process" data-slot="steps"></ol>
-    <p class="throughline" data-slot="throughline"></p>
-    <div class="principles" data-slot="principles"></div>
+    <h2 class="sn-title" id="snapshot-title" data-slot="snapshot-title"></h2>
+    <div class="sn-grid" data-slot="snapshot"></div>
   </div>
 </section>
 
@@ -142,32 +133,51 @@
   </div>
 </section>
 
-<section id="ecosystem" class="eco" data-slot="ecosystem" hidden></section>
-
 <section id="experience" class="alt">
   <div class="wrap">
     <h2 class="s-title" data-slot="exp-title"></h2>
     <p class="s-sub" data-slot="exp-sub"></p>
-    <div class="exp-shell">
-      <div class="exp-tabs" role="tablist" aria-label="Roles" aria-orientation="vertical" data-slot="exp-tabs"></div>
-      <div class="exp-panels" data-slot="exp-panels"></div>
+    <ul class="legend" aria-label="Career tracks" data-slot="exp-legend"></ul>
+    <ol class="timeline" data-slot="exp-timeline"></ol>
+  </div>
+</section>
+
+<section id="ecosystem" class="eco" data-slot="ecosystem" hidden></section>
+
+<section id="about" class="alt">
+  <div class="wrap">
+    <h2 class="s-title" data-slot="about-title"></h2>
+    <div class="about-grid">
+      <div class="about-body" data-slot="about-body"></div>
+      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
     </div>
   </div>
 </section>
 
-<section id="skills">
+<section id="approach">
+  <div class="wrap">
+    <p class="eyebrow">How I build an AI product</p>
+    <h2 class="s-title" data-slot="approach-title"></h2>
+    <p class="s-sub" data-slot="approach-sub"></p>
+    <ol class="process" data-slot="steps"></ol>
+    <p class="throughline" data-slot="throughline"></p>
+    <div class="principles" data-slot="principles"></div>
+  </div>
+</section>
+
+<section id="skills" class="alt">
   <div class="wrap">
     <h2 class="s-title" data-slot="skills-title"></h2>
     <div class="skill-grid" data-slot="skills"></div>
   </div>
 </section>
 
-<section id="education" class="alt">
+<section id="education">
   <div class="wrap">
-    <h2 class="s-title">Writing, building in the open, and learning.</h2>
+    <h2 class="s-title">Education &amp; writing</h2>
     <div class="two-col">
-      <div class="card" data-slot="writing"></div>
       <div class="card"><h3>Education</h3><ul class="edu-list" data-slot="education"></ul></div>
+      <div class="card" data-slot="writing"></div>
     </div>
   </div>
 </section>
@@ -185,7 +195,7 @@
 </section>
 
 <noscript>
-  <p style="padding:24px;text-align:center">This portfolio needs JavaScript to display. You can still <a href="resume.pdf">download the résumé (PDF)</a> or email <a href="mailto:mayukhg@gmail.com">mayukhg@gmail.com</a>.</p>
+  <p style="padding:24px;text-align:center">This portfolio needs JavaScript to display. You can still <a href="resume.pdf">download the résumé (PDF)</a>, the <a href="assets/portfolio.pdf">product portfolio (PDF)</a>, or email <a href="mailto:mayukhg@gmail.com">mayukhg@gmail.com</a>.</p>
 </noscript>
 <div class="load-error" id="load-error" hidden role="alert">
   <p>Sorry, the portfolio content couldn't be loaded. Please refresh, or <a href="resume.pdf">download the résumé (PDF)</a>.</p>

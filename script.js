@@ -34,6 +34,21 @@
   function icon(id) { return '<svg aria-hidden="true"><use href="#' + id + '"/></svg>'; }
   function ext(href) { return /^https?:/i.test(href) ? ' target="_blank" rel="noopener"' : ''; }
   function slug(s, i) { return (String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'item') + (i != null ? '-' + i : ''); }
+  // Inline custom property for a content-supplied colour (hex only), e.g. --arena or --track.
+  function colorVar(name, c) { return /^#[0-9a-f]{3,8}$/i.test(c || '') ? ' style="' + name + ':' + c + '"' : ''; }
+  function docLink(href, cls, label, extra) {
+    return '<a class="' + cls + '" href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (extra || '') + '>' + icon('i-file') + label + '</a>';
+  }
+
+  // How much a figure can be trusted: shown as a badge next to outcomes and metrics.
+  var EVIDENCE = {
+    modelled: ['Modelled estimate', 'Estimated on the public build; production figures are under NDA'],
+    production: ['In production', 'Measured in production']
+  };
+  function evBadge(kind) {
+    var e = EVIDENCE[kind];
+    return e ? '<span class="ev ev-' + kind + '" title="' + esc(e[1]) + '">' + esc(e[0]) + '</span>' : '';
+  }
 
   /* ---------- data loading ---------- */
   function loadJSON(path) {
@@ -65,11 +80,15 @@
       ? ' <span class="grp">' + arr(person.tags).map(function (t) { return '<span class="sep" aria-hidden="true"></span>' + esc(t); }).join('') + '</span>' : ''));
     set('lede', md(person.lede));
 
-    var cta = '<a class="btn btn-light" href="#products">Explore ' + (prodCount ? prodCount + ' ' : '') + 'AI products ' + icon('i-arrow') + '</a>';
-    if (links.resume) cta += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.resume)) + '" target="_blank" rel="noopener">View résumé ' + icon('i-doc') + '</a>';
-    if (links.portfolio) cta += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.portfolio)) + '" target="_blank" rel="noopener">Portfolio PDF ' + icon('i-doc') + '</a>';
-    if (links.github) cta += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.github)) + '" target="_blank" rel="noopener">GitHub ' + icon('i-gh') + '</a>';
+    // Amber = documents (résumé, portfolio) everywhere on the page, so recruiters can spot them at a glance.
+    var cta = '';
+    if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View résumé') +
+      '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download résumé (PDF)" title="Download résumé (PDF)">' + icon('i-doc') + '</a></span>';
+    if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio (PDF)');
+    cta += '<a class="btn btn-ghost" href="#products">Explore ' + (prodCount ? prodCount + ' ' : '') + 'AI products ' + icon('i-arrow') + '</a>';
     set('hero-cta', cta);
+    set('cta-note', links.resume && links.resumeUpdated ? 'Résumé updated ' + esc(links.resumeUpdated) + ' · PDF' : '').hidden = !(links.resume && links.resumeUpdated);
+    set('nav-resume', links.resume ? docLink(links.resume, 'btn btn-doc nav-resume', 'Résumé') : '').hidden = !links.resume;
 
     var portrait = slot('portrait');
     if (person.photo) {
@@ -84,6 +103,18 @@
     }).join(''));
     st.hidden = !stats.length;
     st.style.setProperty('--cols', Math.min(stats.length || 1, 4));
+  }
+
+  function renderSnapshot(p) {
+    var sn = p.snapshot || {}, groups = arr(sn.groups);
+    document.getElementById('snapshot').hidden = !groups.length;
+    set('snapshot-title', esc(sn.title || 'At a glance'));
+    set('snapshot', groups.map(function (g) {
+      var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
+      return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
+        return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
+      }).join('') + '</dl></div>';
+    }).join(''));
   }
 
   function renderAbout(p) {
@@ -117,12 +148,13 @@
     var used = arenas.filter(function (a) { return counts[a.id]; });
     set('filters', used.length > 1
       ? '<button type="button" class="chipbtn" data-f="all" aria-pressed="true">All <span class="ct">' + products.length + '</span></button>' +
-        used.map(function (a) { return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false">' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>'; }).join('')
+        used.map(function (a) { return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>'; }).join('')
       : '');
 
     set('products', products.map(function (p, i) {
       var id = slug(p.id || p.name), a = arenaById[p.arena] || {};
-      var color = /^#[0-9a-f]{3,8}$/i.test(a.color || '') ? ' style="--arena:' + a.color + '"' : '';
+      var color = colorVar('--arena', a.color);
+      var headline = p.headline || arr(p.outcomes)[0];
       var tags = (p.client ? '<span class="client"><i>Implemented for</i> ' + esc(p.client) + '</span>' : '') +
         arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
@@ -143,6 +175,7 @@
           '<span class="kicker">' + esc(p.kicker || a.label || '') + '</span>' +
           '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
           '<p class="acc-sum">' + md(p.summary) + '</p>' +
+          (headline ? '<p class="acc-outcome"><span class="acc-outcome-l">Outcome</span><span class="acc-outcome-t">' + md(headline) + '</span>' + evBadge(p.evidence) + '</p>' : '') +
           (tags ? '<div class="acc-meta">' + tags + '</div>' : '') +
         '</div>' +
         peek +
@@ -175,8 +208,8 @@
       '<ul class="glance-grid">' + products.map(function (p, i) {
         var id = slug(p.id || p.name);
         var icon = GLANCE_ICONS.indexOf(p.icon) > -1 ? p.icon : GLANCE_ICONS[i % GLANCE_ICONS.length];
-        var arena = (arenaById[p.arena] || {}).label || '';
-        return '<li><a class="glance-card" href="#p-' + esc(id) + '" data-product="' + esc(id) + '">' +
+        var a = arenaById[p.arena] || {}, arena = a.label || '';
+        return '<li><a class="glance-card" href="#p-' + esc(id) + '" data-product="' + esc(id) + '"' + colorVar('--arena', a.color) + '>' +
           '<span class="g-icon" aria-hidden="true"><svg><use href="#g-' + icon + '"/></svg></span>' +
           (arena ? '<span class="g-arena">' + esc(arena) + '</span>' : '') +
           '<h4>' + esc(p.name) + '</h4>' +
@@ -202,6 +235,7 @@
       }).join('') + '</div>' +
       (e.spine ? '<p class="spine">' + md(e.spine) + '</p>' : '') +
       '<div class="eco-cols">' + list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) + '</div>' +
+      (EVIDENCE[e.evidence] && arr(e.metrics).length ? '<p class="metrics-ev">' + evBadge(e.evidence) + '</p>' : '') +
       '<div class="metrics">' + arr(e.metrics).map(function (m) {
         return '<div class="metric"><span class="n">' + esc(m.value) + '</span><span class="l">' + esc(m.label) + '</span><span class="c">' + esc(m.caption) + '</span></div>';
       }).join('') + '</div>' +
@@ -209,37 +243,54 @@
       '</div>';
   }
 
-  function renderExperience(p, productIndex) {
-    var x = p.experience || {}, roles = arr(x.roles);
+  // Experience as a colour-coded timeline: every role's headline is visible at once (for scanning);
+  // the full achievements expand per role. The first (current) role starts open.
+  function renderExperience(p, productIndex, arenaById) {
+    var x = p.experience || {}, roles = arr(x.roles), trackById = {};
+    arr(x.tracks).forEach(function (t) { trackById[t.id] = t; });
     set('exp-title', esc(x.title));
     set('exp-sub', esc(x.subtitle));
-    set('exp-tabs', roles.map(function (r, i) {
-      var k = slug(r.tab || r.company, i);
-      return '<button class="exp-tab" type="button" role="tab" id="t-' + k + '" aria-controls="x-' + k + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '"><b>' + esc(r.tab || r.company) + '</b><span>' + esc(r.period) + '</span></button>';
-    }).join(''));
-    set('exp-panels', roles.map(function (r, i) {
-      var k = slug(r.tab || r.company, i);
+    var used = arr(x.tracks).filter(function (t) { return roles.some(function (r) { return r.track === t.id; }); });
+    set('exp-legend', used.map(function (t) {
+      return '<li' + colorVar('--track', t.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(t.label) + '</li>';
+    }).join('')).hidden = !used.length;
+    set('exp-timeline', roles.map(function (r, i) {
+      var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = i === 0;
+      var bullets = arr(r.bullets);
       var rel = arr(r.related).map(function (id) {
-        var prod = productIndex[slug(id)];
-        return prod ? '<a href="#p-' + esc(slug(id)) + '">' + esc(prod.name) + '</a>' : '';
+        var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
+        return prod ? '<a href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean);
-      return '<div class="exp-panel" role="tabpanel" id="x-' + k + '" aria-labelledby="t-' + k + '" tabindex="0"' + (i ? ' hidden' : '') + '>' +
-        '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
-        (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
-        (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
-        (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
-        (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
-        (arr(r.bullets).length ? '<ul class="exp-list">' + arr(r.bullets).map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul>' : '') +
-        (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join(' · ') + '</p>' : '') +
-        '</div>';
+      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '"' + colorVar('--track', t.color) + '>' +
+        '<span class="tl-period">' + esc(r.period) + '</span>' +
+        '<div class="tl-card">' +
+          (t.label ? '<span class="tl-track">' + esc(t.label) + '</span>' : '') +
+          '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
+          (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
+          (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
+          (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
+          (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
+          (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join('') + '</p>' : '') +
+          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="' + open + '" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
+            '<span class="tl-label">' + (open ? 'Hide achievements' : 'Show ' + bullets.length + ' achievements') + '</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button>' +
+            '<div class="tl-body" id="tb-' + k + '"' + (open ? '' : ' inert') + '><div class="tl-inner"><ul class="exp-list">' +
+            bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
+        '</div>' +
+      '</li>';
     }).join(''));
   }
 
   function renderRest(p) {
     var s = p.skills || {}, links = p.links || {};
     set('skills-title', esc(s.title));
-    set('skills', arr(s.groups).map(function (g) {
-      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills">' + arr(g.items).map(function (t) { return '<li class="pill">' + esc(t) + '</li>'; }).join('') + '</ul></div>';
+    // Top skills first; the rest sit behind a "+N more" toggle so each group stays scannable.
+    var TOP = 6;
+    set('skills', arr(s.groups).map(function (g, gi) {
+      var items = arr(g.items), extra = items.length - TOP;
+      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills" id="sk-' + gi + '">' + items.map(function (t, i) {
+        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + esc(t) + '</li>';
+      }).join('') + '</ul>' +
+      (extra > 0 ? '<button type="button" class="pill-more" aria-expanded="false" aria-controls="sk-' + gi + '" data-more="+' + extra + ' more">+' + extra + ' more</button>' : '') + '</div>';
     }).join(''));
 
     var w = p.writing || {};
@@ -258,8 +309,8 @@
     if (links.email) cl += '<a class="btn btn-light" href="mailto:' + esc(links.email) + '">' + icon('i-mail') + esc(links.email) + '</a>';
     if (links.linkedin) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.linkedin)) + '" target="_blank" rel="noopener">' + icon('i-in') + 'LinkedIn</a>';
     if (links.github) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.github)) + '" target="_blank" rel="noopener">' + icon('i-gh') + 'GitHub</a>';
-    if (links.resume) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.resume)) + '" target="_blank" rel="noopener">' + icon('i-doc') + 'Résumé (PDF)</a>';
-    if (links.portfolio) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.portfolio)) + '" target="_blank" rel="noopener">' + icon('i-doc') + 'Portfolio (PDF)</a>';
+    if (links.resume) cl += docLink(links.resume, 'btn btn-doc', 'Résumé (PDF)');
+    if (links.portfolio) cl += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio (PDF)');
     set('contact-links', cl);
     set('foot-name', esc((p.person || {}).name) + ((p.person || {}).location ? ' · ' + esc(p.person.location) : ''));
 
@@ -270,18 +321,20 @@
   }
 
   function render(c) {
-    var productIndex = {};
+    var productIndex = {}, arenaById = {};
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
+    arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
     renderHero(c.profile, arr(c.products.products).length);
+    renderSnapshot(c.profile);
     renderAbout(c.profile);
     renderApproach(c.profile);
     renderGlance(c.products);
     renderProducts(c.products);
     renderEcosystem(c.products);
-    renderExperience(c.profile, productIndex);
+    renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .exp-shell, .skill-card, .card, .contact h2, .contact-row')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row')
       .forEach(function (el) { el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -369,25 +422,26 @@
       });
     });
 
-    var tabs = [].slice.call(document.querySelectorAll('.exp-tab'));
-    function activate(tab, focus) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-        t.tabIndex = on ? 0 : -1;
-        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    // Experience timeline: each role's achievements expand in place (height animates in CSS).
+    document.querySelectorAll('.tl-toggle').forEach(function (btn) {
+      var item = btn.closest('.tl-item'), body = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.addEventListener('click', function () {
+        var open = !item.classList.contains('open');
+        item.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.querySelector('.tl-label').textContent = open ? 'Hide achievements' : 'Show ' + btn.dataset.n + ' achievements';
+        if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
       });
-      if (focus) tab.focus();
-    }
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () { activate(tab, false); });
-      tab.addEventListener('keydown', function (e) {
-        var next = null;
-        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
-        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
-        else if (e.key === 'Home') next = tabs[0];
-        else if (e.key === 'End') next = tabs[tabs.length - 1];
-        if (next) { e.preventDefault(); activate(next, true); }
+    });
+
+    // Skills: "+N more" reveals the rest of a group.
+    document.querySelectorAll('.pill-more').forEach(function (btn) {
+      var list = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') !== 'true';
+        list.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.textContent = open ? 'Show fewer' : btn.dataset.more;
       });
     });
 

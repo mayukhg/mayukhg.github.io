@@ -2,23 +2,38 @@
   "site": {
     "sections": [
       "top",
+      "snapshot",
+      "products",
+      "experience",
+      "ecosystem",
       "about",
       "approach",
-      "products",
-      "ecosystem",
-      "experience",
       "skills",
       "education",
       "contact"
     ],
     "slots": [
+      "nav-resume",
       "badge",
       "name",
       "role",
       "lede",
       "hero-cta",
+      "cta-note",
       "portrait",
       "stats",
+      "snapshot-title",
+      "snapshot",
+      "products-title",
+      "products-sub",
+      "glance",
+      "filters",
+      "products",
+      "exp-title",
+      "exp-sub",
+      "exp-legend",
+      "exp-timeline",
+      "ecosystem",
       "about-title",
       "about-body",
       "facts",
@@ -27,30 +42,20 @@
       "steps",
       "throughline",
       "principles",
-      "products-title",
-      "products-sub",
-      "glance",
-      "filters",
-      "products",
-      "ecosystem",
-      "exp-title",
-      "exp-sub",
-      "exp-tabs",
-      "exp-panels",
       "skills-title",
       "skills",
-      "writing",
       "education",
+      "writing",
       "contact-title",
       "contact-text",
       "contact-links",
       "foot-name"
     ],
     "navLinks": [
-      "about",
-      "approach",
       "products",
       "experience",
+      "about",
+      "approach",
       "skills",
       "contact",
       "top"
@@ -61,8 +66,12 @@
       "role",
       "lede",
       "hero-cta",
+      "cta-note",
+      "nav-resume",
       "portrait",
       "stats",
+      "snapshot-title",
+      "snapshot",
       "about-title",
       "about-body",
       "facts",
@@ -79,8 +88,8 @@
       "ecosystem",
       "exp-title",
       "exp-sub",
-      "exp-tabs",
-      "exp-panels",
+      "exp-legend",
+      "exp-timeline",
       "skills-title",
       "skills",
       "writing",
@@ -205,6 +214,11 @@
         "type": "path"
       },
       {
+        "key": "resumeUpdated",
+        "label": "Résumé last updated",
+        "type": "string"
+      },
+      {
         "key": "portfolio",
         "label": "Portfolio PDF",
         "type": "path"
@@ -223,6 +237,46 @@
         "key": "label",
         "label": "Label",
         "type": "string"
+      },
+      {
+        "key": "snapshot",
+        "label": "60-second snapshot",
+        "type": "object"
+      },
+      {
+        "key": "title",
+        "label": "Heading",
+        "type": "string"
+      },
+      {
+        "key": "groups",
+        "label": "Groups (columns)",
+        "type": "array"
+      },
+      {
+        "key": "name",
+        "label": "Group name",
+        "type": "string"
+      },
+      {
+        "key": "tone",
+        "label": "Colour",
+        "type": "select"
+      },
+      {
+        "key": "items",
+        "label": "Rows",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "type": "md"
       },
       {
         "key": "about",
@@ -320,18 +374,43 @@
         "type": "text"
       },
       {
+        "key": "tracks",
+        "label": "Career tracks (timeline colours)",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Track ID",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "color",
+        "label": "Colour",
+        "type": "color"
+      },
+      {
         "key": "roles",
-        "label": "Roles (first = shown first)",
+        "label": "Roles (first = shown first, and starts expanded)",
         "type": "array"
       },
       {
         "key": "tab",
-        "label": "Tab label",
+        "label": "Short name",
         "type": "string"
       },
       {
+        "key": "track",
+        "label": "Career track",
+        "type": "select"
+      },
+      {
         "key": "period",
-        "label": "Tab years",
+        "label": "Timeline years",
         "type": "string"
       },
       {
@@ -560,6 +639,16 @@
         "type": "md"
       },
       {
+        "key": "headline",
+        "label": "Headline outcome",
+        "type": "md"
+      },
+      {
+        "key": "evidence",
+        "label": "Outcome evidence",
+        "type": "select"
+      },
+      {
         "key": "client",
         "label": "Implemented for",
         "type": "string"
@@ -668,6 +757,11 @@
         "key": "spine",
         "label": "Callout",
         "type": "md"
+      },
+      {
+        "key": "evidence",
+        "label": "Metrics evidence",
+        "type": "select"
       },
       {
         "key": "opportunity",

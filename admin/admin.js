@@ -21,6 +21,9 @@
     ['trend', 'Trend / growth'], ['alert', 'Alert'], ['globe', 'Globe / trade'], ['bank', 'Bank / finance'], ['bolt', 'Lightning'],
     ['search', 'Search'], ['layers', 'Layers / platform']];
 
+  var SNAPSHOT_TONES = [['fit', 'Green — role fit'], ['impact', 'Violet — leadership & impact'], ['logistics', 'Slate — logistics']];
+  var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production']];
+
   var PROFILE_SCHEMA = [
     S('person', 'Basics', 'object', { section: true, open: true, fields: [
       S('name', 'Full name', 'string', { required: true }),
@@ -38,11 +41,22 @@
       S('linkedin', 'LinkedIn URL', 'url'),
       S('github', 'GitHub URL', 'url'),
       S('resume', 'Résumé PDF', 'path', { hint: 'Leave as resume.pdf; upload a new file on the Files tab. Empty hides the résumé buttons.' }),
+      S('resumeUpdated', 'Résumé last updated', 'string', { hint: 'e.g. “Sep 2026” — shown under the hero buttons. Empty hides the note.' }),
       S('portfolio', 'Portfolio PDF', 'path', { hint: 'Set automatically when you upload a portfolio PDF. Empty hides the buttons.' })
     ] }),
     S('stats', 'Headline numbers', 'array', { section: true, desc: 'The big numbers under the hero. Four fit best.', itemTitle: function (x) { return x.value; }, fields: [
       S('value', 'Number', 'string', { required: true, hint: 'e.g. $2M+' }),
       S('label', 'Label', 'string', { required: true })
+    ] }),
+    S('snapshot', '60-second snapshot', 'object', { section: true, desc: 'The colour-coded panel right under the hero: what a recruiter needs in one glance.', fields: [
+      S('title', 'Heading', 'string'),
+      S('groups', 'Groups (columns)', 'array', { itemTitle: function (x) { return x.name; }, fields: [
+        S('name', 'Group name', 'string', { required: true }),
+        S('tone', 'Colour', 'select', { options: function () { return SNAPSHOT_TONES; } }),
+        S('items', 'Rows', 'array', { itemTitle: function (x) { return x.label; }, fields: [
+          S('label', 'Label', 'string', { required: true }), S('value', 'Value', 'md', { required: true })
+        ] })
+      ] })
     ] }),
     S('about', 'About', 'object', { section: true, fields: [
       S('title', 'Heading', 'string', { required: true }),
@@ -59,9 +73,15 @@
     ] }),
     S('experience', 'Experience', 'object', { section: true, fields: [
       S('title', 'Heading', 'string'), S('subtitle', 'Sub-heading', 'text'),
-      S('roles', 'Roles (first = shown first)', 'array', { itemTitle: function (x) { return [x.title, x.company].filter(Boolean).join(' @ '); }, fields: [
-        S('tab', 'Tab label', 'string', { required: true, hint: 'Short name on the tab, e.g. “Qualys”.' }),
-        S('period', 'Tab years', 'string', { hint: 'e.g. 2021 – 2026' }),
+      S('tracks', 'Career tracks (timeline colours)', 'array', { desc: 'Each role is coloured by its track; the legend lists the tracks in use.', itemTitle: function (x) { return x.label; }, fields: [
+        S('id', 'Track ID', 'string', { required: true, check: 'trackId', hint: 'Lowercase letters, numbers and dashes.' }),
+        S('label', 'Label', 'string', { required: true }),
+        S('color', 'Colour', 'color')
+      ] }),
+      S('roles', 'Roles (first = shown first, and starts expanded)', 'array', { itemTitle: function (x) { return [x.title, x.company].filter(Boolean).join(' @ '); }, fields: [
+        S('tab', 'Short name', 'string', { required: true, hint: 'Used for the role’s link anchor, e.g. “Qualys”.' }),
+        S('track', 'Career track', 'select', { options: function () { return ((state.profile.experience || {}).tracks || []).map(function (t) { return [t.id, t.label || t.id]; }); } }),
+        S('period', 'Timeline years', 'string', { hint: 'e.g. 2021 – 2026' }),
         S('title', 'Job title', 'string', { required: true }),
         S('company', 'Company', 'string'),
         S('org', 'Team / location line', 'string'),
@@ -110,6 +130,8 @@
       S('icon', 'Summary card icon', 'select', { options: function () { return GLANCE_ICONS; } }),
       S('tagline', 'Summary card tagline', 'md', { hint: 'One short sentence for the “at a glance” card. Empty = uses the one-line summary.' }),
       S('summary', 'One-line summary', 'md', { required: true }),
+      S('headline', 'Headline outcome', 'md', { hint: 'Shown on the card before it is opened. Empty = the first “Value & outcomes” line.' }),
+      S('evidence', 'Outcome evidence', 'select', { options: function () { return EVIDENCE_OPTIONS; } }),
       S('client', 'Implemented for', 'string'),
       S('stack', 'Built with', 'lines', { hint: 'One technology per line.' }),
       S('github', 'GitHub link', 'url'),
@@ -130,6 +152,7 @@
         S('phase', 'Phase', 'string'), S('name', 'Product', 'string'), S('text', 'Text', 'md')
       ] }),
       S('spine', 'Callout', 'md'),
+      S('evidence', 'Metrics evidence', 'select', { options: function () { return EVIDENCE_OPTIONS; } }),
       S('opportunity', 'The opportunity', 'mdlines', { hint: 'One per line.' }),
       S('differentiator', 'The differentiator', 'mdlines', { hint: 'One per line.' }),
       S('metrics', 'Metrics', 'array', { itemTitle: function (x) { return x.value; }, fields: [
@@ -365,6 +388,7 @@
     $$('.field.invalid').forEach(function (el) { el.classList.remove('invalid'); var m = el.querySelector('.err-msg'); if (m) m.remove(); });
     var productIds = (state.products.products || []).map(function (p) { return p.id; });
     var arenaIds = (state.products.arenas || []).map(function (a) { return a.id; });
+    var trackIds = ((state.profile.experience || {}).tracks || []).map(function (t) { return t.id; });
     $$('.field').forEach(function (el) {
       var f = el._field; if (!f) return;
       var v = el._parent[f.key], msg = '';
@@ -373,10 +397,12 @@
       else if (!empty && f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg = 'Enter a valid email address.';
       else if (!empty && f.type === 'url' && !URL_RE.test(v)) msg = 'Enter a full link starting with https://';
       else if (!empty && f.type === 'path' && !(PATH_RE.test(v) || URL_RE.test(v))) msg = 'Use a file path like assets/file.pdf or a full https:// link.';
-      else if (!empty && (f.check === 'id' || f.check === 'productId') && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v)) msg = 'Use lowercase letters, numbers and dashes only.';
+      else if (!empty && (f.check === 'id' || f.check === 'productId' || f.check === 'trackId') && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v)) msg = 'Use lowercase letters, numbers and dashes only.';
       else if (!empty && f.check === 'productId' && productIds.filter(function (x) { return x === v; }).length > 1) msg = 'Another product already uses this ID.';
       else if (!empty && f.check === 'id' && arenaIds.filter(function (x) { return x === v; }).length > 1) msg = 'Another arena already uses this ID.';
+      else if (!empty && f.check === 'trackId' && trackIds.filter(function (x) { return x === v; }).length > 1) msg = 'Another track already uses this ID.';
       else if (!empty && f.type === 'select' && f.key === 'arena' && arenaIds.indexOf(v) === -1) msg = 'Choose an existing arena.';
+      else if (!empty && f.type === 'select' && f.key === 'track' && trackIds.indexOf(v) === -1) msg = 'Choose an existing career track.';
       else if (!empty && f.check === 'productIds') {
         var bad = v.filter(function (id) { return productIds.indexOf(id) === -1; });
         if (bad.length) msg = 'Unknown product ID: ' + bad.join(', ');

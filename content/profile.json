@@ -19,14 +19,35 @@
     "linkedin": "https://www.linkedin.com/in/mayukh-ghosh-310a327",
     "github": "https://github.com/mayukhg",
     "resume": "resume.pdf",
+    "resumeUpdated": "Sep 2026",
     "portfolio": "assets/portfolio.pdf"
   },
   "stats": [
-    { "value": "20+ yrs", "label": "B2B enterprise security & B2C consumer AI" },
+    { "value": "25-person", "label": "product & engineering team led, 94% retention" },
     { "value": "$2M+", "label": "capital secured for enterprise AI initiatives" },
     { "value": "70%", "label": "infrastructure spend cut via re-architecture" },
     { "value": "15+", "label": "enterprise pilots for Qualys Agentic AI in two quarters" }
   ],
+  "snapshot": {
+    "title": "The 60-second snapshot",
+    "groups": [
+      { "name": "Role fit", "tone": "fit", "items": [
+        { "label": "Current role", "value": "Director of Product Management, Qualys (since Feb 2026)" },
+        { "label": "Looking for", "value": "Director / VP Product in AI or security" },
+        { "label": "Domains", "value": "Agentic AI · Cybersecurity · Cloud platforms · Payments" }
+      ] },
+      { "name": "Leadership & impact", "tone": "impact", "items": [
+        { "label": "Experience", "value": "20+ years across product, platform and architecture" },
+        { "label": "Team led", "value": "25 people, 94% retention (BP)" },
+        { "label": "Funding won", "value": "$2M+ secured with C-suite ROI cases" }
+      ] },
+      { "name": "Logistics", "tone": "logistics", "items": [
+        { "label": "Based in", "value": "Pune, India" },
+        { "label": "Work mode", "value": "Hybrid" },
+        { "label": "Documents", "value": "[Résumé (PDF)](resume.pdf) · [Portfolio (PDF)](assets/portfolio.pdf)" }
+      ] }
+    ]
+  },
   "about": {
     "title": "A product leader for the agentic-AI era.",
     "paragraphs": [
@@ -38,6 +59,7 @@
       { "label": "Focus", "value": "Agentic AI & security platforms" },
       { "label": "Currently", "value": "Director of PM, Qualys" },
       { "label": "Based in", "value": "Pune, India" },
+      { "label": "Work mode", "value": "Hybrid" },
       { "label": "Experience", "value": "20+ years" },
       { "label": "Education", "value": "MBA (IT), Symbiosis · IIM Kozhikode (DS & AI)" },
       { "label": "Certified", "value": "AWS SA · AWS Security" }
@@ -64,9 +86,16 @@
   "experience": {
     "title": "Two decades behind the work.",
     "subtitle": "From test engineering to software architecture, cloud engineering leadership and product. Each step added depth I now use in AI platform decisions.",
+    "tracks": [
+      { "id": "product", "label": "Product leadership", "color": "#6d28d9" },
+      { "id": "engineering", "label": "Engineering leadership", "color": "#0369a1" },
+      { "id": "architecture", "label": "Architecture & consulting", "color": "#475569" },
+      { "id": "quality", "label": "Quality foundation", "color": "#a16207" }
+    ],
     "roles": [
       {
         "tab": "Qualys",
+        "track": "product",
         "period": "2026 – now",
         "title": "Director of Product Management",
         "company": "Qualys",
@@ -86,6 +115,7 @@
       },
       {
         "tab": "Fractional CPO",
+        "track": "product",
         "period": "2024 – now",
         "title": "Fractional CPO",
         "company": "Independent",
@@ -104,6 +134,7 @@
       },
       {
         "tab": "BP",
+        "track": "engineering",
         "period": "2021 – 2026",
         "title": "Head of Cloud Engineering",
         "company": "BP",
@@ -123,6 +154,7 @@
       },
       {
         "tab": "Amdocs",
+        "track": "architecture",
         "period": "2020 – 2021",
         "title": "Lead Principal Consultant",
         "company": "Amdocs",
@@ -140,6 +172,7 @@
       },
       {
         "tab": "Western Union",
+        "track": "architecture",
         "period": "2018 – 2020",
         "title": "Technical Architect, Payments Products",
         "company": "Western Union",
@@ -156,6 +189,7 @@
       },
       {
         "tab": "Pitney Bowes",
+        "track": "architecture",
         "period": "2013 – 2018",
         "title": "Software Architect",
         "company": "Pitney Bowes",
@@ -171,6 +205,7 @@
       },
       {
         "tab": "Early career",
+        "track": "quality",
         "period": "2005 – 2013",
         "title": "Quality & test foundation",
         "company": "",
