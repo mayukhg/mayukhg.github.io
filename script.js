@@ -195,7 +195,7 @@
     }).join(''));
   }
 
-  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers'];
+  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers', 'heart'];
   function renderGlance(d) {
     var o = d.overview || {}, products = arr(d.products), el = slot('glance');
     if (o.show === false || !products.length) { el.hidden = true; el.innerHTML = ''; return; }

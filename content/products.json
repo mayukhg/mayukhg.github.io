@@ -245,6 +245,40 @@
         "Solves thin-file cold-start via shared learning"
       ],
       "note": "Status: targeted for launch in select markets."
+    },
+    {
+      "id": "ellyra-pulse",
+      "name": "Ellyra Pulse",
+      "arena": "applied",
+      "kicker": "Applied AI · Healthcare",
+      "icon": "heart",
+      "tagline": "Safety-gated patient sentiment for a medical AI: PHI-safe, clinical trust first.",
+      "summary": "Safety-gated NPS and sentiment intelligence for a medical AI companion. Safety signals reach a clinician in minutes, not a weekly report.",
+      "headline": "Safety-flagged detractors: 15-min SLA vs. 24h, with automatic clinical on-call paging",
+      "evidence": "",
+      "client": "Ellyra Health",
+      "stack": [
+        "React 19 + TypeScript",
+        "TanStack Start",
+        "PostgreSQL",
+        "JWT + HMAC-signed ingest",
+        "PagerDuty webhook",
+        "Vitest"
+      ],
+      "github": "https://github.com/mayukhg/ellyra-pulse",
+      "demo": "",
+      "pain": "One aggregate NPS hides three very different failures: a UI annoyance, a cold tone, or an AI answer that broke someone's trust in their own care. Verbatims routinely carry PHI, and a genuine safety miss (a misread decimal on a blood panel) sits in a weekly report instead of reaching a clinician in minutes.",
+      "bet": "A feedback pipeline where a clinical risk gate runs before any survey fires, PHI is redacted before storage or any model call, and aspect-level sentiment separates detractor volume from detractor severity. Safety signals page clinical on-call instead of becoming one more dashboard row.",
+      "whyLabel": "Why AI is the right call",
+      "why": "Medical verbatims are unstructured and multi-aspect: “accurate, but felt cold” is two signals. Aspect-based sentiment across clinical trust, tone, OCR quality and actionability surfaces the rare, trust-breaking failures a theme-frequency count buries. Safety routing stays deterministic: models add evidence, never gate a P0.",
+      "tradeoff": "Chose an auditable, rule-based safety gate over a smarter LLM classifier, and shipped schema, routing and dashboard before deeper analysis (SHAP drivers, root-cause quadrant). A clinician must be able to see exactly why a case was paged.",
+      "validated": "Ellyra's clinical and product teams. An NPS score that can't tell a UI gripe from a broken-trust safety miss, plus PHI in free-text feedback, drove the pre-survey risk gate and redact-before-storage design.",
+      "outcomes": [
+        "Safety-flagged detractors: 15-min SLA vs. 24h, with automatic clinical on-call paging",
+        "Targets: anxiety relief >75%, comprehension >85%, inaccuracy flags <0.2%",
+        "Roadmap: medical NER redaction, live UI-to-API wiring, SHAP driver analysis"
+      ],
+      "note": ""
     }
   ],
   "ecosystem": {

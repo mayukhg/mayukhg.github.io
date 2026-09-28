@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Mayukh Ghosh · Product Leader, Agentic AI & Cybersecurity",
-    "description": "Director of Product Management with 20+ years across AI-enabled analytics, payments and enterprise security. Seven AI products built from real customer problems across security, trade and finance."
+    "description": "Director of Product Management with 20+ years across AI-enabled analytics, payments and enterprise security. Eight AI products built from real customer problems across security, trade, finance and healthcare."
   },
   "person": {
     "name": "Mayukh Ghosh",
@@ -60,7 +60,7 @@
           },
           {
             "label": "Domains",
-            "value": "Agentic & GenAI · Enterprise security · Payments · B2B & B2C"
+            "value": "Agentic & GenAI · Enterprise security · Payments · Healthcare · B2B & B2C"
           },
           {
             "label": "Edge",
@@ -269,7 +269,9 @@
           "Advised a B2B AgriTech & Crop Insurance platform on the LLM and RAG architecture behind its self-service farmer query product, cutting cost per query by **35%** while scaling to **50K+** queries monthly.",
           "Designed responsible AI compliance protocols aligned to NIST and the EU AI Act, institutionalising a “Trust by Design” framework across 2 client engagements."
         ],
-        "related": []
+        "related": [
+          "ellyra-pulse"
+        ]
       },
       {
         "tab": "BP",

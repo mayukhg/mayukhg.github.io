@@ -111,6 +111,7 @@
       "bank",
       "bolt",
       "search",
+      "heart",
       "layers"
     ]
   },
@@ -840,6 +841,11 @@
       {
         "id": "kyc",
         "name": "KYC-as-a-Service",
+        "arena": "applied"
+      },
+      {
+        "id": "ellyra-pulse",
+        "name": "Ellyra Pulse",
         "arena": "applied"
       }
     ],

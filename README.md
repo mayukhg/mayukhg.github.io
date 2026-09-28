@@ -3,7 +3,7 @@
 A fast, accessible, single-page portfolio for **Mayukh Ghosh**, Director of Product Management (Agentic AI & Cybersecurity). It covers:
 
 - a "60-second snapshot" for recruiters, with the résumé and portfolio one click away from anywhere on the page
-- seven AI product case studies
+- eight AI product case studies
 - the AI Defense Ecosystem platform story
 - two decades of experience on a colour-coded career timeline
 

@@ -19,7 +19,7 @@
 
   var GLANCE_ICONS = [['shield', 'Shield'], ['target', 'Target'], ['chip', 'Chip / AI'], ['wrench', 'Wrench / tools'], ['grid', 'Grid / modules'],
     ['trend', 'Trend / growth'], ['alert', 'Alert'], ['globe', 'Globe / trade'], ['bank', 'Bank / finance'], ['bolt', 'Lightning'],
-    ['search', 'Search'], ['layers', 'Layers / platform']];
+    ['search', 'Search'], ['layers', 'Layers / platform'], ['heart', 'Heart / health']];
 
   var SNAPSHOT_TONES = [['fit', 'Green — role fit'], ['impact', 'Violet — leadership & impact'], ['logistics', 'Slate — logistics']];
   var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production']];
