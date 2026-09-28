@@ -44,7 +44,7 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 │   ├── index.html
 │   ├── admin.js
 │   └── admin.css
-├── assets/                 # Headshot, social share card, self-hosted fonts, uploaded PDFs
+├── assets/                 # Headshot, social share card, self-hosted fonts, portfolio.pdf
 ├── resume.pdf              # Downloadable résumé (phone number removed)
 ├── 404.html · robots.txt · sitemap.xml · .nojekyll
 ├── .githooks/pre-commit     # Runs the regression suite before every commit

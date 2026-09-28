@@ -19,12 +19,12 @@
     "linkedin": "https://www.linkedin.com/in/mayukh-ghosh-310a327",
     "github": "https://github.com/mayukhg",
     "resume": "resume.pdf",
-    "portfolio": ""
+    "portfolio": "assets/portfolio.pdf"
   },
   "stats": [
     { "value": "20+ yrs", "label": "B2B enterprise security & B2C consumer AI" },
     { "value": "$2M+", "label": "capital secured for enterprise AI initiatives" },
-    { "value": "Up to 85%", "label": "infrastructure spend cut via re-architecture" },
+    { "value": "70%", "label": "infrastructure spend cut via re-architecture" },
     { "value": "15+", "label": "enterprise pilots for Qualys Agentic AI in two quarters" }
   ],
   "about": {

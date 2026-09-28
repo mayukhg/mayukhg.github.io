@@ -298,7 +298,8 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
     products: productsJSON.products.length, glance: productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
     roles: profileJSON.experience.roles.length, panels: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
-    edu: profileJSON.education.length, contact: 4 };
+    edu: profileJSON.education.length,
+    contact: 1 + ['linkedin', 'github', 'resume', 'portfolio'].filter((k) => profileJSON.links[k]).length };
   for (const k in exp) eq(counts[k], exp[k], `${k} count`);
   note(Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(', '));
   await context.close();
