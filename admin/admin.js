@@ -58,7 +58,7 @@
       S('value', 'Number', 'string', { required: true, hint: 'e.g. $2M+' }),
       S('label', 'Label', 'string', { required: true }),
       S('company', 'Company', 'string', { hint: 'Shown as a tag on the number, e.g. Qualys.' }),
-      S('status', 'Status', 'select', { options: function () { return [['direct', 'Direct'], ['pipeline', 'Pipeline'], ['production', 'In production']]; } }),
+      S('status', 'Status', 'select', { options: function () { return [['capital', 'Capital'], ['pipeline', 'Pipeline'], ['market', 'Time-to-Market'], ['org', 'Org'], ['direct', 'Direct'], ['production', 'In production']]; } }),
       S('statusLabel', 'Status label', 'string', { hint: 'Short tag, e.g. Pipeline or In production.' })
     ] }),
     S('snapshot', '60-second snapshot', 'object', { section: true, desc: 'The colour-coded panel right under the hero: what a recruiter needs in one glance.', fields: [

@@ -38,32 +38,32 @@
   },
   "stats": [
     {
-      "value": "3 PMs",
-      "label": "Team led and coached now",
-      "company": "Qualys",
-      "status": "direct",
-      "statusLabel": "Direct"
+      "value": "$2M+",
+      "label": "Enterprise AI funding secured across 15+ BUs",
+      "company": "BP",
+      "status": "capital",
+      "statusLabel": "Capital"
     },
     {
       "value": "$1.5M",
-      "label": "POC pipeline, not booked revenue",
+      "label": "Agentic AI PoC pipe; 40% pilot conversion",
       "company": "Qualys",
       "status": "pipeline",
       "statusLabel": "Pipeline"
     },
     {
-      "value": "$2.4M",
-      "label": "Annual savings, policy automation",
+      "value": "20%",
+      "label": "Faster cloud time-to-market via AI framework",
       "company": "BP",
-      "status": "production",
-      "statusLabel": "In production"
+      "status": "market",
+      "statusLabel": "Time-to-Market"
     },
     {
-      "value": "15+",
-      "label": "Enterprise pilots in two quarters",
-      "company": "Qualys",
-      "status": "pipeline",
-      "statusLabel": "Pilots"
+      "value": "25+",
+      "label": "Cross-functional team led; 94% retention rate",
+      "company": "BP & Qualys",
+      "status": "org",
+      "statusLabel": "Org"
     }
   ],
   "snapshot": {

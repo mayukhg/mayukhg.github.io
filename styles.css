@@ -158,9 +158,11 @@ section{padding:100px 0;position:relative;}
 .stat-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .tag-co,.tag-st{font-size:.68rem;font-weight:700;line-height:1.4;padding:1px 7px;border-radius:4px;}
 .tag-co{background:rgba(255,255,255,.08);color:#e2e8f0;}
-.tag-direct{color:#e9d5ff;border:1px solid #a78bfa;}
+.tag-direct,.tag-org{color:#e9d5ff;border:1px solid #a78bfa;}
 .tag-pipeline{color:#bfdbfe;border:1px solid #60a5fa;}
 .tag-production{color:#86efac;border:1px solid #16a34a;background:rgba(22,163,74,.15);}
+.tag-capital{color:#fde68a;border:1px solid #fbbf24;}
+.tag-market{color:#99f6e4;border:1px solid #2dd4bf;}
 .stat .l{display:block;margin-top:6px;font-size:.84rem;color:#98a7bc;line-height:1.45;}
 
 /* ---------- 60-second snapshot ---------- */
