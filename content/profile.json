@@ -1,17 +1,17 @@
 {
   "meta": {
     "title": "Mayukh Ghosh · Product Leader, Agentic AI & Cybersecurity",
-    "description": "Director of Product Management with 20+ years across AI-enabled analytics, payments and enterprise security. Eight AI products built from real customer problems across security, trade, finance and healthcare."
+    "description": "Product leader architecting AI systems that earn trust. Director of Product Management with 20+ years across security, payments, analytics and healthcare. Trust, verifiability and closed-loop governance gate adoption, not raw model capability."
   },
   "person": {
     "name": "Mayukh Ghosh",
-    "headline": "Director of Product Management",
+    "headline": "Product Leader",
     "tags": [
       "Agentic AI",
       "Cybersecurity"
     ],
-    "badge": "Director-level AI product leadership",
-    "lede": "I build AI products from real customer problems, and use AI only where it beats a simpler option. At **Qualys** I lead and coach a team of **3 PMs** that took our Agentic AI security suite from pilots to general availability, building a **$1.5M POC pipeline**. Before that, at **BP**, I secured **$2M+** for enterprise AI and built the “AI Defense Ecosystem” used across **15+ business units**.",
+    "badge": "Architecting the moat of trust",
+    "lede": "I architect AI systems that earn trust before they earn adoption. Raw model capability is a commodity. The moat is verifiability, a closed loop, and a human still in the path. At **Qualys** I lead **3 PMs** taking an Agentic AI security suite to general availability (**$1.5M POC pipeline**, **40%** of pilots became paid PoCs). At **BP** I secured **$2M+** and built the AI Defense Ecosystem across **15+ business units**.",
     "location": "Pune, India",
     "portraitCaption": "20+ years · Product & Platform",
     "photo": "assets/mayukh.jpg",
@@ -31,10 +31,57 @@
     "domains": [
       { "id": "security", "label": "Security" },
       { "id": "payments", "label": "Payments" },
-      { "id": "analytics", "label": "Analytics" }
+      { "id": "analytics", "label": "Analytics" },
+      { "id": "healthcare", "label": "Healthcare" }
     ],
     "mode": "Remote / Hybrid",
     "notice": "30-day notice"
+  },
+  "trust": {
+    "line": "Trust, verifiability, and closed-loop governance are the gating requirements for AI adoption, not raw model capability.",
+    "traits": [
+      {
+        "label": "Judgment",
+        "text": "LLMs only for reasoning. Statistical detection and deterministic rules where they are cheaper and safer."
+      },
+      {
+        "label": "Cross-domain rigor",
+        "text": "$10M+ risk exposure at BP, MCP workflows at Qualys, and compliance across NIST, the EU AI Act, and clinical safety."
+      },
+      {
+        "label": "Shipping",
+        "text": "Golden datasets, RAGAS groundedness above 0.90, and zero-install builds. Compliance runs in the pipeline."
+      }
+    ]
+  },
+  "pillars": {
+    "eyebrow": "Where the moat is built",
+    "title": "Three pillars of trust-first AI",
+    "subtitle": "Raw model capability sits in the center, and it is a commodity. The defensible layer is orchestration plus a trust architecture a regulated buyer can audit.",
+    "spine": "Multi-model orchestration is the ring. Trust-first architecture is the moat around it.",
+    "items": [
+      {
+        "id": "clinical",
+        "name": "Clinical safety",
+        "org": "Ellyra & Western Union",
+        "proof": "Safety-flagged patient signals page clinical on-call in 15 minutes, not a weekly NPS report. KYC scoring stays verifiable and private.",
+        "products": ["ellyra-pulse", "kyc"]
+      },
+      {
+        "id": "enterprise",
+        "name": "Enterprise trust",
+        "org": "BP",
+        "proof": "$2M+ secured for enterprise AI. Policy review cut from 1–3 weeks to 30 minutes ($2.4M annual savings). SOC mean time to triage cut by more than 60%.",
+        "products": ["policy-foundry", "soc-portal", "ai-spm"]
+      },
+      {
+        "id": "agentic",
+        "name": "Agentic tool safety",
+        "org": "Qualys",
+        "proof": "$1.5M POC pipeline, with 40% of pilots becoming paid proofs of concept. Agents act only through governed MCP tools, with a human approving each fix.",
+        "products": ["mcp", "copilot"]
+      }
+    ]
   },
   "stats": [
     {
@@ -77,7 +124,7 @@
           { "label": "Open to", "value": "Director, AI product" },
           { "label": "Domains", "value": "Security · Payments · Analytics · Healthcare" },
           { "label": "Markets", "value": "B2B enterprise and B2C" },
-          { "label": "Edge", "value": "Architect who still prototypes. NIST and EU AI Act built in." }
+          { "label": "Edge", "value": "Judgment, cross-domain rigor, and shipping. Trust is engineered into the pipeline." }
         ]
       },
       {
@@ -104,7 +151,7 @@
     ]
   },
   "about": {
-    "title": "A product leader for the agentic-AI era.",
+    "title": "Architecting AI systems that earn trust.",
     "paragraphs": [
       "I've spent **20+ years across AI-enabled analytics, payments and enterprise security**, building for both **B2B enterprise and B2C consumer** markets. A hands-on cloud engineering and systems-architecture background lets me evaluate platform trade-offs and win CXO-level buy-in, not just spec features.",
       "My career started in **test and quality**: risk-based test frameworks, automated execution and API-level verification. That shows up today in how I run **AI evaluation, success metrics and production monitoring**: golden datasets, guardrails and pass/fail thresholds before anything goes GA.",
@@ -146,8 +193,34 @@
     ]
   },
   "approach": {
-    "title": "From ideation to business & user value.",
-    "subtitle": "The process I run on every product. It starts from the customer's problem, not the technology.",
+    "title": "The AI PM paradigm I actually run.",
+    "subtitle": "Industry default starts with the model. I start with the customer's pain and put trust in the pipeline.",
+    "contrast": [
+      {
+        "default": "Starts with model capability",
+        "mine": "Starts with customer pain, and picks ML or rules where they are cheaper"
+      },
+      {
+        "default": "Treats trust as a policy document",
+        "mine": "Engineers compliance and redaction into the pipeline"
+      },
+      {
+        "default": "Optimizes engagement and vanity NPS",
+        "mine": "Invents domain-specific trust and safety measures"
+      },
+      {
+        "default": "Builds read-only dashboards",
+        "mine": "Builds closed-loop action engines and MCP tool rails"
+      },
+      {
+        "default": "Prioritizes by ticket volume",
+        "mine": "Prioritizes by severity and tail-risk impact"
+      },
+      {
+        "default": "Ships slideware",
+        "mine": "Delivers a working, zero-install build"
+      }
+    ],
     "steps": [
       {
         "title": "Ideate & Frame",
@@ -197,17 +270,17 @@
       {
         "id": "product",
         "label": "Product leadership",
-        "color": "#6d28d9"
+        "color": "#c4b5fd"
       },
       {
         "id": "architecture",
         "label": "Architecture & consulting",
-        "color": "#475569"
+        "color": "#cbd5e1"
       },
       {
         "id": "quality",
         "label": "Quality foundation",
-        "color": "#a16207"
+        "color": "#fbbf24"
       }
     ],
     "roles": [
@@ -493,7 +566,7 @@
     }
   ],
   "contact": {
-    "title": "Let's build AI that earns trust.",
-    "text": "I'm interested in Director-level AI product leadership roles in enterprise security, payments and analytics, where the hard problems are trust, adoption and turning capability into outcomes."
+    "title": "Open to Director of Product.",
+    "text": "Security, payments, analytics and healthcare. Based in Pune. Remote or hybrid. 30-day notice. The work I want is the same moat: trust, verifiability, and closed-loop governance that turns model capability into something a regulated buyer will adopt."
   }
 }

@@ -1,6 +1,6 @@
 {
-  "title": "Product portfolio",
-  "subtitle": "Filter by the domain on the requisition. Each card leads with the outcome and the decision. Stack and GitHub stay inside the case.",
+  "title": "Eight products, one moat",
+  "subtitle": "Filter by the domain on the requisition. Every case leads with the outcome and the decision that made it adoptable. Stack and GitHub stay inside the case.",
   "overview": {
     "show": false,
     "eyebrow": "Portfolio at a glance",
@@ -10,24 +10,24 @@
     {
       "id": "defence",
       "label": "AI Defense Ecosystem",
-      "color": "#4338ca"
+      "color": "#a5b4fc"
     },
     {
       "id": "agentic",
       "label": "Agentic Platform",
-      "color": "#0f766e"
+      "color": "#5eead4"
     },
     {
       "id": "applied",
       "label": "Applied AI",
-      "color": "#be123c"
+      "color": "#fb7185"
     }
   ],
   "domains": [
-    { "id": "security", "label": "Security", "color": "#4338ca" },
-    { "id": "payments", "label": "Payments", "color": "#be123c" },
-    { "id": "healthcare", "label": "Healthcare", "color": "#0f766e" },
-    { "id": "trade", "label": "Trade", "color": "#a16207" }
+    { "id": "security", "label": "Security", "color": "#a5b4fc" },
+    { "id": "payments", "label": "Payments", "color": "#fb7185" },
+    { "id": "healthcare", "label": "Healthcare", "color": "#5eead4" },
+    { "id": "trade", "label": "Trade", "color": "#fbbf24" }
   ],
   "products": [
     {
@@ -352,5 +352,107 @@
       }
     ],
     "note": ""
+  },
+  "flagship": {
+    "productId": "ellyra-pulse",
+    "eyebrow": "Flagship teardown",
+    "title": "Ellyra Pulse: safety gates the pipeline",
+    "subtitle": "A medical AI companion where one NPS number hides a UI gripe, a cold tone, and a broken-trust safety miss. Verbatims carry PHI. A decimal misread on a blood panel cannot wait for a weekly report.",
+    "thesis": "Safety gates the pipeline, not the other way around.",
+    "panels": [
+      {
+        "id": "kpis",
+        "label": "Trust KPIs",
+        "kicker": "Vanity NPS is the wrong instrument",
+        "text": "An NPS dip cannot tell a palette change from an answer that broke someone's trust in their own care. Ellyra's targets measure clinical trust directly. They are targets, not production results.",
+        "kpis": [
+          {
+            "name": "Anxiety relief",
+            "target": ">75%",
+            "note": "Emotional stabilization after triage."
+          },
+          {
+            "name": "Comprehension",
+            "target": ">85%",
+            "note": "Whether the person retained what the answer meant."
+          },
+          {
+            "name": "Inaccuracy flags",
+            "target": "<0.2%",
+            "note": "Clinical accuracy guardrail. Models add evidence. They never gate a P0."
+          }
+        ]
+      },
+      {
+        "id": "severity",
+        "label": "Severity first",
+        "kicker": "Break the volume trap",
+        "text": "In ordinary SaaS, the roadmap follows ticket volume. In clinical AI that heuristic is unsafe. A rare, high-severity miss outranks a pile of styling complaints.",
+        "zones": [
+          {
+            "tone": "p0",
+            "volume": "Low volume",
+            "severity": "High severity",
+            "title": "Decimal misread on a blood panel",
+            "text": "The P0 zone. It pages clinical on-call. It does not wait in a weekly theme report."
+          },
+          {
+            "tone": "backlog",
+            "volume": "High volume",
+            "severity": "Low severity",
+            "title": "UI styling complaints",
+            "text": "Real, and backlogged. Volume is not the same thing as tail risk."
+          }
+        ]
+      },
+      {
+        "id": "privacy",
+        "label": "Privacy pipeline",
+        "kicker": "Compliance is a pipeline stage",
+        "text": "PHI is redacted before storage and before any model call. A rule-based risk filter runs before routing. The clinician can see exactly why a case was paged.",
+        "stages": [
+          {
+            "name": "Ingest",
+            "text": "Raw, unstructured patient verbatim."
+          },
+          {
+            "name": "Safety gate",
+            "text": "Deterministic risk filter. It runs before any routing or model call."
+          },
+          {
+            "name": "Redact",
+            "text": "Pattern matching swaps names, dates of birth, and other identifiers before storage."
+          },
+          {
+            "name": "Route",
+            "text": "Only the redacted text reaches sentiment analysis and the dashboard."
+          }
+        ]
+      },
+      {
+        "id": "loop",
+        "label": "Closed loop",
+        "kicker": "15-minute P0 path",
+        "text": "Read-only dashboards leave a safety miss in a report. This product changes the operational action from the risk level. Safety-flagged detractors: a 15-minute SLA and automatic clinical on-call paging, against a 24-hour path for everything else.",
+        "paths": [
+          {
+            "tone": "safety",
+            "name": "Safety flagged",
+            "text": "15-minute SLA. PagerDuty. Clinical on-call. The gate is rules, not a model."
+          },
+          {
+            "tone": "else",
+            "name": "Everything else",
+            "text": "24-hour path. Aspect sentiment separates a UI gripe from tone and from clinical trust, so volume cannot bury severity."
+          }
+        ]
+      },
+      {
+        "id": "simulator",
+        "label": "PM simulator",
+        "kicker": "Evaluate before you ship the prompt",
+        "text": "A local harness for the gate order. Nothing is uploaded. Redaction and the P0 check run in the browser, before any pretend classifier. This illustrates the sequence. It is not the production system."
+      }
+    ]
   }
 }

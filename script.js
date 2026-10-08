@@ -80,6 +80,14 @@
     set('role', '<b>' + esc(person.headline) + '</b>' + (arr(person.tags).length
       ? ' <span class="grp">' + arr(person.tags).map(function (t) { return '<span class="sep" aria-hidden="true"></span>' + esc(t); }).join('') + '</span>' : ''));
     set('lede', md(person.lede));
+    var trust = p.trust || {};
+    var thesisEl = set('thesis', trust.line ? md(trust.line) : '');
+    if (thesisEl) thesisEl.hidden = !trust.line;
+    var traits = arr(trust.traits);
+    var traitsEl = set('traits', traits.map(function (t) {
+      return '<li><span>' + esc(t.label) + '</span><p>' + esc(t.text) + '</p></li>';
+    }).join(''));
+    if (traitsEl) traitsEl.hidden = !traits.length;
 
     // Amber = documents (résumé, portfolio) everywhere on the page, so recruiters can spot them at a glance.
     var cta = '';
@@ -154,6 +162,16 @@
     var a = p.approach || {};
     set('approach-title', esc(a.title));
     set('approach-sub', esc(a.subtitle));
+    var rows = arr(a.contrast);
+    var para = slot('paradigm');
+    if (para) {
+      para.hidden = !rows.length;
+      para.innerHTML = rows.length
+        ? '<div class="para-head"><span>Industry default</span><span>What I ship</span></div>' + rows.map(function (r) {
+          return '<div class="para-row"><p>' + esc(r.default) + '</p><p>' + esc(r.mine) + '</p></div>';
+        }).join('')
+        : '';
+    }
     set('steps', arr(a.steps).map(function (s) { return '<li class="step"><h3>' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></li>'; }).join(''));
     slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 6));
     set('throughline', md(a.throughline)).hidden = !a.throughline;
@@ -189,6 +207,7 @@
       var headline = p.headline || arr(p.outcomes)[0];
       var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
+      var teardown = (d.flagship && d.flagship.productId === p.id) ? '<a class="acc-tear" href="#ellyra">Architecture teardown</a>' : '';
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
       if (p.demo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
@@ -207,6 +226,7 @@
             '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
             face +
             '<div class="acc-links">' +
+              teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
                 '<span class="t-labels"><span class="t-open">Read the case</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
                 '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
@@ -353,13 +373,110 @@
     if (desc && m.description) desc.setAttribute('content', m.description);
   }
 
+  function renderPillars(p, productIndex) {
+    var x = p.pillars || {}, items = arr(x.items);
+    var sec = document.getElementById('pillars');
+    if (sec) sec.hidden = !items.length;
+    var eye = set('pillars-eyebrow', esc(x.eyebrow || ''));
+    if (eye) eye.hidden = !x.eyebrow;
+    set('pillars-title', esc(x.title || ''));
+    set('pillars-sub', esc(x.subtitle || ''));
+    var moat = slot('moat');
+    if (moat) {
+      moat.hidden = !x.spine && !items.length;
+      moat.innerHTML = '<div class="moat-visual">' +
+        '<div class="moat-ring" aria-hidden="true"><div class="ring-outer"></div><div class="ring-mid"></div><div class="ring-core"><span>Model<small>Commodity</small></span></div></div>' +
+        '<ul class="moat-key"><li><i class="k-outer" aria-hidden="true"></i>Trust-first architecture</li><li><i class="k-mid" aria-hidden="true"></i>Multi-model orchestration</li><li><i class="k-core" aria-hidden="true"></i>Raw model capability</li></ul>' +
+        '</div>' +
+        (x.spine ? '<p class="moat-spine">' + md(x.spine) + '</p>' : '');
+    }
+    set('pillar-grid', items.map(function (item) {
+      var links = arr(item.products).map(function (id) {
+        var prod = productIndex[slug(id)];
+        return prod ? '<a href="#p-' + esc(slug(id)) + '">' + esc(prod.name) + '</a>' : '';
+      }).filter(Boolean).join('');
+      return '<article class="trust-pillar"><p class="tp-org">' + esc(item.org || '') + '</p><h3>' + esc(item.name) + '</h3><p>' + md(item.proof || '') + '</p>' +
+        (links ? '<p class="tp-links">' + links + '</p>' : '') + '</article>';
+    }).join(''));
+  }
+
+  function panelBody(panel) {
+    if (arr(panel.kpis).length) {
+      return '<ul class="kpi-list">' + arr(panel.kpis).map(function (k) {
+        return '<li><span class="kpi-target">' + esc(k.target) + '</span><span class="kpi-name">' + esc(k.name) + '</span><span class="kpi-note">' + esc(k.note) + '</span></li>';
+      }).join('') + '</ul>';
+    }
+    if (arr(panel.zones).length) {
+      return '<div class="quad">' + arr(panel.zones).map(function (z) {
+        var tone = z.tone === 'p0' || z.tone === 'backlog' ? z.tone : 'backlog';
+        return '<div class="zone zone-' + tone + '"><p class="zone-meta"><span>' + esc(z.volume) + '</span><span>' + esc(z.severity) + '</span></p><h4>' + esc(z.title) + '</h4><p>' + esc(z.text) + '</p></div>';
+      }).join('') + '</div>';
+    }
+    if (arr(panel.stages).length) {
+      return '<ol class="pipe">' + arr(panel.stages).map(function (s, i) {
+        return '<li><span class="pipe-n">' + (i + 1) + '</span><h4>' + esc(s.name) + '</h4><p>' + esc(s.text) + '</p></li>';
+      }).join('') + '</ol>';
+    }
+    if (arr(panel.paths).length) {
+      return '<div class="loop"><p class="loop-core">Safety gate runs first. Rules decide the page. Models only add evidence.</p>' +
+        arr(panel.paths).map(function (path) {
+          var tone = path.tone === 'safety' ? 'safety' : 'else';
+          return '<div class="loop-path loop-' + tone + '"><h4>' + esc(path.name) + '</h4><p>' + esc(path.text) + '</p></div>';
+        }).join('') + '</div>';
+    }
+    if (panel.id === 'simulator') {
+      return '<div class="sim">' +
+        '<form id="sim-form">' +
+          '<label for="sim-input">Synthetic verbatim</label>' +
+          '<textarea id="sim-input" rows="4" placeholder="Paste a synthetic sentence. Nothing leaves this browser."></textarea>' +
+          '<div class="sim-actions">' +
+            '<button class="btn" type="submit">Run the gate</button>' +
+            '<button class="btn btn-ghost" type="button" id="sim-sample">Load a safety sample</button>' +
+            '<button class="btn btn-ghost" type="button" id="sim-benign">Load a UI complaint</button>' +
+          '</div>' +
+        '</form>' +
+        '<div class="sim-log" id="sim-log" role="log" aria-live="polite" aria-relevant="additions"><p class="sim-empty">The gate has not run yet.</p></div>' +
+        '<p class="sim-note">Local harness only. Redaction and the P0 check run in this page. This is the sequence, not the production system.</p>' +
+      '</div>';
+    }
+    return '';
+  }
+
+  function renderFlagship(d) {
+    var f = d.flagship || {}, panels = arr(f.panels);
+    var sec = document.getElementById('ellyra');
+    var el = slot('flagship');
+    if (!el) return;
+    if (!f.title || !panels.length) { if (sec) sec.hidden = true; el.innerHTML = ''; return; }
+    if (sec) sec.hidden = false;
+    var tabs = panels.map(function (panel, i) {
+      var selected = i === 0;
+      return '<button type="button" class="tear-tab" role="tab" id="tab-' + esc(panel.id) + '" aria-controls="panel-' + esc(panel.id) + '" aria-selected="' + selected + '" tabindex="' + (selected ? '0' : '-1') + '">' + esc(panel.label) + '</button>';
+    }).join('');
+    var bodies = panels.map(function (panel, i) {
+      return '<div class="tear-panel" role="tabpanel" id="panel-' + esc(panel.id) + '" aria-labelledby="tab-' + esc(panel.id) + '"' + (i === 0 ? '' : ' hidden') + '>' +
+        (panel.kicker ? '<p class="tear-kicker">' + esc(panel.kicker) + '</p>' : '') +
+        (panel.text ? '<p>' + md(panel.text) + '</p>' : '') +
+        panelBody(panel) +
+      '</div>';
+    }).join('');
+    el.innerHTML =
+      '<p class="eyebrow">' + esc(f.eyebrow || 'Flagship') + '</p>' +
+      '<h2 class="s-title" id="ellyra-title">' + esc(f.title) + '</h2>' +
+      '<p class="s-sub">' + esc(f.subtitle || '') + '</p>' +
+      (f.thesis ? '<p class="flag-thesis">' + md(f.thesis) + '</p>' : '') +
+      '<div class="teardown"><div class="tear-tabs" role="tablist" aria-label="Ellyra Pulse architecture">' + tabs + '</div>' + bodies + '</div>';
+  }
+
   function render(c) {
     var productIndex = {}, arenaById = {};
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
     arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
     renderHero(c.profile, arr(c.products.products).length);
     renderFit(c.profile);
+    renderPillars(c.profile, productIndex);
     renderSnapshot(c.profile);
+    renderFlagship(c.products);
     renderAbout(c.profile);
     renderApproach(c.profile);
     renderGlance(c.products);
@@ -368,7 +485,7 @@
     renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm')
       .forEach(function (el) { el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -459,6 +576,85 @@
         }
       });
     });
+    document.querySelectorAll('.tp-links a').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = (a.getAttribute('href') || '').slice(1);
+        if (openProduct(id)) {
+          e.preventDefault();
+          if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+        }
+      });
+    });
+
+    var tearTabs = [].slice.call(document.querySelectorAll('.tear-tab'));
+    function selectTear(tab) {
+      tearTabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+      });
+    }
+    tearTabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { selectTear(tab); tab.focus(); });
+      tab.addEventListener('keydown', function (e) {
+        var next = e.key === 'ArrowRight' ? tearTabs[(i + 1) % tearTabs.length]
+          : e.key === 'ArrowLeft' ? tearTabs[(i - 1 + tearTabs.length) % tearTabs.length]
+          : e.key === 'Home' ? tearTabs[0]
+          : e.key === 'End' ? tearTabs[tearTabs.length - 1]
+          : null;
+        if (!next) return;
+        e.preventDefault();
+        selectTear(next);
+        next.focus();
+      });
+    });
+
+    var simForm = document.getElementById('sim-form');
+    var simInput = document.getElementById('sim-input');
+    var simLog = document.getElementById('sim-log');
+    var SAFETY = /chest pain|difficulty breathing|can'?t breathe|blood (glucose|panel)|decimal misread|overdose|suicid/i;
+    function redactSim(text) {
+      return String(text)
+        .replace(/\bPatient\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2}/g, '[REDACTED_NAME]')
+        .replace(/\bDOB\s*\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/gi, '[REDACTED_DOB]')
+        .replace(/\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/g, '[REDACTED_PHONE]')
+        .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[REDACTED_EMAIL]');
+    }
+    function runSim(text) {
+      if (!simLog) return;
+      var raw = String(text || '').trim();
+      if (!raw) {
+        simLog.innerHTML = '<p class="sim-empty">Add a synthetic sentence first.</p>';
+        return;
+      }
+      var redacted = redactSim(raw);
+      var safety = SAFETY.test(raw);
+      var lines = [{ lvl: 'info', msg: (redacted === raw ? 'No identifier pattern matched. ' : 'Redaction applied before storage or any model call. ') + redacted }];
+      if (safety) {
+        lines.push({ lvl: 'warn', msg: 'P0_SAFETY_FLAG — interception complete before the classifier.' });
+        lines.push({ lvl: 'debug', msg: 'Routing to the clinical on-call path. 15-minute SLA. A model does not make this decision.' });
+      } else {
+        lines.push({ lvl: 'debug', msg: 'No P0 pattern. This stays on the 24-hour path. Aspect sentiment may add evidence. It does not gate safety.' });
+      }
+      simLog.innerHTML = lines.map(function (line) {
+        return '<p class="sim-' + line.lvl + '"><span>' + line.lvl.toUpperCase() + '</span> ' + esc(line.msg) + '</p>';
+      }).join('');
+    }
+    if (simForm && simInput) {
+      simForm.addEventListener('submit', function (e) { e.preventDefault(); runSim(simInput.value); });
+      var sample = document.getElementById('sim-sample');
+      var benign = document.getElementById('sim-benign');
+      if (sample) sample.addEventListener('click', function () {
+        simInput.value = 'Patient Alex Rivera is experiencing severe chest pain and difficulty breathing. DOB 03/14/1982.';
+        runSim(simInput.value);
+      });
+      if (benign) benign.addEventListener('click', function () {
+        simInput.value = 'The submit button is too small and the green is hard to see on my phone.';
+        runSim(simInput.value);
+      });
+    }
 
     // Experience timeline: each role's achievements expand in place (height animates in CSS).
     document.querySelectorAll('.tl-toggle').forEach(function (btn) {
