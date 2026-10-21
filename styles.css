@@ -39,6 +39,7 @@ body{
   margin:0;background:var(--bg);color:var(--body);
   font-family:var(--sans);font-size:16.5px;line-height:1.66;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  --section-rail:0px;
 }
 img{max-width:100%;display:block;}
 a{color:var(--accent);text-decoration:none;}
@@ -85,7 +86,7 @@ section{padding:100px 0;position:relative;}
 .fit-meta{margin-left:auto;display:inline-flex;align-items:center;gap:10px;font-size:.82rem;font-weight:600;color:var(--body);white-space:nowrap;flex-wrap:wrap;}
 .fit-dot{width:4px;height:4px;border-radius:50%;background:#94a3b8;flex:none;}
 
-/* ---------- section crumb pills (third row, after Open to) ---------- */
+/* ---------- section crumb pills (mobile: under Open to; desktop: right rail) ---------- */
 .section-crumbs{border-top:1px solid var(--line);background:#050505;max-width:100%;overflow-x:clip;}
 .section-crumbs-in,.nav-links{
   max-width:var(--max);margin:0 auto;padding:10px 28px;
@@ -721,11 +722,14 @@ section{padding:100px 0;position:relative;}
 .band-act{border-color:#fb7185;background:rgba(251,113,133,.08);}
 .band-act b{color:#fda4af;}
 .m-tile .m-open,.btn-metrics{
-  align-self:flex-start;margin-top:auto;font:inherit;font-size:.88rem;font-weight:600;
-  color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:var(--r-sm);
-  padding:8px 12px;cursor:pointer;
+  align-self:flex-start;margin-top:auto;font:inherit;font-size:.88rem;font-weight:700;
+  color:#0a0a0a;background:#fbbf24;border:1px solid #fbbf24;border-radius:var(--r-sm);
+  padding:10px 14px;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease;
 }
-.m-tile .m-open:hover,.btn-metrics:hover{border-color:#fff;text-decoration:none;}
+.m-tile .m-open:hover,.btn-metrics:hover{
+  background:#fcd34d;border-color:#fcd34d;color:#000;text-decoration:none;transform:translateY(-1px);
+}
 .metrics-deck{margin-top:8px;}
 .badge-measured{
   display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;letter-spacing:.02em;
@@ -836,3 +840,27 @@ section{padding:100px 0;position:relative;}
 .process-icons .step-icon{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;margin-bottom:10px;color:var(--accent);}
 .process-icons .step-icon svg{width:22px;height:22px;}
 .tl-item .exp-summary{display:none;}
+
+/* Desktop: right sticky pill rail + reserved gutter (keeps content clear of the rail) */
+@media (min-width:1100px){
+  :root,body{--section-rail:19.5rem;}
+  html{scroll-padding-top:120px;}
+  body{padding-right:var(--section-rail);box-sizing:border-box;}
+  .nav{overflow:visible;right:var(--section-rail);width:auto;}
+  .section-crumbs{
+    position:fixed;top:var(--rail-top,10.5rem);right:28px;left:auto;bottom:auto;
+    transform:none;z-index:90;
+    width:auto;max-width:none;border:0;background:transparent;overflow:visible;
+  }
+  .section-crumbs-in,.nav-links{
+    flex-direction:column;flex-wrap:nowrap;align-items:stretch;
+    gap:10px;padding:14px;margin:0;max-width:none;
+    background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.2);
+    border-radius:999px;backdrop-filter:blur(12px);
+    box-shadow:0 16px 48px rgba(0,0,0,.5);
+  }
+  .nav-links a{min-width:11.5rem;justify-content:center;white-space:nowrap;}
+  .nav-links a:hover{transform:translateX(-3px);}
+  .nav-links a.active,.nav-links a[aria-current="true"]{transform:translateX(-4px);}
+  .hero{padding:168px 0 72px;}
+}

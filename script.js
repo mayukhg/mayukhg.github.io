@@ -1008,6 +1008,19 @@
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
     var navMap = { top: 'products', snapshot: 'products', ecosystem: 'products', education: 'how', pillars: 'how', ellyra: 'products', metrics: 'metrics', how: 'how' };
+    var crumbs = document.querySelector('.section-crumbs');
+    var railMq = window.matchMedia('(min-width:1100px)');
+    function placeSectionRail() {
+      if (!crumbs || !railMq.matches) {
+        document.documentElement.style.removeProperty('--rail-top');
+        return;
+      }
+      var photo = document.querySelector('.portrait-wrap:not([hidden])');
+      if (!photo) return;
+      // Document Y of the portrait top == fixed top when the page is at scroll 0.
+      var top = Math.max(Math.round(photo.getBoundingClientRect().top + window.scrollY), nav.offsetHeight + 12);
+      document.documentElement.style.setProperty('--rail-top', top + 'px');
+    }
     function onScroll() {
       nav.classList.toggle('scrolled', window.scrollY > 12);
       var pos = window.scrollY + Math.max(nav.offsetHeight, 120) + 8, cur = '';
@@ -1020,6 +1033,25 @@
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', placeSectionRail, { passive: true });
+    if (railMq.addEventListener) railMq.addEventListener('change', placeSectionRail);
+    function scheduleRail() {
+      placeSectionRail();
+      requestAnimationFrame(function () { requestAnimationFrame(placeSectionRail); });
+      setTimeout(placeSectionRail, 50);
+      setTimeout(placeSectionRail, 250);
+    }
+    scheduleRail();
+    var portraitImg = document.querySelector('.portrait-wrap img');
+    if (portraitImg) {
+      if (!portraitImg.complete) portraitImg.addEventListener('load', scheduleRail);
+    }
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(placeSectionRail);
+      ro.observe(nav);
+      var photoEl = document.querySelector('.portrait-wrap');
+      if (photoEl) ro.observe(photoEl);
+    }
     onScroll();
 
     var rv = document.querySelectorAll('.rv');
