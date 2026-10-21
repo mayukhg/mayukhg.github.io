@@ -5,13 +5,10 @@
   },
   "person": {
     "name": "Mayukh Ghosh",
-    "headline": "Product Leader",
-    "tags": [
-      "Agentic AI",
-      "Cybersecurity"
-    ],
+    "headline": "Director of Product Management | Agentic AI & GenAI | Builder-PM",
+    "tags": [],
     "badge": "Architecting the moat of trust",
-    "lede": "I architect AI that earns trust. At **Qualys** I lead **3 PMs** shipping Agentic AI security (**$1.5M** POC pipeline). At **BP** I secured **$2M+** across **15+** BUs.",
+    "lede": "I build market-defining AI products grounded in user trust and measurable value. At **Qualys** I lead **3 PMs** shipping Agentic AI security (**$1.5M** POC pipeline). At **BP** I secured **$2M+** across **15+** BUs.",
     "location": "Pune, India",
     "portraitCaption": "20+ years \u00b7 Product & Platform",
     "photo": "assets/mayukh.jpg",
@@ -113,7 +110,7 @@
     },
     {
       "value": "25+",
-      "label": "Cross-functional team led; 94% retention rate",
+      "label": "Cross-functional team led",
       "company": "BP & Qualys",
       "status": "org",
       "statusLabel": "Org"
