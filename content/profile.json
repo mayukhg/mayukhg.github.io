@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Mayukh Ghosh · Product Leader, Agentic AI & Cybersecurity",
+    "title": "Mayukh Ghosh \u00b7 Product Leader, Agentic AI & Cybersecurity",
     "description": "Product leader architecting AI systems that earn trust. Director of Product Management with 20+ years across security, payments, analytics and healthcare. Trust, verifiability and closed-loop governance gate adoption, not raw model capability."
   },
   "person": {
@@ -13,7 +13,7 @@
     "badge": "Architecting the moat of trust",
     "lede": "I architect AI systems that earn trust before they earn adoption. Raw model capability is a commodity. The moat is verifiability, a closed loop, and a human still in the path. At **Qualys** I lead **3 PMs** taking an Agentic AI security suite to general availability (**$1.5M POC pipeline**, **40%** of pilots became paid PoCs). At **BP** I secured **$2M+** and built the AI Defense Ecosystem across **15+ business units**.",
     "location": "Pune, India",
-    "portraitCaption": "20+ years · Product & Platform",
+    "portraitCaption": "20+ years \u00b7 Product & Platform",
     "photo": "assets/mayukh.jpg",
     "photoAlt": "Portrait of Mayukh Ghosh"
   },
@@ -30,11 +30,26 @@
     "open": "Open to",
     "level": "Director of Product",
     "domains": [
-      { "id": "security", "label": "Security" },
-      { "id": "payments", "label": "Payments" },
-      { "id": "analytics", "label": "Analytics" },
-      { "id": "healthcare", "label": "Healthcare" },
-      { "id": "agritech", "label": "Agritech" }
+      {
+        "id": "security",
+        "label": "Security"
+      },
+      {
+        "id": "payments",
+        "label": "Payments"
+      },
+      {
+        "id": "analytics",
+        "label": "Analytics"
+      },
+      {
+        "id": "healthcare",
+        "label": "Healthcare"
+      },
+      {
+        "id": "agritech",
+        "label": "Agritech"
+      }
     ],
     "mode": "Remote / Hybrid",
     "notice": "30-day notice"
@@ -67,21 +82,31 @@
         "name": "Clinical safety",
         "org": "Ellyra & Western Union",
         "proof": "Safety-flagged patient signals page clinical on-call in 15 minutes, not a weekly NPS report. KYC scoring stays verifiable and private.",
-        "products": ["ellyra-pulse", "kyc"]
+        "products": [
+          "ellyra-pulse",
+          "kyc"
+        ]
       },
       {
         "id": "enterprise",
         "name": "Enterprise trust",
         "org": "BP",
-        "proof": "$2M+ secured for enterprise AI. Policy review cut from 1–3 weeks to 30 minutes ($2.4M annual savings). SOC mean time to triage cut by more than 60%.",
-        "products": ["policy-foundry", "soc-portal", "ai-spm"]
+        "proof": "$2M+ secured for enterprise AI. Policy review cut from 1\u20133 weeks to 30 minutes ($2.4M annual savings). SOC mean time to triage cut by more than 60%.",
+        "products": [
+          "policy-foundry",
+          "soc-portal",
+          "ai-spm"
+        ]
       },
       {
         "id": "agentic",
         "name": "Agentic tool safety",
         "org": "Qualys",
         "proof": "$1.5M POC pipeline, with 40% of pilots becoming paid proofs of concept. Agents act only through governed MCP tools, with a human approving each fix.",
-        "products": ["mcp", "copilot"]
+        "products": [
+          "mcp",
+          "copilot"
+        ]
       }
     ]
   },
@@ -122,32 +147,78 @@
         "name": "Role fit",
         "tone": "fit",
         "items": [
-          { "label": "Now", "value": "Director of PM, Qualys" },
-          { "label": "Open to", "value": "Director, AI product" },
-          { "label": "Domains", "value": "Security · Payments · Analytics · Healthcare · Agritech" },
-          { "label": "Markets", "value": "B2B enterprise and B2C" },
-          { "label": "Edge", "value": "Judgment, cross-domain rigor, and shipping. Trust is engineered into the pipeline." }
+          {
+            "label": "Now",
+            "value": "Director of PM, Qualys"
+          },
+          {
+            "label": "Open to",
+            "value": "Director, AI product"
+          },
+          {
+            "label": "Domains",
+            "value": "Security \u00b7 Payments \u00b7 Analytics \u00b7 Healthcare \u00b7 Agritech"
+          },
+          {
+            "label": "Markets",
+            "value": "B2B enterprise and B2C"
+          },
+          {
+            "label": "Edge",
+            "value": "Judgment, cross-domain rigor, and shipping. Trust is engineered into the pipeline."
+          }
         ]
       },
       {
         "name": "Proof",
         "tone": "impact",
         "items": [
-          { "label": "Savings", "value": "**$2.4M** / year · BP · In production" },
-          { "label": "Pipeline", "value": "**$1.5M** POC · Qualys · Pipeline" },
-          { "label": "Traction", "value": "15+ pilots, 40% became paid POCs" },
-          { "label": "Investment", "value": "**$2M+** won from the C-suite at BP" },
-          { "label": "Scope", "value": "3 PMs direct · 25 people matrix at BP" }
+          {
+            "label": "Savings",
+            "value": "**$2.4M** / year \u00b7 BP \u00b7 In production"
+          },
+          {
+            "label": "Pipeline",
+            "value": "**$1.5M** POC \u00b7 Qualys \u00b7 Pipeline"
+          },
+          {
+            "label": "Traction",
+            "value": "15+ pilots, 40% became paid POCs"
+          },
+          {
+            "label": "Investment",
+            "value": "**$2M+** won from the C-suite at BP"
+          },
+          {
+            "label": "Scope",
+            "value": "3 PMs direct \u00b7 25 people matrix at BP"
+          },
+          {
+            "label": "Measurement",
+            "value": "7 products instrumented \u00b7 38 metrics with action thresholds (Mixpanel)"
+          }
         ]
       },
       {
         "name": "Logistics",
         "tone": "logistics",
         "items": [
-          { "label": "Based", "value": "Pune, India" },
-          { "label": "Mode", "value": "Remote / Hybrid" },
-          { "label": "Notice", "value": "30 days, negotiable" },
-          { "label": "Documents", "value": "[Résumé PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf) · [Product metrics PDF](assets/My_Product_Metrics.pdf)" }
+          {
+            "label": "Based",
+            "value": "Pune, India"
+          },
+          {
+            "label": "Mode",
+            "value": "Remote / Hybrid"
+          },
+          {
+            "label": "Notice",
+            "value": "30 days, negotiable"
+          },
+          {
+            "label": "Documents",
+            "value": "[R\u00e9sum\u00e9 PDF](resume.pdf) \u00b7 [Portfolio PDF](assets/portfolio.pdf) \u00b7 [Product metrics PDF](assets/My_Product_Metrics.pdf)"
+          }
         ]
       }
     ]
@@ -186,11 +257,11 @@
       },
       {
         "label": "Education",
-        "value": "MBA (IT), Symbiosis · IIM Kozhikode (DS & AI)"
+        "value": "MBA (IT), Symbiosis \u00b7 IIM Kozhikode (DS & AI)"
       },
       {
         "label": "Certified",
-        "value": "AWS SA · AWS Security"
+        "value": "AWS SA \u00b7 AWS Security"
       }
     ]
   },
@@ -289,18 +360,20 @@
       {
         "tab": "Qualys",
         "track": "product",
-        "period": "2026 – now",
+        "period": "2026 \u2013 now",
         "title": "Director of Product Management",
         "company": "Qualys",
-        "org": "Enterprise Cybersecurity · Agentic AI · Pune",
-        "dates": "Feb 2026 – Present",
+        "org": "Enterprise Cybersecurity \u00b7 Agentic AI \u00b7 Pune",
+        "dates": "Feb 2026 \u2013 Present",
         "duration": "8 months",
-        "scope": "Direct · 3 PMs",
-        "domains": ["security"],
+        "scope": "Direct \u00b7 3 PMs",
+        "domains": [
+          "security"
+        ],
         "summary": "Leading 3 PMs taking the Agentic AI security suite from pilots to general availability: multi-agent orchestration, tool use and evaluation.",
         "metrics": [
           "15+ enterprise pilots",
-          "40% pilot → paid PoC",
+          "40% pilot \u2192 paid PoC",
           "$1.5M POC pipeline",
           "Shipped to GA"
         ],
@@ -321,28 +394,31 @@
       {
         "tab": "Fractional CPO",
         "track": "product",
-        "period": "2024 – now",
+        "period": "2024 \u2013 now",
         "title": "Fractional CPO",
         "company": "Independent",
-        "org": "AI Product & Strategy · Part-time advisory · B2B & B2C · Remote",
-        "dates": "Jul 2024 – Present",
+        "org": "AI Product & Strategy \u00b7 Part-time advisory \u00b7 B2B & B2C \u00b7 Remote",
+        "dates": "Jul 2024 \u2013 Present",
         "duration": "2+ years",
         "scope": "Part-time",
-        "domains": ["healthcare", "agritech"],
+        "domains": [
+          "healthcare",
+          "agritech"
+        ],
         "summary": "Part-time. Shipped a B2C healthtech conversational AI chatbot alongside B2B AI advisory, including CropGuard for ambient crop insurance.",
         "metrics": [
-          "3+ 0→1 in <4 months",
+          "3+ 0\u21921 in <4 months",
           "+24% engagement",
-          "−35% cost / query",
+          "\u221235% cost / query",
           "50K+ queries / month"
         ],
         "bullets": [
           "Defined product strategy for a consumer healthtech **conversational AI chatbot** answering users' medical queries in real time, owning the **query-accuracy and response-safety evaluation framework** from discovery through launch.",
           "Served as Fractional CPO for early-stage AI founders, identifying high-value AI use cases and defining roadmaps and personas that took **3+ 0-to-1 concepts** from raw idea to market-ready SaaS in under 4 months each.",
           "Architected a computer-vision MVP for a Digital Wellness startup; rapid A/B loops lifted user engagement by **24%** within 6 weeks of launch.",
-          "Built **CropGuard**: ambient WhatsApp and voice crop insurance for Indian farmers — parametric drought claims, multilingual channels, and geo-verified field evidence on Express, React and Postgres.",
+          "Built **CropGuard**: ambient WhatsApp and voice crop insurance for Indian farmers \u2014 parametric drought claims, multilingual channels, and geo-verified field evidence on Express, React and Postgres.",
           "Advised a B2B AgriTech & Crop Insurance platform on the LLM and RAG architecture behind its self-service farmer query product, cutting cost per query by **35%** while scaling to **50K+** queries monthly.",
-          "Designed responsible AI compliance protocols aligned to NIST and the EU AI Act, institutionalising a “Trust by Design” framework across 2 client engagements."
+          "Designed responsible AI compliance protocols aligned to NIST and the EU AI Act, institutionalising a \u201cTrust by Design\u201d framework across 2 client engagements."
         ],
         "related": [
           "ellyra-pulse",
@@ -352,14 +428,16 @@
       {
         "tab": "BP",
         "track": "product",
-        "period": "2021 – 2026",
+        "period": "2021 \u2013 2026",
         "title": "Principal Product Manager",
         "company": "BP",
-        "org": "Global GenAI & Cloud Security · Pune",
-        "dates": "Jul 2021 – Jan 2026",
+        "org": "Global GenAI & Cloud Security \u00b7 Pune",
+        "dates": "Jul 2021 \u2013 Jan 2026",
         "duration": "4.5 years",
-        "scope": "Matrix · 25 people",
-        "domains": ["security"],
+        "scope": "Matrix \u00b7 25 people",
+        "domains": [
+          "security"
+        ],
         "summary": "Product owner for enterprise GenAI and AI security, run as an internal platform serving 15+ global business units.",
         "metrics": [
           "$2M+ AI investment",
@@ -370,7 +448,7 @@
         "bullets": [
           "Owned GenAI and cloud security product strategy across 15+ business units, aligning Security, Engineering, Platform and Compliance stakeholders on a shared roadmap.",
           "**AI Defense Ecosystem:** established standardised AI eval harnesses and end-to-end auditability on a unified Agentic AI trust platform (Prevent, Protect, Detect & Respond), securing **$2M+** in C-suite investment and mitigating **$10M+** risk exposure.",
-          "**AI Policy Foundry:** cut policy review cycles from 1–3 weeks to **30 minutes** with 95%+ policy accuracy and **$2.4M** annual savings, using a 5-agent GPT-4 product with full clause-level auditability.",
+          "**AI Policy Foundry:** cut policy review cycles from 1\u20133 weeks to **30 minutes** with 95%+ policy accuracy and **$2.4M** annual savings, using a 5-agent GPT-4 product with full clause-level auditability.",
           "**AI SOC Portal:** reduced Mean Time to Triage by **more than 60%** and executive reporting overhead by ~50%, sustaining an **85%+** analyst action rate (RAGAS groundedness above 0.90).",
           "**AI-SPM:** delivered sub-second threat blocking and predictive drift and anomaly detection across 6 data quality dimensions, flagging issues before business impact and automating NIST & EU AI Act compliance evidence.",
           "Led a 25-person product team without direct reporting lines, setting its vision, goals and priorities; built organisational AI capability through the corporate **AI Maturity Index**, accelerating cloud time-to-market by **20%**."
@@ -384,11 +462,11 @@
       {
         "tab": "Amdocs",
         "track": "architecture",
-        "period": "2020 – 2021",
+        "period": "2020 \u2013 2021",
         "title": "Lead Principal Consultant",
         "company": "Amdocs",
-        "org": "Cloud Modernization · Pune",
-        "dates": "Jan 2020 – Jul 2021",
+        "org": "Cloud Modernization \u00b7 Pune",
+        "dates": "Jan 2020 \u2013 Jul 2021",
         "duration": "1.5 years",
         "scope": "",
         "domains": [],
@@ -396,7 +474,7 @@
         "metrics": [
           "Multi-million $ contracts",
           "10+ engagements",
-          "−25% migration risk incidents"
+          "\u221225% migration risk incidents"
         ],
         "bullets": [
           "Authored technical product proposals and RFP responses that directly secured **multi-million dollar** cloud modernization contracts.",
@@ -409,17 +487,19 @@
       {
         "tab": "Western Union",
         "track": "architecture",
-        "period": "2018 – 2020",
+        "period": "2018 \u2013 2020",
         "title": "Technical Architect, Payments Products",
         "company": "Western Union",
-        "org": "Western Union Business Solutions · Pune",
-        "dates": "Jan 2018 – Jan 2020",
+        "org": "Western Union Business Solutions \u00b7 Pune",
+        "dates": "Jan 2018 \u2013 Jan 2020",
         "duration": "2 years",
         "scope": "",
-        "domains": ["payments"],
+        "domains": [
+          "payments"
+        ],
         "summary": "Launched NLP voice payments and cut infrastructure costs 70% via a serverless, event-driven re-architecture.",
         "metrics": [
-          "−70% infra cost",
+          "\u221270% infra cost",
           "NLP voice payments launched",
           "Blockchain KYC"
         ],
@@ -435,14 +515,16 @@
       {
         "tab": "Pitney Bowes",
         "track": "architecture",
-        "period": "2013 – 2018",
+        "period": "2013 \u2013 2018",
         "title": "Software Architect",
         "company": "Pitney Bowes",
-        "org": "Global e-commerce & shipping · Pune",
-        "dates": "Dec 2013 – Jan 2018",
+        "org": "Global e-commerce & shipping \u00b7 Pune",
+        "dates": "Dec 2013 \u2013 Jan 2018",
         "duration": "4 years",
         "scope": "",
-        "domains": ["trade"],
+        "domains": [
+          "trade"
+        ],
         "summary": "Cut engineering onboarding time 20% via a microservices migration.",
         "metrics": [
           "20% faster onboarding",
@@ -459,19 +541,19 @@
       {
         "tab": "Early career",
         "track": "quality",
-        "period": "2005 – 2013",
+        "period": "2005 \u2013 2013",
         "title": "Quality & test foundation",
         "company": "",
-        "org": "Principal Financial Group · PTC | Cybage",
-        "dates": "2005 – 2013",
+        "org": "Principal Financial Group \u00b7 PTC | Cybage",
+        "dates": "2005 \u2013 2013",
         "duration": "8 years",
         "scope": "",
         "domains": [],
         "summary": "The rigour that now shapes how I evaluate AI: risk-based testing, automation and API-level verification.",
         "metrics": [],
         "bullets": [
-          "**Principal Financial Group, System Test Lead (2007–2013):** designed risk-based test frameworks, automated script execution and resource plans.",
-          "**PTC | Cybage, Test Engineer (2005–2007):** built multi-OS functional verification and API-level automated testing infrastructure."
+          "**Principal Financial Group, System Test Lead (2007\u20132013):** designed risk-based test frameworks, automated script execution and resource plans.",
+          "**PTC | Cybage, Test Engineer (2005\u20132007):** built multi-OS functional verification and API-level automated testing infrastructure."
         ],
         "related": []
       }
@@ -486,7 +568,10 @@
           "AI product strategy & roadmaps",
           "Discovery through launch",
           "Strategic fit & Cost of Delay prioritisation",
-          "Success metrics & KPIs",
+          {
+            "label": "Success metrics & KPIs",
+            "href": "#metrics"
+          },
           "Go-to-market (GTM)",
           "Senior stakeholder alignment"
         ]
@@ -541,7 +626,7 @@
         "name": "Certifications",
         "items": [
           "AWS Certified Solutions Architect",
-          "AWS Certified Security – Specialty",
+          "AWS Certified Security \u2013 Specialty",
           "Machine Learning in Production (DeepLearning.AI)",
           "Data Science & AI, IIM Kozhikode"
         ]
@@ -556,17 +641,17 @@
     {
       "mark": "IIMK",
       "degree": "Professional Certificate, Data Science & AI",
-      "school": "Indian Institute of Management, Kozhikode · 2024"
+      "school": "Indian Institute of Management, Kozhikode \u00b7 2024"
     },
     {
       "mark": "SIU",
       "degree": "MBA (IT)",
-      "school": "Symbiosis International University · 2003–2005"
+      "school": "Symbiosis International University \u00b7 2003\u20132005"
     },
     {
       "mark": "BU",
       "degree": "Bachelor of Computer Science",
-      "school": "Bangalore University · 2000–2003"
+      "school": "Bangalore University \u00b7 2000\u20132003"
     }
   ],
   "contact": {

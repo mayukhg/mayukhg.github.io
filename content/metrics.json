@@ -1,126 +1,927 @@
 {
-  "title": "Product metrics boards",
-  "subtitle": "PostHog dashboards for the portfolio products. All figures are demo / synthetic unless a product case marks evidence as production.",
+  "eyebrow": "Product analytics",
+  "title": "How I measure product outcomes",
+  "subtitle": "Seven Mixpanel boards: north stars, journey mapping and action thresholds. Dashboard values are synthetic demo data.",
+  "disclaimer": "DEMO DATA \u00b7 SYNTHETIC. All Mixpanel values are synthetic demo data, not real product performance. Thresholds are proposed starting points.",
   "pdf": "assets/My_Product_Metrics.pdf",
-  "disclaimer": "DEMO DATA · SYNTHETIC",
-  "boards": [
+  "method": [
     {
-      "id": "defence-ecosystem",
-      "productId": null,
-      "name": "AI Defence Ecosystem v2",
-      "product": "AI Defense Ecosystem",
-      "summary": "Executive programme dashboard unifying AI-SPM, AI SOC, and AI Policy Foundry.",
-      "question": "Is our AI estate secure, governed, and actively monitored?",
-      "screenshots": [
-        {
-          "file": "assets/metrics/def_1.webp",
-          "caption": "Executive KPIs: AI assets under management, security incidents created, policies enforced; risk distribution and assessments over time."
-        },
-        {
-          "file": "assets/metrics/def_4.webp",
-          "caption": "Cross-pillar signals: weekly active users across platforms, audit reports generated, compliance pass rate by framework, exemption approval rate."
-        }
-      ]
+      "id": "objective",
+      "label": "Objective",
+      "text": "What outcome the product must move"
     },
     {
-      "id": "policy-foundry",
-      "productId": "policy-foundry",
-      "name": "AI Policy Foundry — Safety, Satisfaction & NPS v2",
-      "product": "AI Policy Foundry",
-      "summary": "Safety and compliance trends, user satisfaction, weekly retention, and NPS detail for policy automation.",
-      "screenshots": [
+      "id": "north-star",
+      "label": "North star",
+      "text": "One metric that proves that outcome"
+    },
+    {
+      "id": "inputs",
+      "label": "Input metrics",
+      "text": "Journey events, funnels and retention that feed it"
+    },
+    {
+      "id": "thresholds",
+      "label": "Thresholds",
+      "text": "Green / Watch / Act bands that force a decision"
+    },
+    {
+      "id": "action",
+      "label": "Action",
+      "text": "What to change when a band is breached"
+    }
+  ],
+  "apps": [
+    {
+      "id": "agent-val",
+      "productId": "mcp",
+      "umbrella": false,
+      "name": "Agent Val",
+      "product": "Exploit Validation & Remediation (Agent Val)",
+      "northStar": "Confirmed risks closed per week",
+      "summary": "Agentic exploit validation inside Qualys ETM: nudge, autonomy mode, scope, TruConfirm validation, remediation, revalidation",
+      "howDecided": {
+        "problem": "Security teams know their findings but not which ones an attacker can exploit right now",
+        "workflow": "Closed loop: nudge on Vulnerabilities page, pick autonomy mode, select CVE and assets, run TruConfirm, remediate, revalidate",
+        "approach": "One event per loop step with properties (autonomy_mode, result, option, status), then absolutes, medians, funnels and retention on top"
+      },
+      "mapping": [
         {
-          "file": "assets/metrics/pf_funnel.webp",
-          "caption": "Safety & compliance: policy lifecycle funnel and exemption approval rate."
+          "step": "Nudge on Vulnerabilities page",
+          "event": "val_nudge_viewed / clicked",
+          "metric": "Adoption funnel step 1\u20132"
         },
         {
-          "file": "assets/metrics/pf_3.webp",
-          "caption": "NPS detail: score over time, distribution, and breakdowns by feature, aspect, and tier."
+          "step": "Choose autonomy mode",
+          "event": "val_autonomy_mode_selected",
+          "metric": "Autonomy mode mix, override rate"
+        },
+        {
+          "step": "Select CVE + assets",
+          "event": "val_scope_selected",
+          "metric": "Adoption funnel step 5"
+        },
+        {
+          "step": "TruConfirm validation",
+          "event": "val_validation_completed",
+          "metric": "Confirmation rate, duration P50/P90"
+        },
+        {
+          "step": "Remediate (patch / mitigation)",
+          "event": "val_remediation_applied",
+          "metric": "Option and outcome, failure rate"
+        },
+        {
+          "step": "Post-fix revalidation",
+          "event": "val_revalidation_completed",
+          "metric": "North star: risks closed, TruRisk reduced"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Prove risk is closed",
+          "text": "Confirmed risks closed and TruRisk points reduced per week are the outcome Agent Val exists to deliver"
+        },
+        {
+          "title": "Find adoption leaks",
+          "text": "Nudge-to-validation funnel shows where users stop before the agent can help"
+        },
+        {
+          "title": "Keep the loop fast",
+          "text": "Median time from confirmed risk to closed tracks the speed promise"
+        },
+        {
+          "title": "Earn trust",
+          "text": "Feedback, evidence views and mode overrides show whether users trust the agent"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Risks closed / week",
+          "green": "\u2265 8",
+          "amber": "4\u20137",
+          "red": "< 4"
+        },
+        {
+          "metric": "Adoption funnel (nudge\u2192validation)",
+          "green": "\u2265 35%",
+          "amber": "25\u201335%",
+          "red": "< 25%"
+        },
+        {
+          "metric": "Confirmed\u2192closed (full auto)",
+          "green": "\u2265 75%",
+          "amber": "60\u201375%",
+          "red": "< 60%"
+        },
+        {
+          "metric": "Median confirmed\u2192closed",
+          "green": "\u2264 2h",
+          "amber": "2\u20136h",
+          "red": "> 6h"
+        },
+        {
+          "metric": "Remediation failure (any industry)",
+          "green": "\u2264 5%",
+          "amber": "5\u201310%",
+          "red": "> 10%"
+        },
+        {
+          "metric": "Week-4 validation retention",
+          "green": "\u2265 15%",
+          "amber": "8\u201315%",
+          "red": "< 8%"
+        }
+      ],
+      "action": "Red on failure or retention: review remediation playbooks for technology customers and add a weekly re-engagement nudge",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Shows which loop step to fix next and lets Cost of Delay rank fixes by risk closed"
+        },
+        {
+          "audience": "Security operations",
+          "text": "Shows where remediation fails, by industry and option, before customers escalate"
+        },
+        {
+          "audience": "Leadership / Sales",
+          "text": "TruRisk points reduced is a customer-facing ROI number for renewals and expansion"
+        }
+      ],
+      "images": [
+        {
+          "file": "assets/metrics/val_2.webp",
+          "alt": "Agent Val Product Metrics dashboard: weekly active users, validations run, risk confirmation rate and adoption funnel",
+          "w": 1440,
+          "h": 900
+        },
+        {
+          "file": "assets/metrics/val_4.webp",
+          "alt": "Agent Val Product Metrics dashboard: autonomy mix, remediation outcomes and weekly retention",
+          "w": 1440,
+          "h": 900
         }
       ]
     },
     {
       "id": "soc-portal",
       "productId": "soc-portal",
-      "name": "AI SOC Portal – Operations Dashboard v2",
+      "umbrella": false,
+      "name": "AI SOC Portal",
       "product": "AI SOC Portal",
-      "summary": "Analyst activity, alert throughput, incident response times, AI recommendation performance, and workflow efficiency.",
-      "screenshots": [
+      "northStar": "Alerts resolved end-to-end (per alert) and time to resolve",
+      "summary": "AI-assisted security operations: alert triage, incident response and AI recommendations for SOC analysts",
+      "howDecided": {
+        "problem": "SOCs face high alert volume, many false positives and slow response",
+        "workflow": "Alert viewed \u2192 triaged (true / false positive) \u2192 incident created \u2192 resolved, with AI analysis requested along the way",
+        "approach": "Count work per alert (hold alert_id), use median and P90 for time, and measure AI acceptance and feedback"
+      },
+      "mapping": [
+        {
+          "step": "Analyst opens alert",
+          "event": "alert_viewed",
+          "metric": "Alerts worked per day, daily active analysts"
+        },
+        {
+          "step": "Triage decision",
+          "event": "alert_triaged (triage_decision)",
+          "metric": "Triage funnel, false positive rate"
+        },
+        {
+          "step": "Escalate to incident",
+          "event": "incident_created",
+          "metric": "Incidents created, severity mix"
+        },
+        {
+          "step": "Resolve incident",
+          "event": "incident_resolved (time_to_resolve)",
+          "metric": "Time to resolve P50/P90 by severity"
+        },
+        {
+          "step": "Use AI assistant",
+          "event": "ai_analysis_requested / accepted",
+          "metric": "AI requests, acceptance rate by type"
+        },
+        {
+          "step": "Rate AI output",
+          "event": "ai_feedback_submitted",
+          "metric": "% positive AI feedback"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Count alerts, not analysts",
+          "text": "Per-alert triage funnel measures conversion on the work object"
+        },
+        {
+          "title": "Measure end-to-end flow",
+          "text": "End-to-end funnel and median time to convert track resolution"
+        },
+        {
+          "title": "Cut false-positive load",
+          "text": "False positive rate shows how much triage effort is wasted"
+        },
+        {
+          "title": "Prove AI helps",
+          "text": "AI acceptance and positive feedback show whether recommendations reduce analyst burden"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Per-alert triage conversion",
+          "green": "\u2265 98%",
+          "amber": "95\u201398%",
+          "red": "< 95%"
+        },
+        {
+          "metric": "False positive rate",
+          "green": "\u2264 30%",
+          "amber": "30\u201345%",
+          "red": "> 45%"
+        },
+        {
+          "metric": "End-to-end median time",
+          "green": "\u2264 8h",
+          "amber": "8\u201316h",
+          "red": "> 16h"
+        },
+        {
+          "metric": "AI acceptance rate",
+          "green": "\u2265 70%",
+          "amber": "55\u201370%",
+          "red": "< 55%"
+        },
+        {
+          "metric": "% positive AI feedback",
+          "green": "\u2265 75%",
+          "amber": "60\u201375%",
+          "red": "< 60%"
+        },
+        {
+          "metric": "Active analysts vs 7-day avg",
+          "green": "\u2265 90%",
+          "amber": "70\u201390%",
+          "red": "< 70%"
+        }
+      ],
+      "action": "Red on false positives: tune noisiest source systems and feed false-positive labels back to the triage model",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Verifies the pitch claims (faster response, fewer false positives) with measured trends"
+        },
+        {
+          "audience": "SOC lead",
+          "text": "Time to resolve by severity shows where staffing or playbooks are the bottleneck"
+        },
+        {
+          "audience": "CISO / leadership",
+          "text": "AI acceptance and feedback turn AI adoption into a reportable efficiency story"
+        }
+      ],
+      "images": [
         {
           "file": "assets/metrics/soc_1.webp",
-          "caption": "Daily active analysts, alerts worked per day, and alert triage funnel."
+          "alt": "AI SOC Portal operations dashboard: daily active analysts, alerts worked and triage funnel",
+          "w": 1440,
+          "h": 900
         },
         {
           "file": "assets/metrics/soc_6.webp",
-          "caption": "Median time to convert, total conversions, false-positive rate, and % positive AI feedback."
+          "alt": "AI SOC Portal operations dashboard: time to convert, false positive rate and AI feedback",
+          "w": 1440,
+          "h": 900
         }
       ]
     },
     {
       "id": "ai-spm",
       "productId": "ai-spm",
-      "name": "AI-SPM Analytics v2",
+      "umbrella": false,
+      "name": "AI-SPM",
       "product": "AI Security Posture Management (AI-SPM)",
-      "summary": "Full-funnel analytics for AI security posture: acquisition, onboarding, asset risk, and retention.",
-      "screenshots": [
+      "northStar": "Active accounts running risk assessments every week",
+      "summary": "AI Security Posture Management: discover AI assets, assess risk, detect policy violations and stay compliant",
+      "howDecided": {
+        "problem": "CISOs lack an inventory of AI assets and a way to quantify AI risk for the board",
+        "workflow": "Sign up \u2192 onboard \u2192 register AI assets \u2192 connect integrations \u2192 run risk assessments \u2192 handle violations and alerts \u2192 invite team",
+        "approach": "Follow the lifecycle: activation funnel, core-action volume, alert resolution speed, then weekly retention on risk assessments"
+      },
+      "mapping": [
+        {
+          "step": "Sign up and onboard",
+          "event": "user_signed_up, onboarding_completed",
+          "metric": "Activation funnel with time to convert"
+        },
+        {
+          "step": "Register AI assets",
+          "event": "ai_asset_registered (asset_type)",
+          "metric": "Assets by type and risk level"
+        },
+        {
+          "step": "Assess risk",
+          "event": "risk_assessment_completed",
+          "metric": "Assessments over time by risk level"
+        },
+        {
+          "step": "Detect violations",
+          "event": "policy_violation_detected",
+          "metric": "Violations by type"
+        },
+        {
+          "step": "Resolve alerts",
+          "event": "alert_resolved (resolution_type)",
+          "metric": "Alert time to resolve, resolution by type"
+        },
+        {
+          "step": "Grow the team",
+          "event": "team_member_invited (role)",
+          "metric": "Invites by role, integrations by platform"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Activate new accounts",
+          "text": "Activation funnel shows whether signups reach a first registered asset"
+        },
+        {
+          "title": "Build a weekly habit",
+          "text": "Weekly retention on risk assessments is the core-value retention signal"
+        },
+        {
+          "title": "Respond fast to alerts",
+          "text": "Median and P90 time to resolve by severity keep critical alerts first"
+        },
+        {
+          "title": "Show account growth",
+          "text": "Weekly active users and team invites show expansion inside accounts"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Signup \u2192 onboarding",
+          "green": "\u2265 60%",
+          "amber": "30\u201360%",
+          "red": "< 30%"
+        },
+        {
+          "metric": "Week-4 assessment retention",
+          "green": "\u2265 40%",
+          "amber": "25\u201340%",
+          "red": "< 25%"
+        },
+        {
+          "metric": "Critical vs high alert TTR",
+          "green": "Critical faster",
+          "amber": "Equal",
+          "red": "Critical slower"
+        },
+        {
+          "metric": "Auto-remediated share of alerts",
+          "green": "\u2265 40%",
+          "amber": "20\u201340%",
+          "red": "< 20%"
+        },
+        {
+          "metric": "Assets registered vs prior 30d",
+          "green": "Up",
+          "amber": "Flat",
+          "red": "Down > 20%"
+        }
+      ],
+      "action": "Red on activation: add a guided first-asset registration in onboarding and alert on any signup with no asset after 24h",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Pinpoints the onboarding step blocking activation, the biggest lever on growth"
+        },
+        {
+          "audience": "Security / compliance",
+          "text": "Compliance exports by framework give audit-ready evidence of coverage"
+        },
+        {
+          "audience": "Leadership",
+          "text": "Asset inventory, violations and team growth give a board-level AI risk view"
+        }
+      ],
+      "images": [
         {
           "file": "assets/metrics/spm_1.webp",
-          "caption": "KPIs: signups, AI assets registered, risk assessments run, policy violations; activation funnel."
+          "alt": "AI-SPM Analytics dashboard: signups, assets, risk assessments and activation funnel",
+          "w": 1440,
+          "h": 900
         },
         {
           "file": "assets/metrics/spm_2.webp",
-          "caption": "Assets by type and risk level, assessments over time, and policy violations by type."
+          "alt": "AI-SPM Analytics dashboard: assets by type and risk, assessments over time, violations by type",
+          "w": 1440,
+          "h": 900
         }
       ]
     },
     {
-      "id": "agent-val",
-      "productId": "mcp",
-      "name": "Agent Val — Product Metrics",
-      "product": "Exploit Validation & Remediation (Agent Val)",
-      "summary": "Adoption and value funnels for agent-driven validation: nudge → session → autonomy → scope → validation launch, plus mix and retention.",
-      "screenshots": [
+      "id": "policy-foundry",
+      "productId": "policy-foundry",
+      "umbrella": false,
+      "name": "AI Policy Foundry",
+      "product": "AI Policy Foundry",
+      "northStar": "Median time from policy draft to enforcement",
+      "summary": "Multi-agent cloud security policy generation with human approval gates and compliance validation",
+      "howDecided": {
+        "problem": "Manual policy creation takes weeks per cloud service, leaving multi-week security gaps",
+        "workflow": "Policy drafted \u2192 submitted for review \u2192 approved \u2192 published \u2192 enforced; exemptions requested and approved; compliance checks run",
+        "approach": "Lifecycle funnel per policy (hold policy_id), cycle time, exemption and compliance pass rates, plus user satisfaction"
+      },
+      "mapping": [
         {
-          "file": "assets/metrics/val_2.webp",
-          "caption": "Weekly active users, validations run, risk confirmation rate, and adoption funnel."
+          "step": "Draft policy (AI agents)",
+          "event": "policy_drafted",
+          "metric": "Lifecycle funnel step 1"
         },
         {
-          "file": "assets/metrics/val_4.webp",
-          "caption": "Mix: autonomy mode, remediation option/outcome, failure rate by industry; weekly retention."
+          "step": "Human review and approval",
+          "event": "policy_submitted_for_review, policy_approved",
+          "metric": "Funnel conversion, review time"
+        },
+        {
+          "step": "Publish and enforce",
+          "event": "policy_published, policy_enforced",
+          "metric": "Draft-to-enforced cycle time"
+        },
+        {
+          "step": "Request exemption",
+          "event": "exemption_requested / approved",
+          "metric": "Exemption approval rate"
+        },
+        {
+          "step": "Validate compliance",
+          "event": "compliance_check_passed / failed",
+          "metric": "Pass rate by framework"
+        },
+        {
+          "step": "User feedback",
+          "event": "nps_response_recorded",
+          "metric": "NPS, retention"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Deliver the 24h promise",
+          "text": "Draft-to-enforced time tests the pitch claim of policies in under 24 hours"
+        },
+        {
+          "title": "Keep humans in control",
+          "text": "Review and approval steps in the funnel show where approvals stall"
+        },
+        {
+          "title": "Prove compliance coverage",
+          "text": "Pass rate by framework shows audit readiness"
+        },
+        {
+          "title": "Track user sentiment",
+          "text": "NPS by tier and weekly retention show whether engineers rely on the tool"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Draft \u2192 enforced (median)",
+          "green": "\u2264 1 day",
+          "amber": "1\u20133 days",
+          "red": "> 3 days"
+        },
+        {
+          "metric": "Compliance pass rate (each framework)",
+          "green": "\u2265 90%",
+          "amber": "75\u201390%",
+          "red": "< 75%"
+        },
+        {
+          "metric": "Exemption approval rate",
+          "green": "\u2264 30%",
+          "amber": "30\u201350%",
+          "red": "> 50%"
+        },
+        {
+          "metric": "Detractor share of NPS",
+          "green": "\u2264 30%",
+          "amber": "30\u201350%",
+          "red": "> 50%"
+        },
+        {
+          "metric": "Weekly retention",
+          "green": "\u2265 20%",
+          "amber": "10\u201320%",
+          "red": "< 10%"
+        }
+      ],
+      "action": "Red on cycle time: break down draft\u2192enforced by step to find the slow approval gate, then add SLA reminders to reviewers",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Turns the faster-policy claim into a measured cycle-time trend"
+        },
+        {
+          "audience": "Cloud security engineering",
+          "text": "Shows which frameworks fail most often so policy templates can be fixed"
+        },
+        {
+          "audience": "Leadership / audit",
+          "text": "Pass rates and exemption trends give evidence for audits and risk committees"
+        }
+      ],
+      "images": [
+        {
+          "file": "assets/metrics/pf_funnel.webp",
+          "alt": "AI Policy Foundry dashboard: policy lifecycle funnel and exemption approval rate",
+          "w": 1440,
+          "h": 900
+        },
+        {
+          "file": "assets/metrics/pf_3.webp",
+          "alt": "AI Policy Foundry dashboard: NPS detail by score, feature, aspect and tier",
+          "w": 1440,
+          "h": 900
         }
       ]
     },
     {
       "id": "ellyra-pulse",
       "productId": "ellyra-pulse",
-      "name": "Ellyra Pulse v2",
+      "umbrella": false,
+      "name": "Ellyra Pulse",
       "product": "Ellyra Pulse",
-      "summary": "Clinical-trust intelligence: patient NPS and sentiment, safety-gate operations, companion performance, and engagement.",
-      "screenshots": [
+      "northStar": "NPS (% promoters \u2212 % detractors) with zero unrouted safety signals",
+      "summary": "NPS and sentiment intelligence for a medical AI companion, with safety-gated feedback routing",
+      "howDecided": {
+        "problem": "A dip in NPS can mean a UI annoyance or a clinical-trust failure, and today they look the same",
+        "workflow": "Patient uses an AI companion \u2192 feedback captured \u2192 safety gate and PHI redaction \u2192 routing \u2192 clinical review and closed loop",
+        "approach": "Separate volume from severity: NPS by feature, aspect and tier, safety-flag routing, incident lifecycle and AI acceptance"
+      },
+      "mapping": [
+        {
+          "step": "Patient gives feedback",
+          "event": "nps_response_recorded (feature, aspect)",
+          "metric": "NPS, NPS by feature and aspect"
+        },
+        {
+          "step": "Safety gate flags risk",
+          "event": "safety_flag_routed",
+          "metric": "Safety flags routed over time"
+        },
+        {
+          "step": "Clinical incident",
+          "event": "incident_created / resolved",
+          "metric": "Created vs resolved, by severity"
+        },
+        {
+          "step": "Clinician triages alert",
+          "event": "alert_viewed / alert_triaged",
+          "metric": "Alert triage funnel (per alert)"
+        },
+        {
+          "step": "AI companion advice",
+          "event": "ai_analysis_requested / recommendation_accepted",
+          "metric": "Acceptance rate, feedback"
+        },
+        {
+          "step": "Team onboarding",
+          "event": "Sign Up, Onboarding Completed",
+          "metric": "Activation funnel"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Measure trust correctly",
+          "text": "True NPS (promoters \u2212 detractors) replaces the average score"
+        },
+        {
+          "title": "Route safety fast",
+          "text": "Safety flags and per-alert triage time track clinical response"
+        },
+        {
+          "title": "Activate clinical teams",
+          "text": "Activation funnel shows whether teams reach a first analysis"
+        },
+        {
+          "title": "Find the weakest feature",
+          "text": "NPS by feature and aspect show where trust erodes first"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "NPS (promoters \u2212 detractors)",
+          "green": "\u2265 0",
+          "amber": "\u221220 to 0",
+          "red": "< \u221220"
+        },
+        {
+          "metric": "Detractor share",
+          "green": "\u2264 30%",
+          "amber": "30\u201350%",
+          "red": "> 50%"
+        },
+        {
+          "metric": "Per-alert triage median",
+          "green": "\u2264 5 min",
+          "amber": "5\u201315 min",
+          "red": "> 15 min"
+        },
+        {
+          "metric": "Onboarded \u2192 first AI analysis",
+          "green": "\u2265 50%",
+          "amber": "25\u201350%",
+          "red": "< 25%"
+        },
+        {
+          "metric": "Hallucination flag rate (repo)",
+          "green": "< 0.20%",
+          "amber": "\u2014",
+          "red": "\u2265 0.20%"
+        },
+        {
+          "metric": "Disclaimer fatigue index (repo)",
+          "green": "< 5",
+          "amber": "\u2264 8",
+          "red": "> 8"
+        }
+      ],
+      "action": "Any safety flag spike above 2\u00d7 the 7-day average pages clinical on-call; red NPS triggers a feature-level root-cause review",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Shows which AI companion needs work first"
+        },
+        {
+          "audience": "Clinical safety team",
+          "text": "Safety flags and triage time prove signals reach a human within minutes"
+        },
+        {
+          "audience": "Leadership",
+          "text": "One trusted view of patient trust instead of three teams reading NPS differently"
+        }
+      ],
+      "images": [
         {
           "file": "assets/metrics/ell_1.webp",
-          "caption": "NPS & sentiment: average score, responses over time, and NPS by feature, aspect, and tier."
+          "alt": "Ellyra Pulse dashboard: average NPS, responses over time and NPS by feature, aspect and tier",
+          "w": 1440,
+          "h": 900
         },
         {
           "file": "assets/metrics/ell_8.webp",
-          "caption": "Share of responses by tier over time and weekly retention for accepted recommendations."
+          "alt": "Ellyra Pulse dashboard: share of responses by tier and weekly retention",
+          "w": 1440,
+          "h": 900
         }
       ]
     },
     {
       "id": "cropguard",
       "productId": "cropguard",
-      "name": "Agritech Crop Insurance v2",
+      "umbrella": false,
+      "name": "Agritech Crop Insurance",
       "product": "CropGuard",
-      "summary": "Farmer acquisition, parametric payout triggers, field evidence, insurer console, and WhatsApp/voice channel activity.",
-      "screenshots": [
+      "northStar": "Hours from payout trigger to money in the farmer's hands",
+      "summary": "CropGuard: parametric drought insurance for Indian farmers over WhatsApp and voice in regional languages",
+      "howDecided": {
+        "problem": "Claims take 90+ days; paperwork and language barriers exclude smallholder farmers",
+        "workflow": "Farmer onboards on WhatsApp/voice \u2192 requests quote \u2192 buys policy \u2192 sends field photo + location \u2192 rainfall trigger fires \u2192 payout",
+        "approach": "Two-sided view: farmer funnel and payout speed, plus insurer console activity and channel health by language"
+      },
+      "mapping": [
+        {
+          "step": "Onboard and buy policy",
+          "event": "farmer_onboarded \u2192 policy_purchased",
+          "metric": "Purchase funnel; buys by channel, language, crop"
+        },
+        {
+          "step": "Parametric trigger",
+          "event": "payout_trigger_fired (trigger_type)",
+          "metric": "Triggers fired, by type"
+        },
+        {
+          "step": "Payout",
+          "event": "payout_initiated / completed",
+          "metric": "Payout pipeline funnel, time to payout"
+        },
+        {
+          "step": "Field evidence",
+          "event": "field_photo_submitted (has_location_pin)",
+          "metric": "Photos, location pin attach rate"
+        },
+        {
+          "step": "Insurer review",
+          "event": "evidence_inspected, claim_adjudicated",
+          "metric": "Insurer DAU, claim approval rate"
+        },
+        {
+          "step": "Channel activity",
+          "event": "whatsapp_message / voice_call",
+          "metric": "Messages and calls over time"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Pay farmers fast",
+          "text": "Median and P90 time to payout test the settlement target"
+        },
+        {
+          "title": "Reach farmers in their language",
+          "text": "Purchases by channel and language show WhatsApp vs voice reach"
+        },
+        {
+          "title": "Verify claims cleanly",
+          "text": "Location pin attach rate exposes geo-verification friction"
+        },
+        {
+          "title": "Keep insurers engaged",
+          "text": "Insurer DAU and claim approval rate track the other side of the market"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Median time to payout",
+          "green": "\u2264 6h",
+          "amber": "6\u201324h",
+          "red": "> 24h"
+        },
+        {
+          "metric": "Trigger \u2192 payout completed",
+          "green": "\u2265 95%",
+          "amber": "80\u201395%",
+          "red": "< 80%"
+        },
+        {
+          "metric": "Location pin attach rate",
+          "green": "\u2265 90%",
+          "amber": "70\u201390%",
+          "red": "< 70%"
+        },
+        {
+          "metric": "Claim approval rate",
+          "green": "60\u201390%",
+          "amber": "40\u201360%",
+          "red": "< 40% or > 100%"
+        },
+        {
+          "metric": "Purchase funnel conversion",
+          "green": "\u2265 20%",
+          "amber": "10\u201320%",
+          "red": "< 10%"
+        }
+      ],
+      "action": "Red on payouts: fix farmer identity across steps so funnels connect, then alert when any payout exceeds 24h",
+      "value": [
+        {
+          "audience": "Product (PM)",
+          "text": "Shows whether the claim promise holds and where the payout pipeline breaks"
+        },
+        {
+          "audience": "Insurer operations",
+          "text": "Insurer DAU, evidence inspection and approval rates size review workload"
+        },
+        {
+          "audience": "Leadership",
+          "text": "Channel and language mix guide expansion to new states and crops"
+        }
+      ],
+      "images": [
         {
           "file": "assets/metrics/agr_1.webp",
-          "caption": "Farmer acquisition & policy sales: purchase funnel by channel, language, and crop type."
+          "alt": "Agritech Crop Insurance dashboard: farmer acquisition and policy purchase funnel",
+          "w": 1440,
+          "h": 900
         },
         {
           "file": "assets/metrics/agr_4.webp",
-          "caption": "Payout pipeline, triggers by type, field photos submitted, and location-pin attach rate."
+          "alt": "Agritech Crop Insurance dashboard: payout pipeline, triggers and field evidence",
+          "w": 1440,
+          "h": 900
+        }
+      ]
+    },
+    {
+      "id": "defence-ecosystem",
+      "productId": "ecosystem",
+      "umbrella": true,
+      "name": "AI Defence Ecosystem",
+      "product": "AI Defense Ecosystem",
+      "northStar": "Policy compliance rate and draft-to-enforced time across the AI estate",
+      "summary": "Executive umbrella across AI-SPM, AI SOC and AI Policy Foundry: is our AI estate secure, governed and monitored?",
+      "howDecided": {
+        "problem": "Leaders need one answer across three products instead of reading three boards",
+        "workflow": "Discover and assess AI assets (SPM) \u2192 detect and respond to threats (SOC) \u2192 govern with policies and compliance (Policy Foundry)",
+        "approach": "One or two signals per pillar plus cross-pillar adoption, each defined the same way as on the pillar boards"
+      },
+      "mapping": [
+        {
+          "step": "Risk posture (AI-SPM)",
+          "event": "risk_assessment_completed",
+          "metric": "Assets under management, risk distribution"
+        },
+        {
+          "step": "Incident operations (AI SOC)",
+          "event": "incident_created / resolved",
+          "metric": "Incidents created vs resolved, severity"
+        },
+        {
+          "step": "Threat landscape (AI SOC)",
+          "event": "threat_detected (threat_type)",
+          "metric": "Threats by type, containment rate"
+        },
+        {
+          "step": "Policy lifecycle (Foundry)",
+          "event": "policy_drafted \u2192 policy_enforced",
+          "metric": "Draft-to-enforced median time"
+        },
+        {
+          "step": "Compliance (Foundry)",
+          "event": "compliance_check_passed / failed",
+          "metric": "Checks passed vs failed, pass rate"
+        },
+        {
+          "step": "Programme health",
+          "event": "weekly users per platform",
+          "metric": "WAU across all three pillars"
+        }
+      ],
+      "objectives": [
+        {
+          "title": "Answer one question",
+          "text": "Is the AI estate secure, governed and actively monitored?"
+        },
+        {
+          "title": "Show governance speed",
+          "text": "Draft-to-enforced median is the headline governance KPI"
+        },
+        {
+          "title": "Keep backlogs in check",
+          "text": "Incidents created vs resolved and checks passed vs failed show backlog growth"
+        },
+        {
+          "title": "Track platform adoption",
+          "text": "WAU per pillar shows whether all three products are used together"
+        }
+      ],
+      "thresholds": [
+        {
+          "metric": "Draft \u2192 enforced (median)",
+          "green": "\u2264 1 day",
+          "amber": "1\u20133 days",
+          "red": "> 3 days"
+        },
+        {
+          "metric": "Compliance checks failed share",
+          "green": "\u2264 15%",
+          "amber": "15\u201330%",
+          "red": "> 30%"
+        },
+        {
+          "metric": "Incidents resolved vs created",
+          "green": "\u2265 95%",
+          "amber": "80\u201395%",
+          "red": "< 80%"
+        },
+        {
+          "metric": "Containment rate by severity",
+          "green": "\u2265 90%",
+          "amber": "70\u201390%",
+          "red": "< 70%"
+        },
+        {
+          "metric": "Exemption approval rate",
+          "green": "\u2264 30%",
+          "amber": "30\u201350%",
+          "red": "> 50% or > 100%"
+        }
+      ],
+      "action": "Red rows are partly data-definition issues: fix the containment and exemption formulas before using them in exec reviews",
+      "value": [
+        {
+          "audience": "Product (portfolio PM)",
+          "text": "One board to prioritise across three products using the same definitions"
+        },
+        {
+          "audience": "CISO",
+          "text": "Answers 'secure, governed, monitored?' in one view for board and regulator updates"
+        },
+        {
+          "audience": "Leadership / GTM",
+          "text": "Cross-pillar adoption supports a platform story and bundled pricing"
+        }
+      ],
+      "images": [
+        {
+          "file": "assets/metrics/def_1.webp",
+          "alt": "AI Defence Ecosystem executive dashboard: AI assets, incidents and policies enforced",
+          "w": 1440,
+          "h": 900
+        },
+        {
+          "file": "assets/metrics/def_4.webp",
+          "alt": "AI Defence Ecosystem dashboard: WAU across platforms, audit reports and compliance pass rates",
+          "w": 1440,
+          "h": 900
         }
       ]
     }

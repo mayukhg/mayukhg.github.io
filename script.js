@@ -1,7 +1,7 @@
 /* Mayukh Ghosh — portfolio renderer + interactions (vanilla JS, no dependencies)
  *
- * All copy lives in content/profile.json and content/products.json and is edited
- * through /admin. This file only turns that data into markup.
+ * All copy lives in content/*.json and is edited through /admin.
+ * This file only turns that data into markup.
  * Text fields support **bold** and [link text](https://url) — nothing else.
  */
 (function () {
@@ -63,11 +63,123 @@
     if (preview) {
       try {
         var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
-        if (d && d.profile && d.products) return Promise.resolve({ profile: d.profile, products: d.products, preview: true });
+        if (d && d.profile && d.products) {
+          return Promise.resolve({ profile: d.profile, products: d.products, metrics: d.metrics || null, preview: true });
+        }
       } catch (e) { /* fall through to published content */ }
     }
-    return Promise.all([loadJSON('content/profile.json'), loadJSON('content/products.json')])
-      .then(function (r) { return { profile: r[0], products: r[1], preview: false }; });
+    return Promise.all([
+      loadJSON('content/profile.json'),
+      loadJSON('content/products.json'),
+      loadJSON('content/metrics.json').catch(function () { return null; })
+    ]).then(function (r) { return { profile: r[0], products: r[1], metrics: r[2], preview: false }; });
+  }
+
+  /* ---------- metrics helpers ---------- */
+  var METRICS = null;
+  var METRICS_BY_PRODUCT = {};
+  function indexMetrics(m) {
+    METRICS = m;
+    METRICS_BY_PRODUCT = {};
+    if (!m) return;
+    arr(m.apps).forEach(function (app) {
+      if (app.productId && app.productId !== 'ecosystem') METRICS_BY_PRODUCT[app.productId] = app;
+    });
+  }
+  function thresholdLadder(thresholds, limit) {
+    var rows = arr(thresholds);
+    if (limit) rows = rows.slice(0, limit);
+    return '<ul class="ladder" aria-label="Action thresholds">' + rows.map(function (t) {
+      return '<li><span class="l-metric">' + esc(t.metric) + '</span><span class="bands">' +
+        '<span class="band band-good"><b>Good</b><span>' + esc(t.green) + '</span></span>' +
+        '<span class="band band-watch"><b>Watch</b><span>' + esc(t.amber) + '</span></span>' +
+        '<span class="band band-act"><b>Act</b><span>' + esc(t.red) + '</span></span>' +
+      '</span></li>';
+    }).join('') + '</ul>';
+  }
+  function metricsDisclaimer(text) {
+    return '<p class="metrics-disclaimer" role="note">' + icon('g-info') + '<span>' + esc(text) + '</span></p>';
+  }
+  function metricsDetailHtml(app, disclaimer) {
+    if (!app) return '';
+    var decided = app.howDecided || {};
+    var mapRows = arr(app.mapping).map(function (r) {
+      return '<tr><td>' + esc(r.step) + '</td><td><code>' + esc(r.event) + '</code></td><td>' + esc(r.metric) + '</td></tr>';
+    }).join('');
+    return metricsDisclaimer(disclaimer || (METRICS && METRICS.disclaimer) || '') +
+      '<div class="mx-block"><h4>How it was decided</h4><ul class="mx-decided">' +
+        '<li><strong>Problem</strong> ' + esc(decided.problem || '') + '</li>' +
+        '<li><strong>Workflow</strong> ' + esc(decided.workflow || '') + '</li>' +
+        '<li><strong>Approach</strong> ' + esc(decided.approach || '') + '</li>' +
+      '</ul></div>' +
+      (mapRows ? '<div class="mx-block"><h4>Journey → metric</h4><div class="mx-table-wrap"><table class="mx-table"><thead><tr><th scope="col">Step</th><th scope="col">Event</th><th scope="col">Metric</th></tr></thead><tbody>' + mapRows + '</tbody></table></div></div>' : '') +
+      (arr(app.objectives).length ? '<div class="mx-block"><h4>Objectives</h4><ul class="mx-obj">' + arr(app.objectives).map(function (o) {
+        return '<li><strong>' + esc(o.title) + '.</strong> ' + esc(o.text) + '</li>';
+      }).join('') + '</ul></div>' : '') +
+      (arr(app.thresholds).length ? '<div class="mx-block"><h4>Threshold ladder</h4>' + thresholdLadder(app.thresholds) +
+        (app.action ? '<p class="note">' + esc(app.action) + '</p>' : '') + '</div>' : '') +
+      (arr(app.value).length ? '<div class="mx-block"><h4>Value delivered</h4><ul class="mx-value">' + arr(app.value).map(function (v) {
+        return '<li><strong>' + esc(v.audience) + '</strong>' + esc(v.text) + '</li>';
+      }).join('') + '</ul></div>' : '') +
+      (arr(app.images).length ? '<div class="mx-block"><h4>Dashboard</h4>' + metricsDisclaimer(disclaimer || (METRICS && METRICS.disclaimer) || '') +
+        '<div class="mx-shots">' + arr(app.images).map(function (img, i) {
+          return '<button type="button" class="mx-shot" data-app="' + esc(app.id) + '" data-i="' + i + '" aria-label="Open dashboard image ' + (i + 1) + '">' +
+            '<img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy">' +
+          '</button>';
+        }).join('') + '</div></div>' : '');
+  }
+  function renderMetrics(m, products) {
+    var el = slot('metrics');
+    var sec = document.getElementById('metrics');
+    if (!el || !m || !arr(m.apps).length) { if (sec) sec.hidden = true; if (el) el.innerHTML = ''; return; }
+    if (sec) sec.hidden = false;
+    var arenaById = {}, productById = {};
+    arr(products.arenas).forEach(function (a) { arenaById[a.id] = a; });
+    arr(products.products).forEach(function (p) { productById[p.id] = p; });
+    var method = '<ol class="method-flow" aria-label="How I measure">' + arr(m.method).map(function (step, i) {
+      return '<li><span class="m-step">Step ' + (i + 1) + '</span><span class="m-label">' + esc(step.label) + '</span><span class="m-text">' + esc(step.text) + '</span></li>';
+    }).join('') + '</ol>';
+    var tiles = '<div class="metrics-grid">' + arr(m.apps).map(function (app) {
+      var prod = productById[app.productId] || {};
+      var arena = arenaById[prod.arena] || {};
+      var color = colorVar('--arena', arena.color);
+      var img = arr(app.images)[0];
+      var openTarget = app.umbrella ? 'data-umbrella="' + esc(app.id) + '"' : 'data-product="' + esc(app.productId || '') + '"';
+      return '<article class="m-tile' + (app.umbrella ? ' umbrella' : '') + '"' + color + '>' +
+        '<h3>' + esc(app.name) + '</h3>' +
+        '<p class="m-star">' + esc(app.northStar) + '</p>' +
+        (img ? '<button type="button" class="m-thumb mx-shot" data-app="' + esc(app.id) + '" data-i="0" aria-label="Enlarge ' + esc(app.name) + ' dashboard">' +
+          '<img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy">' +
+        '</button>' : '') +
+        thresholdLadder(app.thresholds, 3) +
+        '<button type="button" class="m-open" ' + openTarget + '>See how it\'s measured</button>' +
+      '</article>';
+    }).join('') + '</div>';
+    el.innerHTML =
+      '<div class="metrics-head">' +
+        (m.eyebrow ? '<p class="eyebrow">' + esc(m.eyebrow) + '</p>' : '') +
+        '<h2 class="s-title" id="metrics-title">' + esc(m.title || 'Product metrics') + '</h2>' +
+        (m.subtitle ? '<p class="s-sub">' + esc(m.subtitle) + '</p>' : '') +
+        metricsDisclaimer(m.disclaimer) +
+      '</div>' +
+      method + tiles +
+      (m.pdf ? '<div class="metrics-deck">' + docLink(m.pdf, 'btn btn-doc', 'Download the full metrics deck (PDF)') + '</div>' : '') +
+      '<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Dashboard image">' +
+        '<div class="lightbox-dialog" tabindex="-1">' +
+          '<button type="button" class="lightbox-close" aria-label="Close">×</button>' +
+          '<button type="button" class="lightbox-prev" aria-label="Previous image">‹</button>' +
+          '<img id="lightbox-img" alt="">' +
+          '<button type="button" class="lightbox-next" aria-label="Next image">›</button>' +
+          '<p class="lightbox-caption" id="lightbox-cap"></p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="umbrella-drawer" id="umbrella-drawer" hidden>' +
+        '<div class="umbrella-panel" role="dialog" aria-modal="true" aria-labelledby="umbrella-title" tabindex="-1">' +
+          '<button type="button" class="btn ud-close" data-close-umbrella>Close</button>' +
+          '<h2 id="umbrella-title"></h2>' +
+          '<div id="umbrella-body"></div>' +
+        '</div>' +
+      '</div>';
   }
 
   /* ---------- renderers ---------- */
@@ -209,7 +321,8 @@
       var links = '';
       var teardown = (d.flagship && d.flagship.productId === p.id) ? '<a class="acc-tear" href="#ellyra">Architecture teardown</a>' : '';
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
-      if (p.demo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
+      var isVideo = p.demo && /\.mp4(\?|$)/i.test(p.demo);
+      if (p.demo && !isVideo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
         .filter(function (x) { return x[1]; })
         .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
@@ -219,11 +332,48 @@
       if (p.validated) decide += '<div style="--i:' + n++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
       if (arr(p.outcomes).length) decide += '<div style="--i:' + n++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
       var face = (p.tradeoff ? '<p class="acc-sum"><span class="acc-decision-l">Decision.</span> ' + md(p.tradeoff) + '</p>' : '<p class="acc-sum">' + md(p.summary) + '</p>');
+      var mx = METRICS_BY_PRODUCT[p.id];
+      var measured = mx ? '<button type="button" class="badge-measured" data-open-metrics="' + esc(id) + '" aria-label="Open metrics for ' + esc(p.name) + '">' + icon('g-chart') + 'Measured</button>' : '';
+      var noteBadge = '';
+      var noteKey = String(p.note || '').toLowerCase();
+      if (p.note) {
+        if (noteKey === 'prototype') noteBadge = '<span class="ev ev-prototype" title="Prototype / independent build">Prototype</span>';
+        else noteBadge = '<p class="note">' + md(p.note) + '</p>';
+      }
+      var evidenceBadges = evBadge(p.evidence) + (noteKey === 'prototype' ? noteBadge : '');
+      var videoBlock = isVideo
+        ? '<figure class="acc-video"><video controls preload="none" poster="' + esc(safeUrl(p.poster || p.thumbnail || 'assets/cropguard/workflow.webp')) + '">' +
+            '<source src="' + esc(safeUrl(p.demo)) + '" type="video/mp4"></video>' +
+            '<figcaption>Walkthrough (click to play — does not autoplay)</figcaption></figure>'
+        : '';
+      var figure = (p.thumbnail || p.poster)
+        ? '<figure class="acc-figure"><img src="' + esc(safeUrl(p.thumbnail || p.poster)) + '" alt="' + esc(p.name) + ' architecture workflow" width="1200" height="675" loading="lazy"></figure>'
+        : '';
+      var caseHtml =
+        (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
+        figure + videoBlock +
+        ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
+        (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
+        (decide ? '<div class="decide">' + decide + '</div>' : '') +
+        (noteBadge && noteKey !== 'prototype' ? noteBadge : '');
+      var bodyInner;
+      if (mx) {
+        var caseId = 'case-' + id, mxId = 'mx-' + id;
+        bodyInner =
+          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' case and metrics">' +
+            '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="true" tabindex="0" data-tab="case">Case</button>' +
+            '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>' +
+          '</div>' +
+          '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '">' + caseHtml + '</div>' +
+          '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>';
+      } else {
+        bodyInner = caseHtml;
+      }
       return '<article class="acc" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
         '<div class="acc-face">' +
           '<div class="acc-main">' +
             '<span class="kicker">' + esc(p.kicker || dom.label || a.label || '') + '</span>' +
-            '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
+            '<h3 class="acc-title">' + esc(p.name) + ' ' + measured + '</h3>' +
             face +
             '<div class="acc-links">' +
               teardown +
@@ -233,21 +383,17 @@
               '</button>' +
             '</div>' +
           '</div>' +
-          (headline ? '<div class="acc-result"><span class="acc-outcome-l">Outcome</span><p class="acc-outcome"><span class="acc-outcome-t">' + md(headline) + '</span>' + evBadge(p.evidence) + '</p>' +
+          (headline ? '<div class="acc-result"><span class="acc-outcome-l">Outcome</span><p class="acc-outcome"><span class="acc-outcome-t">' + md(headline) + '</span>' + evidenceBadges + '</p>' +
             (p.client ? '<div class="acc-meta"><span class="client">' + esc(p.client) + '</span></div>' : '') + '</div>' : '') +
         '</div>' +
         '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details" inert><div class="acc-inner">' +
-          (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
-          ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
-          (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
-          (decide ? '<div class="decide">' + decide + '</div>' : '') +
-          (p.note ? '<p class="note">' + md(p.note) + '</p>' : '') +
+          bodyInner +
         '</div></div>' +
       '</article>';
     }).join(''));
   }
 
-  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers', 'heart'];
+  var GLANCE_ICONS = ['shield', 'target', 'chip', 'wrench', 'grid', 'trend', 'alert', 'globe', 'bank', 'bolt', 'search', 'layers', 'heart', 'leaf'];
   function renderGlance(d) {
     var o = d.overview || {}, products = arr(d.products), el = slot('glance');
     if (o.show === false || !products.length) { el.hidden = true; el.innerHTML = ''; return; }
@@ -341,7 +487,10 @@
     set('skills', arr(s.groups).map(function (g, gi) {
       var items = arr(g.items), extra = items.length - TOP;
       return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills" id="sk-' + gi + '">' + items.map(function (t, i) {
-        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + esc(t) + '</li>';
+        var label = typeof t === 'object' && t ? (t.label || '') : t;
+        var href = typeof t === 'object' && t && t.href ? t.href : '';
+        var inner = href ? '<a href="' + esc(safeUrl(href)) + '">' + esc(label) + '</a>' : esc(label);
+        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + inner + '</li>';
       }).join('') + '</ul>' +
       (extra > 0 ? '<button type="button" class="pill-more" aria-expanded="false" aria-controls="sk-' + gi + '" data-more="+' + extra + ' more">+' + extra + ' more</button>' : '') + '</div>';
     }).join(''));
@@ -472,6 +621,7 @@
     var productIndex = {}, arenaById = {};
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
     arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
+    indexMetrics(c.metrics);
     renderHero(c.profile, arr(c.products.products).length);
     renderFit(c.profile);
     renderPillars(c.profile, productIndex);
@@ -482,10 +632,11 @@
     renderGlance(c.products);
     renderProducts(c.products);
     renderEcosystem(c.products);
+    renderMetrics(c.metrics, c.products);
     renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
       .forEach(function (el) { el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -547,24 +698,171 @@
     }
     chips.forEach(function (c) { c.addEventListener('click', function () { applyFilter(c.dataset.f); }); });
 
-    function openProduct(id) {
+    function selectCaseTab(card, which) {
+      var tabs = [].slice.call(card.querySelectorAll('.case-tab'));
+      if (!tabs.length) return;
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('data-tab') === which;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+      });
+    }
+    function openProduct(id, tab) {
       var card = document.getElementById(id);
       if (!card || !card.classList.contains('acc')) return false;
       if (card.hidden) applyFilter('all');
       card.classList.add('in');
       setAcc(card, true);
-      // offsetTop ignores the reveal animation's transform, so the card lands exactly below the sticky nav.
+      if (tab === 'metrics') selectCaseTab(card, 'metrics');
+      else if (card.querySelector('.case-tab')) selectCaseTab(card, 'case');
       var y = 0, el = card;
       while (el) { y += el.offsetTop; el = el.offsetParent; }
       window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
-      var btn = card.querySelector('.acc-toggle');
-      if (btn) btn.focus({ preventScroll: true });
+      var focusEl = tab === 'metrics' ? card.querySelector('.case-tab[data-tab="metrics"]') : card.querySelector('.acc-toggle');
+      if (focusEl) focusEl.focus({ preventScroll: true });
       return true;
     }
     function openFromHash() {
-      var id = decodeURIComponent(location.hash.slice(1));
-      if (/^p-/.test(id)) openProduct(id);
+      var raw = decodeURIComponent(location.hash.slice(1));
+      var m = raw.match(/^(p-[\w-]+)(?:\/(metrics))?$/);
+      if (m) openProduct(m[1], m[2] || 'case');
     }
+
+    /* Case / Metrics tabs */
+    document.querySelectorAll('.acc').forEach(function (card) {
+      var tabs = [].slice.call(card.querySelectorAll('.case-tab'));
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function (e) {
+          e.stopPropagation();
+          selectCaseTab(card, tab.getAttribute('data-tab'));
+          tab.focus();
+        });
+        tab.addEventListener('keydown', function (e) {
+          var next = e.key === 'ArrowRight' ? tabs[(i + 1) % tabs.length]
+            : e.key === 'ArrowLeft' ? tabs[(i - 1 + tabs.length) % tabs.length]
+            : e.key === 'Home' ? tabs[0]
+            : e.key === 'End' ? tabs[tabs.length - 1]
+            : null;
+          if (!next) return;
+          e.preventDefault();
+          selectCaseTab(card, next.getAttribute('data-tab'));
+          next.focus();
+        });
+      });
+    });
+    document.querySelectorAll('[data-open-metrics]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = 'p-' + btn.getAttribute('data-open-metrics');
+        openProduct(id, 'metrics');
+        if (location.hash !== '#' + id + '/metrics') history.pushState(null, '', '#' + id + '/metrics');
+      });
+    });
+    document.querySelectorAll('.m-open[data-product]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var pid = btn.getAttribute('data-product');
+        if (!pid) return;
+        openProduct('p-' + slug(pid), 'metrics');
+        history.pushState(null, '', '#p-' + slug(pid) + '/metrics');
+      });
+    });
+
+    /* Umbrella metrics drawer */
+    var umb = document.getElementById('umbrella-drawer');
+    var umbPanel = umb && umb.querySelector('.umbrella-panel');
+    function openUmbrella(appId) {
+      if (!METRICS || !umb) return;
+      var app = arr(METRICS.apps).filter(function (a) { return a.id === appId; })[0];
+      if (!app) return;
+      document.getElementById('umbrella-title').textContent = app.name;
+      document.getElementById('umbrella-body').innerHTML = metricsDetailHtml(app);
+      umb.hidden = false;
+      umbPanel.focus();
+    }
+    function closeUmbrella() {
+      if (!umb) return;
+      umb.hidden = true;
+    }
+    document.querySelectorAll('.m-open[data-umbrella]').forEach(function (btn) {
+      btn.addEventListener('click', function () { openUmbrella(btn.getAttribute('data-umbrella')); });
+    });
+    if (umb) {
+      umb.addEventListener('click', function (e) {
+        if (e.target === umb || e.target.closest('[data-close-umbrella]')) closeUmbrella();
+      });
+    }
+
+    /* Lightbox */
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lightbox-img');
+    var lbCap = document.getElementById('lightbox-cap');
+    var lbState = { appId: null, i: 0, lastFocus: null };
+    function lbImages() {
+      if (!METRICS) return [];
+      var app = arr(METRICS.apps).filter(function (a) { return a.id === lbState.appId; })[0];
+      return app ? arr(app.images) : [];
+    }
+    function paintLb() {
+      var imgs = lbImages();
+      if (!imgs.length) return;
+      var img = imgs[lbState.i];
+      lbImg.src = safeUrl(img.file);
+      lbImg.alt = img.alt || '';
+      lbCap.textContent = (METRICS && METRICS.disclaimer) || '';
+    }
+    function trapLb(e) {
+      if (!lb || lb.hidden || e.key !== 'Tab') return;
+      var focusables = lb.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      focusables = [].slice.call(focusables).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+      if (!focusables.length) return;
+      var first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    function openLb(appId, i) {
+      lbState.appId = appId;
+      lbState.i = i || 0;
+      lbState.lastFocus = document.activeElement;
+      paintLb();
+      lb.hidden = false;
+      lb.querySelector('.lightbox-close').focus();
+    }
+    function closeLb() {
+      if (!lb || lb.hidden) return;
+      lb.hidden = true;
+      if (lbState.lastFocus) lbState.lastFocus.focus();
+    }
+    document.querySelectorAll('.mx-shot').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openLb(btn.getAttribute('data-app'), parseInt(btn.getAttribute('data-i'), 10) || 0);
+      });
+    });
+    if (lb) {
+      lb.querySelector('.lightbox-close').addEventListener('click', closeLb);
+      lb.querySelector('.lightbox-prev').addEventListener('click', function () {
+        var imgs = lbImages(); if (!imgs.length) return;
+        lbState.i = (lbState.i - 1 + imgs.length) % imgs.length; paintLb();
+      });
+      lb.querySelector('.lightbox-next').addEventListener('click', function () {
+        var imgs = lbImages(); if (!imgs.length) return;
+        lbState.i = (lbState.i + 1) % imgs.length; paintLb();
+      });
+      lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (lb && !lb.hidden) { closeLb(); return; }
+        if (umb && !umb.hidden) { closeUmbrella(); return; }
+      }
+      if (lb && !lb.hidden) {
+        if (e.key === 'ArrowLeft') { lb.querySelector('.lightbox-prev').click(); }
+        if (e.key === 'ArrowRight') { lb.querySelector('.lightbox-next').click(); }
+        trapLb(e);
+      }
+    });
     window.addEventListener('hashchange', openFromHash);
     // Summary cards: open the product even when its hash is already in the URL.
     document.querySelectorAll('.glance-card').forEach(function (a) {
@@ -709,7 +1007,10 @@
     });
 
     var rv = document.querySelectorAll('.rv');
-    if ('IntersectionObserver' in window) {
+    var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver;
+    if (staticMode) {
+      rv.forEach(function (el) { el.classList.add('in'); });
+    } else if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
       }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
@@ -723,7 +1024,7 @@
 
     openFromHash();
     if (location.hash && !/^#p-/.test(location.hash)) {
-      var t = document.getElementById(location.hash.slice(1));
+      var t = document.getElementById(location.hash.slice(1).split('/')[0]);
       if (t) t.scrollIntoView();
     }
   }
