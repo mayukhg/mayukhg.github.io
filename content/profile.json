@@ -23,7 +23,8 @@
     "github": "https://github.com/mayukhg",
     "resume": "resume.pdf",
     "resumeUpdated": "Sep 2026",
-    "portfolio": "assets/portfolio.pdf"
+    "portfolio": "assets/portfolio.pdf",
+    "metrics": "assets/My_Product_Metrics.pdf"
   },
   "fit": {
     "open": "Open to",
@@ -32,7 +33,8 @@
       { "id": "security", "label": "Security" },
       { "id": "payments", "label": "Payments" },
       { "id": "analytics", "label": "Analytics" },
-      { "id": "healthcare", "label": "Healthcare" }
+      { "id": "healthcare", "label": "Healthcare" },
+      { "id": "agritech", "label": "Agritech" }
     ],
     "mode": "Remote / Hybrid",
     "notice": "30-day notice"
@@ -122,7 +124,7 @@
         "items": [
           { "label": "Now", "value": "Director of PM, Qualys" },
           { "label": "Open to", "value": "Director, AI product" },
-          { "label": "Domains", "value": "Security · Payments · Analytics · Healthcare" },
+          { "label": "Domains", "value": "Security · Payments · Analytics · Healthcare · Agritech" },
           { "label": "Markets", "value": "B2B enterprise and B2C" },
           { "label": "Edge", "value": "Judgment, cross-domain rigor, and shipping. Trust is engineered into the pipeline." }
         ]
@@ -145,7 +147,7 @@
           { "label": "Based", "value": "Pune, India" },
           { "label": "Mode", "value": "Remote / Hybrid" },
           { "label": "Notice", "value": "30 days, negotiable" },
-          { "label": "Documents", "value": "[Résumé PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf)" }
+          { "label": "Documents", "value": "[Résumé PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf) · [Product metrics PDF](assets/My_Product_Metrics.pdf)" }
         ]
       }
     ]
@@ -326,8 +328,8 @@
         "dates": "Jul 2024 – Present",
         "duration": "2+ years",
         "scope": "Part-time",
-        "domains": ["healthcare"],
-        "summary": "Part-time. Shipped a B2C healthtech conversational AI chatbot alongside B2B AI advisory for early-stage founders.",
+        "domains": ["healthcare", "agritech"],
+        "summary": "Part-time. Shipped a B2C healthtech conversational AI chatbot alongside B2B AI advisory, including CropGuard for ambient crop insurance.",
         "metrics": [
           "3+ 0→1 in <4 months",
           "+24% engagement",
@@ -338,11 +340,13 @@
           "Defined product strategy for a consumer healthtech **conversational AI chatbot** answering users' medical queries in real time, owning the **query-accuracy and response-safety evaluation framework** from discovery through launch.",
           "Served as Fractional CPO for early-stage AI founders, identifying high-value AI use cases and defining roadmaps and personas that took **3+ 0-to-1 concepts** from raw idea to market-ready SaaS in under 4 months each.",
           "Architected a computer-vision MVP for a Digital Wellness startup; rapid A/B loops lifted user engagement by **24%** within 6 weeks of launch.",
+          "Built **CropGuard**: ambient WhatsApp and voice crop insurance for Indian farmers — parametric drought claims, multilingual channels, and geo-verified field evidence on Express, React and Postgres.",
           "Advised a B2B AgriTech & Crop Insurance platform on the LLM and RAG architecture behind its self-service farmer query product, cutting cost per query by **35%** while scaling to **50K+** queries monthly.",
           "Designed responsible AI compliance protocols aligned to NIST and the EU AI Act, institutionalising a “Trust by Design” framework across 2 client engagements."
         ],
         "related": [
-          "ellyra-pulse"
+          "ellyra-pulse",
+          "cropguard"
         ]
       },
       {

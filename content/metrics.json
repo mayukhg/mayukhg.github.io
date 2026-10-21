@@ -1,0 +1,128 @@
+{
+  "title": "Product metrics boards",
+  "subtitle": "PostHog dashboards for the portfolio products. All figures are demo / synthetic unless a product case marks evidence as production.",
+  "pdf": "assets/My_Product_Metrics.pdf",
+  "disclaimer": "DEMO DATA · SYNTHETIC",
+  "boards": [
+    {
+      "id": "defence-ecosystem",
+      "productId": null,
+      "name": "AI Defence Ecosystem v2",
+      "product": "AI Defense Ecosystem",
+      "summary": "Executive programme dashboard unifying AI-SPM, AI SOC, and AI Policy Foundry.",
+      "question": "Is our AI estate secure, governed, and actively monitored?",
+      "screenshots": [
+        {
+          "file": "assets/metrics/def_1.webp",
+          "caption": "Executive KPIs: AI assets under management, security incidents created, policies enforced; risk distribution and assessments over time."
+        },
+        {
+          "file": "assets/metrics/def_4.webp",
+          "caption": "Cross-pillar signals: weekly active users across platforms, audit reports generated, compliance pass rate by framework, exemption approval rate."
+        }
+      ]
+    },
+    {
+      "id": "policy-foundry",
+      "productId": "policy-foundry",
+      "name": "AI Policy Foundry — Safety, Satisfaction & NPS v2",
+      "product": "AI Policy Foundry",
+      "summary": "Safety and compliance trends, user satisfaction, weekly retention, and NPS detail for policy automation.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/pf_funnel.webp",
+          "caption": "Safety & compliance: policy lifecycle funnel and exemption approval rate."
+        },
+        {
+          "file": "assets/metrics/pf_3.webp",
+          "caption": "NPS detail: score over time, distribution, and breakdowns by feature, aspect, and tier."
+        }
+      ]
+    },
+    {
+      "id": "soc-portal",
+      "productId": "soc-portal",
+      "name": "AI SOC Portal – Operations Dashboard v2",
+      "product": "AI SOC Portal",
+      "summary": "Analyst activity, alert throughput, incident response times, AI recommendation performance, and workflow efficiency.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/soc_1.webp",
+          "caption": "Daily active analysts, alerts worked per day, and alert triage funnel."
+        },
+        {
+          "file": "assets/metrics/soc_6.webp",
+          "caption": "Median time to convert, total conversions, false-positive rate, and % positive AI feedback."
+        }
+      ]
+    },
+    {
+      "id": "ai-spm",
+      "productId": "ai-spm",
+      "name": "AI-SPM Analytics v2",
+      "product": "AI Security Posture Management (AI-SPM)",
+      "summary": "Full-funnel analytics for AI security posture: acquisition, onboarding, asset risk, and retention.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/spm_1.webp",
+          "caption": "KPIs: signups, AI assets registered, risk assessments run, policy violations; activation funnel."
+        },
+        {
+          "file": "assets/metrics/spm_2.webp",
+          "caption": "Assets by type and risk level, assessments over time, and policy violations by type."
+        }
+      ]
+    },
+    {
+      "id": "agent-val",
+      "productId": "mcp",
+      "name": "Agent Val — Product Metrics",
+      "product": "Exploit Validation & Remediation (Agent Val)",
+      "summary": "Adoption and value funnels for agent-driven validation: nudge → session → autonomy → scope → validation launch, plus mix and retention.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/val_2.webp",
+          "caption": "Weekly active users, validations run, risk confirmation rate, and adoption funnel."
+        },
+        {
+          "file": "assets/metrics/val_4.webp",
+          "caption": "Mix: autonomy mode, remediation option/outcome, failure rate by industry; weekly retention."
+        }
+      ]
+    },
+    {
+      "id": "ellyra-pulse",
+      "productId": "ellyra-pulse",
+      "name": "Ellyra Pulse v2",
+      "product": "Ellyra Pulse",
+      "summary": "Clinical-trust intelligence: patient NPS and sentiment, safety-gate operations, companion performance, and engagement.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/ell_1.webp",
+          "caption": "NPS & sentiment: average score, responses over time, and NPS by feature, aspect, and tier."
+        },
+        {
+          "file": "assets/metrics/ell_8.webp",
+          "caption": "Share of responses by tier over time and weekly retention for accepted recommendations."
+        }
+      ]
+    },
+    {
+      "id": "cropguard",
+      "productId": "cropguard",
+      "name": "Agritech Crop Insurance v2",
+      "product": "CropGuard",
+      "summary": "Farmer acquisition, parametric payout triggers, field evidence, insurer console, and WhatsApp/voice channel activity.",
+      "screenshots": [
+        {
+          "file": "assets/metrics/agr_1.webp",
+          "caption": "Farmer acquisition & policy sales: purchase funnel by channel, language, and crop type."
+        },
+        {
+          "file": "assets/metrics/agr_4.webp",
+          "caption": "Payout pipeline, triggers by type, field photos submitted, and location-pin attach rate."
+        }
+      ]
+    }
+  ]
+}
