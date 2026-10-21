@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>My Product Metrics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky app index rail on the left, long-form app chapters on the right; one deliberate dark look that matches the deck and the Mixpanel screenshots. */
+:root{
+  --bg:#0b0b10; --surface:#14141b; --surface-2:#1b1b25; --line:#2a2a38;
+  --fg:#f4f4f6; --muted:#aeb4c2; --dim:#8a90a0;
+  --violet:#a493ff; --green:#3ddc97; --amber:#ffb547; --red:#ff6b6b; --cyan:#5cc8ff;
+  --on-pill:#0b0b10;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --sans:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--violet)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+.gut{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.mono{font-family:var(--mono)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{font-family:var(--display);font-weight:700;font-size:18px;color:var(--fg);text-decoration:none;display:flex;gap:10px;align-items:center}
+.brand i{width:22px;height:22px;border-radius:6px;background:var(--violet);display:inline-grid;place-items:center;font-style:normal;color:var(--on-pill);font-size:12px;font-weight:800}
+.demo-flag{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.demo-flag b{font-weight:700}
+
+/* hero */
+.hero{max-width:1320px;margin:0 auto;padding-block:72px 48px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:end}
+.hero h1{font-size:clamp(48px,8vw,104px);font-weight:800;letter-spacing:-.035em;line-height:.95}
+.hero h1 span{color:var(--violet)}
+.hero .lede{font-size:19px;color:var(--muted);max-width:56ch;margin-top:22px}
+.hero .by{margin-top:18px;font-size:14px;color:var(--dim)}
+.counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.counts div{background:var(--surface);padding:18px}
+.counts b{display:block;font-family:var(--display);font-size:44px;line-height:1;font-weight:800}
+.counts span{font-size:13px;color:var(--muted)}
+.mix{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.mix-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:10px;gap:2px}
+.mix-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+
+/* intro blocks */
+.wrap{max-width:1320px;margin:0 auto}
+.block{padding-block:56px;border-top:1px solid var(--line)}
+.block h2{font-size:clamp(30px,4vw,46px);font-weight:700;letter-spacing:-.02em;margin-top:8px}
+.block .sub{color:var(--muted);margin-top:10px;max-width:70ch}
+.disc{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:28px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.panel h3{font-size:20px;font-weight:700;margin-bottom:10px}
+.panel ul{margin:0;padding-left:20px;display:grid;gap:8px;color:var(--muted)}
+.panel.warn{border-color:color-mix(in srgb,var(--amber) 50%,transparent)}
+.panel.warn h3{color:var(--amber)}
+.panel.real h3{color:var(--green)}
+.nsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-top:28px}
+.ns{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-decoration:none;color:var(--fg);transition:border-color .15s,transform .15s}
+.ns:hover{border-color:var(--violet);transform:translateY(-2px)}
+.ns .top{display:flex;align-items:center;gap:10px}
+.num{width:28px;height:28px;flex:none;border-radius:50%;display:inline-grid;place-items:center;font-weight:700;font-size:13px;color:var(--on-pill)}
+.ns h3{font-size:18px}
+.ns p{font-size:15px;color:var(--muted)}
+.ns .strip{display:flex;gap:3px;margin-top:auto}
+.ns .strip i{height:6px;flex:1;border-radius:3px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.step h3{font-size:18px;display:flex;align-items:center;gap:10px}
+.step p{font-size:15px;color:var(--muted)}
+.guide{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;margin-top:28px}
+.qlist{display:grid;gap:8px;counter-reset:q}
+.qlist li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;font-weight:600}
+.qlist{padding:0;margin:0}
+.legend{display:grid;gap:12px}
+.legend div{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:15px}
+
+/* status pills */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;color:var(--on-pill);white-space:nowrap}
+.G{background:var(--green)} .A{background:var(--amber)} .R{background:var(--red)}
+
+/* layout with rail */
+.main{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;padding-block:24px 72px}
+.rail{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 100px);overflow:auto}
+.rail .eyebrow{margin-bottom:10px}
+.rail a{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:15px;font-weight:500}
+.rail a:hover{background:var(--surface);color:var(--fg)}
+.rail a.on{background:var(--surface-2);color:var(--fg)}
+.rail .num{width:22px;height:22px;font-size:11px}
+.rail hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+
+/* app chapter */
+.app{padding-bottom:72px;margin-bottom:72px;border-bottom:1px solid var(--line);min-width:0}
+.app-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}
+.app-head .idx{font-family:var(--display);font-size:15px;font-weight:700}
+.app-head h2{font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-.03em;margin-top:6px}
+.app-head .tag{color:var(--muted);font-size:17px;margin-top:10px;max-width:68ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.umb{font-size:12px;font-weight:700;color:var(--on-pill);background:var(--cyan);border-radius:6px;padding:3px 8px;margin-left:8px;vertical-align:middle;font-family:var(--sans);letter-spacing:0}
+.north{margin-top:24px;border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line)}
+.north .eyebrow{color:var(--accent)}
+.north .nsv{font-family:var(--display);font-size:clamp(22px,2.6vw,30px);font-weight:700;line-height:1.2;margin-top:6px}
+.tally{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+
+.sec{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;margin-top:48px;align-items:start}
+.sec.flip .shot{order:-1}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.sec-h .n{font-family:var(--mono);font-size:13px;color:var(--accent)}
+.sec-h h3{font-size:24px;font-weight:700}
+.shot{margin:0;position:sticky;top:84px}
+.shot button{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);cursor:zoom-in}
+.shot img{display:block;width:100%;height:auto;max-width:100%}
+.shot figcaption{font-size:13px;color:var(--dim);margin-top:8px;display:flex;justify-content:space-between;gap:10px}
+.shot figcaption em{font-style:normal;color:var(--amber);white-space:nowrap}
+.wide{grid-template-columns:minmax(0,1fr)}
+.wide .shot{position:static}
+
+.trio{display:grid;gap:10px}
+.trio div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.trio b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.trio p{color:var(--muted);font-size:15px}
+.cap{margin-top:12px;font-size:14px;color:var(--dim)}
+
+.flow{display:grid;gap:8px}
+.flow li{list-style:none;display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1.25fr) 18px minmax(0,1fr);align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.flow{padding:0;margin:0}
+.flow .ev{display:inline-block;font-family:var(--mono);font-size:12.5px;line-height:1.5;color:var(--cyan);background:color-mix(in srgb,var(--cyan) 10%,transparent);border-radius:6px;padding:3px 7px;overflow-wrap:break-word}
+.flow .arr{color:var(--dim);text-align:center}
+.flow .met{color:var(--fg);font-weight:500}
+.flow-hd{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1.25fr) 18px minmax(0,1fr);gap:6px;padding:0 14px 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+
+.objs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.obj{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.obj b{font-family:var(--display);font-size:17px}
+.obj p{color:var(--muted);font-size:14.5px}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:600;padding:10px 12px;background:var(--surface-2)}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+td.band{font-family:var(--mono);font-size:13px;white-space:nowrap}
+td.g{color:var(--green)} td.a{color:var(--amber)} td.r{color:var(--red)}
+td.now{color:var(--muted)}
+.action{margin-top:12px;display:flex;gap:12px;align-items:flex-start;background:color-mix(in srgb,var(--red) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--red) 35%,transparent);border-radius:12px;padding:14px 16px;font-size:15px}
+.action svg{flex:none;margin-top:3px}
+
+.vals{display:grid;gap:10px}
+.val{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.val b{font-size:14px;color:var(--accent)}
+.val p{color:var(--muted);font-size:15px}
+.note{margin-top:10px;font-size:14px;color:var(--amber)}
+
+/* summary */
+.score{margin-top:28px}
+.score td:first-child{font-weight:600;white-space:nowrap}
+.score .ns-cell{color:var(--muted)}
+.mini{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px;min-width:140px}
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:28px}
+.nx{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px}
+.nx i{width:12px;height:12px;border-radius:50%;margin-top:6px}
+.nx b{font-family:var(--display);font-size:18px;display:block}
+.nx p{color:var(--muted);font-size:15px;margin-top:4px}
+.nx small{display:block;margin-top:6px;font-size:12px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+footer{border-top:1px solid var(--line);padding-block:32px 48px;color:var(--dim);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* lightbox */
+dialog{border:0;padding:0;background:transparent;max-width:min(1200px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(5,5,8,.86)}
+dialog img{display:block;max-width:100%;max-height:84vh;border-radius:10px;margin:0 auto}
+dialog .dlg-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;color:var(--muted);font-size:14px}
+dialog button{font:inherit;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+
+@media (max-width:1080px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;flex-direction:row;overflow-x:auto;max-height:none;gap:6px;padding-bottom:6px}
+  .rail .eyebrow,.rail hr{display:none}
+  .rail a{flex:none;border:1px solid var(--line)}
+  .hero{grid-template-columns:minmax(0,1fr);gap:32px}
+}
+@media (max-width:820px){
+  .sec,.sec.flip{grid-template-columns:minmax(0,1fr)}
+  .sec.flip .shot{order:0}
+  .shot{position:static}
+  .disc,.guide,.next{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .objs{grid-template-columns:minmax(0,1fr)}
+  .north{grid-template-columns:minmax(0,1fr)}
+  .tally{justify-content:flex-start}
+  .app-head{grid-template-columns:minmax(0,1fr)}
+  .flow li,.flow-hd{grid-template-columns:minmax(0,1fr)}
+  .flow-hd{display:none}
+  .flow .arr{display:none}
+  .val{grid-template-columns:minmax(0,1fr);gap:4px}
+  .demo-flag .long{display:none}
+}
+@media (max-width:480px){.counts b{font-size:34px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ns{transition:none}.ns:hover{transform:none}}
+</style>
+
+<header class="bar">
+  <div class="bar-in gut">
+    <a class="brand" href="#top"><i>M</i>My Product Metrics</a>
+    <span class="demo-flag" role="note"><b>Demo data</b><span class="long">· every value is synthetic</span></span>
+  </div>
+</header>
+
+<section class="hero gut" id="top">
+  <div>
+    <p class="eyebrow">Product analytics portfolio · Mixpanel</p>
+    <h1>My Product <span>Metrics</span></h1>
+    <p class="lede">How I chose, mapped and set action thresholds for the product metrics of seven AI products, from agentic exploit validation to parametric crop insurance. Each chapter answers the same five questions, with screenshots of the live dashboard.</p>
+    <p class="by">Mayukh Ghosh · Director of Product Management</p>
+  </div>
+  <div>
+    <div class="counts tnum">
+      <div><b id="cApps">7</b><span>apps and boards</span></div>
+      <div><b id="cMetrics">38</b><span>metrics with thresholds</span></div>
+      <div><b>5</b><span>questions per app</span></div>
+    </div>
+    <div class="mix">
+      <p class="eyebrow">Threshold status across all metrics · synthetic</p>
+      <div class="mix-bar" id="mixBar" role="img"></div>
+      <div class="mix-legend" id="mixLegend"></div>
+    </div>
+  </div>
+</section>
+
+<section class="block gut" id="disclaimer">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--amber)">Read this first</p>
+    <h2>Disclaimer: synthetic demo data</h2>
+    <div class="disc">
+      <div class="panel warn">
+        <h3>Metric values are for demo purposes only</h3>
+        <p style="color:var(--fg)">Every number, trend and funnel on this site was generated using synthetic data scripts. None of it reflects real customers, real usage or real product performance.</p>
+        <ul style="margin-top:14px">
+          <li>Thresholds are proposed starting points, to be validated with real baselines.</li>
+          <li>Flat lines after mid-October show when the synthetic event feed stopped, not product behaviour.</li>
+          <li>Known data gaps are called out where they appear.</li>
+        </ul>
+      </div>
+      <div class="panel real">
+        <h3>What is real</h3>
+        <ul>
+          <li>The product workflows, from each app's GitHub repo and the Agent Val workflow video</li>
+          <li>The event design and metric definitions</li>
+          <li>The Mixpanel dashboards and their structure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block gut" id="portfolio">
+  <div class="wrap">
+    <p class="eyebrow">The portfolio</p>
+    <h2>Seven apps, seven north-star metrics</h2>
+    <p class="sub">Each card shows the app's north star and the status of each of its threshold metrics. Select a card to jump to its chapter.</p>
+    <div class="nsgrid" id="nsGrid"></div>
+  </div>
+</section>
+
+<section class="block gut" id="method">
+  <div class="wrap">
+    <p class="eyebrow">Method</p>
+    <h2>One method, applied to every app</h2>
+    <p class="sub">Based on the product analytics approach from the session "Key Analytical Tools &amp; Communicating Persuasively with Data", built in Mixpanel.</p>
+    <div class="steps" id="steps"></div>
+  </div>
+</section>
+
+<section class="block gut" id="guide">
+  <div class="wrap">
+    <p class="eyebrow">Reading guide</p>
+    <h2>Five questions answered for each app</h2>
+    <div class="guide">
+      <ol class="qlist" id="qlist"></ol>
+      <div class="panel">
+        <h3>Threshold status</h3>
+        <div class="legend">
+          <div><span class="pill G">On track</span>Inside the green band</div>
+          <div><span class="pill A">Watch</span>In the amber band: monitor</div>
+          <div><span class="pill R">Act now</span>In the red band: take the listed action</div>
+        </div>
+        <p class="cap">Every chapter uses real screenshots of the app's v2 Mixpanel dashboard. Select a screenshot to enlarge it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="main gut">
+  <nav class="rail" aria-label="Apps" id="rail"></nav>
+  <div id="apps"></div>
+</div>
+
+<section class="block gut" id="summary">
+  <div class="wrap">
+    <p class="eyebrow">Across the portfolio</p>
+    <h2>Where each app stands against its thresholds</h2>
+    <p class="sub">Count of threshold metrics by status for each app (synthetic data).</p>
+    <div class="tbl-wrap score"><table id="scoreTbl"></table></div>
+  </div>
+</section>
+
+<section class="block gut" id="next">
+  <div class="wrap">
+    <p class="eyebrow">Next steps</p>
+    <h2>What to fix before these metrics drive decisions</h2>
+    <div class="next" id="nextGrid"></div>
+  </div>
+</section>
+
+<footer class="gut">
+  <div class="wrap">
+    <span>My Product Metrics · Mayukh Ghosh</span>
+    <span><b style="color:var(--amber)">Disclaimer:</b> metric values are for demo purposes only and were generated using synthetic data.</span>
+  </div>
+</footer>
+
+<dialog id="lb" aria-label="Dashboard screenshot">
+  <img id="lbImg" alt="">
+  <div class="dlg-bar"><span id="lbCap"></span><span style="display:flex;gap:8px"><button type="button" id="lbPrev" aria-label="Previous screenshot">←</button><button type="button" id="lbNext" aria-label="Next screenshot">→</button><button type="button" id="lbClose">Close</button></span></div>
+</dialog>
+
+<script>
+const APPS = [{"key": "val", "name": "Agent Val", "board": "Agent Val — Product Metrics", "tagline": "Agentic exploit validation inside Qualys ETM: nudge, autonomy mode, scope, TruConfirm validation, remediation, revalidation", "northStar": "Confirmed risks closed per week", "source": "Agent Val workflow video", "decided": {"img": "val_2", "caption": "Adoption funnel built from the six steps a user takes before a validation starts", "problem": "Security teams know their findings but not which ones an attacker can exploit right now", "workflow": "The video shows one closed loop: nudge on Vulnerabilities page, pick autonomy mode, select CVE and assets, run TruConfirm, remediate, revalidate", "metrics": "One event per loop step with properties (autonomy_mode, result, option, status), then absolutes, medians, funnels and retention on top"}, "mapping": {"img": "val_3", "rows": [["Nudge on Vulnerabilities page", "val_nudge_viewed / clicked", "Adoption funnel step 1–2"], ["Choose autonomy mode", "val_autonomy_mode_selected", "Autonomy mode mix, override rate"], ["Select CVE + assets", "val_scope_selected", "Adoption funnel step 5"], ["TruConfirm validation", "val_validation_completed", "Confirmation rate, duration P50/P90"], ["Remediate (patch / mitigation)", "val_remediation_applied", "Option and outcome, failure rate"], ["Post-fix revalidation", "val_revalidation_completed", "North star: risks closed, TruRisk reduced"]]}, "objective": {"img": "val_1", "items": [["Prove risk is closed", "Confirmed risks closed and TruRisk points reduced per week are the outcome Agent Val exists to deliver"], ["Find adoption leaks", "Nudge-to-validation funnel shows where users stop before the agent can help"], ["Keep the loop fast", "Median time from confirmed risk to closed (1.5h) tracks the speed promise"], ["Earn trust", "Feedback, evidence views and mode overrides show whether users trust the agent"]]}, "thresholds": {"img": "val_4", "rows": [["Risks closed / week", "≥ 8", "4–7", "< 4", "Recent weeks 1–6", "A"], ["Adoption funnel (nudge→validation)", "≥ 35%", "25–35%", "< 25%", "32.4%", "A"], ["Confirmed→closed (full auto)", "≥ 75%", "60–75%", "< 60%", "61.1%", "A"], ["Median confirmed→closed", "≤ 2h", "2–6h", "> 6h", "1.5h", "G"], ["Remediation failure (any industry)", "≤ 5%", "5–10%", "> 10%", "Technology 18.2%", "R"], ["Week-4 validation retention", "≥ 15%", "8–15%", "< 8%", "~2–6%", "R"]], "action": "Red on failure or retention: review remediation playbooks for technology customers and add a weekly re-engagement nudge"}, "value": {"img": "val_5", "rows": [["Product (PM)", "Shows which loop step to fix next and lets Cost of Delay rank fixes by risk closed"], ["Security operations", "Shows where remediation fails, by industry and option, before customers escalate"], ["Leadership / Sales", "TruRisk points reduced is a customer-facing ROI number for renewals and expansion"]]}}, {"key": "soc", "name": "AI SOC Portal", "board": "AI SOC Portal — Operations Dashboard v2", "tagline": "AI-assisted security operations: alert triage, incident response and AI recommendations for SOC analysts", "northStar": "Alerts resolved end-to-end (per alert) and time to resolve", "source": "github.com/mayukhg/ai-soc-portal", "decided": {"img": "soc_1", "caption": "Board opens with analyst activity and alert throughput — the volume problem the portal targets", "problem": "SOCs face 10,000+ alerts a day, ~70% false positives and slow response (repo executive pitch)", "workflow": "Alert viewed → triaged (true / false positive) → incident created → resolved, with AI analysis requested along the way", "metrics": "Count work per alert (hold alert_id), use median and P90 for time, and measure AI acceptance and feedback"}, "mapping": {"img": "soc_2", "rows": [["Analyst opens alert", "alert_viewed", "Alerts worked per day, daily active analysts"], ["Triage decision", "alert_triaged (triage_decision)", "Triage funnel, false positive rate"], ["Escalate to incident", "incident_created", "Incidents created, severity mix"], ["Resolve incident", "incident_resolved (time_to_resolve)", "Time to resolve P50/P90 by severity"], ["Use AI assistant", "ai_analysis_requested / accepted", "AI requests, acceptance rate by type"], ["Rate AI output", "ai_feedback_submitted", "% positive AI feedback"]]}, "objective": {"img": "soc_5", "items": [["Count alerts, not analysts", "Per-alert triage funnel: 3,022 → 3,003 (99.4%) instead of 16 users"], ["Measure end-to-end flow", "End-to-end funnel converts 95.7% with a 12.9h median time to convert"], ["Cut false-positive load", "False positive rate shows how much triage effort is wasted"], ["Prove AI helps", "AI acceptance and positive feedback show whether recommendations reduce analyst burden"]]}, "thresholds": {"img": "soc_6", "rows": [["Per-alert triage conversion", "≥ 98%", "95–98%", "< 95%", "99.4%", "G"], ["False positive rate", "≤ 30%", "30–45%", "> 45%", "~40–52%", "R"], ["End-to-end median time", "≤ 8h", "8–16h", "> 16h", "12.9h", "A"], ["AI acceptance rate", "≥ 70%", "55–70%", "< 55%", "~55–75%", "A"], ["% positive AI feedback", "≥ 75%", "60–75%", "< 60%", "~60–88%", "A"], ["Active analysts vs 7-day avg", "≥ 90%", "70–90%", "< 70%", "Feed stopped ~Oct 14", "R"]], "action": "Red on false positives: tune noisiest source systems (palo_alto, crowdstrike) and feed false-positive labels back to the triage model"}, "value": {"img": "soc_7", "rows": [["Product (PM)", "Verifies the pitch claims (faster response, fewer false positives) with measured trends"], ["SOC lead", "Time to resolve by severity shows where staffing or playbooks are the bottleneck"], ["CISO / leadership", "AI acceptance and feedback turn AI adoption into a reportable efficiency story"]]}}, {"key": "spm", "name": "AI-SPM", "board": "AI-SPM Analytics v2", "tagline": "AI Security Posture Management: discover AI assets, assess risk, detect policy violations and stay compliant", "northStar": "Active accounts running risk assessments every week", "source": "github.com/mayukhg/ai-spm", "decided": {"img": "spm_1", "caption": "KPI tiles: signups, AI assets registered, risk assessments and policy violations", "problem": "CISOs lack an inventory of AI assets and a way to quantify AI risk for the board (repo executive pitch)", "workflow": "Sign up → onboard → register AI assets → connect integrations → run risk assessments → handle violations and alerts → invite team", "metrics": "Follow the lifecycle: activation funnel, core-action volume, alert resolution speed, then weekly retention on risk assessments"}, "mapping": {"img": "spm_2", "rows": [["Sign up and onboard", "user_signed_up, onboarding_completed", "Activation funnel with time to convert"], ["Register AI assets", "ai_asset_registered (asset_type)", "Assets by type and risk level"], ["Assess risk", "risk_assessment_completed", "Assessments over time by risk level"], ["Detect violations", "policy_violation_detected", "Violations by type"], ["Resolve alerts", "alert_resolved (resolution_type)", "Alert time to resolve, resolution by type"], ["Grow the team", "team_member_invited (role)", "Invites by role, integrations by platform"]]}, "objective": {"img": "spm_3", "items": [["Activate new accounts", "Activation funnel shows whether signups reach a first registered asset"], ["Build a weekly habit", "Weekly retention on risk assessments is the core-value retention signal"], ["Respond fast to alerts", "Median and P90 time to resolve by severity keep critical alerts first"], ["Show account growth", "Weekly active users and team invites show expansion inside accounts"]]}, "thresholds": {"img": "spm_2", "rows": [["Signup → onboarding", "≥ 60%", "30–60%", "< 30%", "0% (4 signups)", "R"], ["Week-4 assessment retention", "≥ 40%", "25–40%", "< 25%", "~45% → 0% after wk 6", "A"], ["Critical vs high alert TTR", "Critical faster", "Equal", "Critical slower", "1,325 vs 1,260", "R"], ["Auto-remediated share of alerts", "≥ 40%", "20–40%", "< 20%", "21% (9 of 43)", "A"], ["Assets registered vs prior 30d", "Up", "Flat", "Down > 20%", "29 → 7", "R"]], "action": "Red on activation: add a guided first-asset registration in onboarding and alert on any signup with no asset after 24h"}, "value": {"img": "spm_4", "rows": [["Product (PM)", "Pinpoints the onboarding step blocking activation, the biggest lever on growth"], ["Security / compliance", "Compliance exports by framework give audit-ready evidence of coverage"], ["Leadership", "Asset inventory, violations and team growth give a board-level AI risk view"]]}}, {"key": "pf", "name": "AI Policy Foundry", "board": "AI Policy Foundry — Safety, Satisfaction & NPS v2", "tagline": "Multi-agent cloud security policy generation with human approval gates and compliance validation", "northStar": "Median time from policy draft to enforcement", "source": "github.com/mayukhg/ai-policy-foundry", "decided": {"img": "pf_funnel", "wide": true, "caption": "Policy lifecycle funnel (now populated) and exemption approval rate", "problem": "Manual policy creation takes 2–6 weeks per cloud service, leaving 30–60 day security gaps (repo executive pitch)", "workflow": "Policy drafted → submitted for review → approved → published → enforced; exemptions requested and approved; compliance checks run", "metrics": "Lifecycle funnel per policy (hold policy_id), cycle time, exemption and compliance pass rates, plus user satisfaction"}, "mapping": {"img": "pf_funnel", "rows": [["Draft policy (AI agents)", "policy_drafted", "Lifecycle funnel step 1"], ["Human review and approval", "policy_submitted_for_review, policy_approved", "Funnel conversion, review time"], ["Publish and enforce", "policy_published, policy_enforced", "Draft-to-enforced cycle time"], ["Request exemption", "exemption_requested / approved", "Exemption approval rate"], ["Validate compliance", "compliance_check_passed / failed", "Pass rate by framework"], ["User feedback", "nps_response_recorded", "NPS, retention"]]}, "objective": {"img": "pf_3", "items": [["Deliver the 24h promise", "Draft-to-enforced time tests the pitch claim of policies in under 24 hours"], ["Keep humans in control", "Review and approval steps in the funnel show where approvals stall"], ["Prove compliance coverage", "Pass rate by framework (ISO 42001, EU AI Act, NIST AI RMF…) shows audit readiness"], ["Track user sentiment", "NPS by tier and weekly retention show whether engineers rely on the tool"]]}, "thresholds": {"img": "def_3", "rows": [["Draft → enforced (median)", "≤ 1 day", "1–3 days", "> 3 days", "4.8 days", "R"], ["Compliance pass rate (each framework)", "≥ 90%", "75–90%", "< 75%", "70.8–73.1%", "R"], ["Exemption approval rate", "≤ 30%", "30–50%", "> 50%", "0–100%, volatile", "A"], ["Detractor share of NPS", "≤ 30%", "30–50%", "> 50%", "116 of 186 (62%)", "R"], ["Weekly retention", "≥ 20%", "10–20%", "< 10%", "~6% → 0%", "R"]], "action": "Red on cycle time: break down draft→enforced by step to find the slow approval gate, then add SLA reminders to reviewers"}, "value": {"img": "pf_funnel", "wide": true, "rows": [["Product (PM)", "Turns the 70%-faster policy claim into a measured cycle-time trend"], ["Cloud security engineering", "Shows which frameworks fail most often so policy templates can be fixed"], ["Leadership / audit", "Pass rates and exemption trends give evidence for audits and risk committees"]], "note": "Data gap: NPS breakdowns currently show Ellyra features — add a product property to separate them"}}, {"key": "ell", "name": "Ellyra Pulse", "board": "Ellyra Pulse v2", "tagline": "NPS and sentiment intelligence for a medical AI companion, with safety-gated feedback routing", "northStar": "NPS (% promoters − % detractors) with zero unrouted safety signals", "source": "github.com/mayukhg/ellyra-pulse", "decided": {"img": "ell_1", "caption": "NPS and sentiment section: average score and response volume", "problem": "A dip in NPS can mean a UI annoyance or a clinical-trust failure, and today they look the same (repo README)", "workflow": "Patient uses an AI companion → feedback captured → safety gate and PHI redaction → routing → clinical review and closed loop", "metrics": "Separate volume from severity: NPS by feature, aspect and tier, safety-flag routing, incident lifecycle and AI acceptance"}, "mapping": {"img": "ell_3", "rows": [["Patient gives feedback", "nps_response_recorded (feature, aspect)", "NPS, NPS by feature and aspect"], ["Safety gate flags risk", "safety_flag_routed", "Safety flags routed over time"], ["Clinical incident", "incident_created / resolved", "Created vs resolved, by severity"], ["Clinician triages alert", "alert_viewed / alert_triaged", "Alert triage funnel (per alert)"], ["AI companion advice", "ai_analysis_requested / recommendation_accepted", "Acceptance rate, feedback"], ["Team onboarding", "Sign Up, Onboarding Completed", "Activation funnel"]]}, "objective": {"img": "ell_6", "items": [["Measure trust correctly", "True NPS (promoters − detractors) replaces the average score"], ["Route safety fast", "Safety flags and per-alert triage time (2.9 min median) track clinical response"], ["Activate clinical teams", "Activation funnel shows 43 sign-ups → 39 onboarded → 0 first analyses"], ["Find the weakest feature", "NPS by feature and aspect show where trust erodes first"]]}, "thresholds": {"img": "ell_8", "rows": [["NPS (promoters − detractors)", "≥ 0", "−20 to 0", "< −20", "Avg −22, dips to −85", "R"], ["Detractor share", "≤ 30%", "30–50%", "> 50%", "~60–87%", "R"], ["Per-alert triage median", "≤ 5 min", "5–15 min", "> 15 min", "2.9 min", "G"], ["Onboarded → first AI analysis", "≥ 50%", "25–50%", "< 25%", "0%", "R"], ["Hallucination flag rate (repo)", "< 0.20", "—", "≥ 0.20", "Not yet on board", "A"], ["Disclaimer fatigue index (repo)", "< 5", "≤ 8", "> 8", "Not yet on board", "A"]], "action": "Any safety flag spike above 2× the 7-day average pages clinical on-call; red NPS triggers a feature-level root-cause review"}, "value": {"img": "ell_5", "rows": [["Product (PM)", "Shows which AI companion (e.g. GP Question Builder, NPS −58) needs work first"], ["Clinical safety team", "Safety flags and triage time prove signals reach a human within minutes"], ["Leadership", "One trusted view of patient trust instead of three teams reading NPS differently"]]}}, {"key": "agr", "name": "Agritech Crop Insurance", "board": "Agritech Crop Insurance v2", "tagline": "CropGuard: parametric drought insurance for Indian farmers over WhatsApp and voice in regional languages", "northStar": "Hours from payout trigger to money in the farmer's hands", "source": "github.com/mayukhg/agritech_crop_insurance", "decided": {"img": "agr_1", "caption": "Farmer acquisition: policy purchase funnel by channel", "problem": "Claims take 90+ days, paperwork and language barriers exclude smallholder farmers (repo executive pitch)", "workflow": "Farmer onboards on WhatsApp/voice → requests quote → buys policy → sends field photo + location → rainfall trigger fires → payout", "metrics": "Two-sided view: farmer funnel and payout speed, plus insurer console activity and channel health by language"}, "mapping": {"img": "agr_4", "rows": [["Onboard and buy policy", "farmer_onboarded → policy_purchased", "Purchase funnel; buys by channel, language, crop"], ["Parametric trigger", "payout_trigger_fired (trigger_type)", "Triggers fired, by type"], ["Payout", "payout_initiated / completed", "Payout pipeline funnel, time to payout"], ["Field evidence", "field_photo_submitted (has_location_pin)", "Photos, location pin attach rate"], ["Insurer review", "evidence_inspected, claim_adjudicated", "Insurer DAU, claim approval rate"], ["Channel activity", "whatsapp_message / voice_call", "Messages and calls over time"]]}, "objective": {"img": "agr_3", "items": [["Pay farmers fast", "Median and P90 time to payout test the 6-hour settlement target (CLAIM_SETTLEMENT_HOURS=6)"], ["Reach farmers in their language", "Purchases by channel and language show WhatsApp vs voice reach"], ["Verify claims cleanly", "Location pin attach rate exposes geo-verification friction"], ["Keep insurers engaged", "Insurer DAU and claim approval rate track the other side of the market"]]}, "thresholds": {"img": "agr_4", "rows": [["Median time to payout", "≤ 6h", "6–24h", "> 24h", "Spikes to ~70h (P90)", "R"], ["Trigger → payout completed", "≥ 95%", "80–95%", "< 80%", "0% (7 triggers)", "R"], ["Location pin attach rate", "≥ 90%", "70–90%", "< 70%", "~25–100%", "A"], ["Claim approval rate", "60–90%", "40–60%", "< 40% or > 100%", "~0–100%", "A"], ["Purchase funnel conversion", "≥ 20%", "10–20%", "< 10%", "0% (identity gap)", "R"]], "action": "Red on payouts: fix farmer identity across steps (hashed phone number) so funnels connect, then alert when any payout exceeds 24h"}, "value": {"img": "agr_6", "rows": [["Product (PM)", "Shows whether the 24-hour claim promise holds and where the payout pipeline breaks"], ["Insurer operations", "Insurer DAU, evidence inspection and approval rates size review workload"], ["Leadership", "Channel and language mix guide expansion to new states and crops"]]}}, {"key": "def", "name": "AI Defence Ecosystem", "board": "AI Defence Ecosystem v2", "umbrella": true, "tagline": "Executive umbrella across AI-SPM, AI SOC and AI Policy Foundry: is our AI estate secure, governed and monitored?", "northStar": "Policy compliance rate and draft-to-enforced time across the AI estate", "source": "Umbrella board over the AI-SPM, AI SOC and AI Policy Foundry repos", "decided": {"img": "def_1", "caption": "Executive KPIs: AI assets under management, incidents created, policies enforced", "problem": "Leaders need one answer across three products instead of reading three boards", "workflow": "Discover and assess AI assets (SPM) → detect and respond to threats (SOC) → govern with policies and compliance (Policy Foundry)", "metrics": "One or two signals per pillar plus cross-pillar adoption, each defined the same way as on the pillar boards"}, "mapping": {"img": "def_2", "rows": [["Risk posture (AI-SPM)", "risk_assessment_completed", "Assets under management, risk distribution"], ["Incident operations (AI SOC)", "incident_created / resolved", "Incidents created vs resolved, severity"], ["Threat landscape (AI SOC)", "threat_detected (threat_type)", "Threats by type, containment rate"], ["Policy lifecycle (Foundry)", "policy_drafted → policy_enforced", "Draft-to-enforced median time"], ["Compliance (Foundry)", "compliance_check_passed / failed", "Checks passed vs failed, pass rate"], ["Programme health", "weekly users per platform", "WAU across all three pillars"]]}, "objective": {"img": "def_3", "items": [["Answer one question", "Is the AI estate secure, governed and actively monitored?"], ["Show governance speed", "Draft-to-enforced median of 4.8 days is the headline governance KPI"], ["Keep backlogs in check", "Incidents created vs resolved and checks passed vs failed show backlog growth"], ["Track platform adoption", "WAU per pillar shows whether all three products are used together"]]}, "thresholds": {"img": "def_4", "rows": [["Draft → enforced (median)", "≤ 1 day", "1–3 days", "> 3 days", "4.8 days", "R"], ["Compliance checks failed share", "≤ 15%", "15–30%", "> 30%", "~27%", "A"], ["Incidents resolved vs created", "≥ 95%", "80–95%", "< 80%", "~80–85%", "A"], ["Containment rate by severity", "≥ 90%", "70–90%", "< 70%", "0% (data gap)", "R"], ["Exemption approval rate", "≤ 30%", "30–50%", "> 50% or > 100%", "Up to 300%", "R"]], "action": "Red rows are partly data-definition issues: fix the containment and exemption formulas before using them in exec reviews"}, "value": {"img": "def_4", "rows": [["Product (portfolio PM)", "One board to prioritise across three products using the same definitions"], ["CISO", "Answers 'secure, governed, monitored?' in one view for board and regulator updates"], ["Leadership / GTM", "Cross-pillar adoption supports a platform story and bundled pricing"]]}}];
+const COLORS = ['#a493ff','#5cc8ff','#3ddc97','#ffb547','#ff8fa3','#7bd88f','#c9a7ff'];
+const SEC = ['How the metrics were decided','Mapping the app to its metrics','Objective of the metrics','Thresholds that require action','Value the metrics provide'];
+const STAT = {G:'On track',A:'Watch',R:'Act now'};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const img = (n, alt, cap) => `<figure class="shot"><button type="button" data-img="${n}" data-cap="${esc(cap||alt)}" aria-label="Enlarge: ${esc(alt)}"><img src="img/${n}.webp" alt="${esc(alt)}" loading="lazy" width="764" height="705"></button><figcaption><span>${esc(cap||'')}</span><em>Synthetic data</em></figcaption></figure>`;
+const arrow = '→';
+
+/* counts */
+const all = APPS.flatMap(a => a.thresholds.rows);
+const tot = {G:0,A:0,R:0}; all.forEach(r => tot[r[5]]++);
+document.getElementById('cApps').textContent = APPS.length;
+document.getElementById('cMetrics').textContent = all.length;
+const mixBar = document.getElementById('mixBar');
+mixBar.setAttribute('aria-label', `${tot.G} on track, ${tot.A} watch, ${tot.R} act now, out of ${all.length}`);
+mixBar.innerHTML = ['G','A','R'].map(k => `<i class="${k}" style="flex:${tot[k]}"></i>`).join('');
+document.getElementById('mixLegend').innerHTML = ['G','A','R'].map(k => `<span><span class="dot ${k}"></span>${STAT[k]} <b class="tnum" style="color:var(--fg)">${tot[k]}</b></span>`).join('');
+
+/* portfolio cards */
+document.getElementById('nsGrid').innerHTML = APPS.map((a,i) => `
+  <a class="ns" href="#${a.key}">
+    <span class="top"><span class="num" style="background:${COLORS[i]}">${i+1}</span><h3>${esc(a.name)}</h3></span>
+    <span class="eyebrow">North star</span>
+    <p>${esc(a.northStar)}</p>
+    <span class="strip" aria-label="Threshold status">${a.thresholds.rows.map(r => `<i class="${r[5]}" title="${esc(r[0])}: ${STAT[r[5]]}"></i>`).join('')}</span>
+  </a>`).join('');
+
+/* method */
+const STEPS = [
+  ['Events and properties','Walk the user journey: one broad event per step, with the detail in properties.'],
+  ['Absolute numbers','North-star counts and active users for reporting, compared with the prior period.'],
+  ['Medians and P90','Time metrics use the median and 90th percentile so outliers don’t mislead.'],
+  ['Funnels','Map the journey step by step, counting the object (an alert, a policy) where that is the unit.'],
+  ['Retention','Cohorts on the value action, given enough time to mature. Watch the shape, not the level.'],
+  ['Filter and breakdown','Slice by channel, severity, industry or mode to find where a metric breaks.']
+];
+document.getElementById('steps').innerHTML = STEPS.map((s,i) => `<div class="step"><h3><span class="num" style="background:var(--violet)">${i+1}</span>${s[0]}</h3><p>${s[1]}</p></div>`).join('');
+document.getElementById('qlist').innerHTML = SEC.map((s,i) => `<li><span class="num" style="background:var(--violet)">${i+1}</span>${s}</li>`).join('');
+
+/* rail */
+document.getElementById('rail').innerHTML = `<p class="eyebrow">Apps</p>` + APPS.map((a,i) => `<a href="#${a.key}" data-k="${a.key}"><span class="num" style="background:${COLORS[i]}">${i+1}</span>${esc(a.name)}</a>`).join('') + `<hr><a href="#summary">Scorecard</a><a href="#next">Next steps</a>`;
+
+/* chapters */
+document.getElementById('apps').innerHTML = APPS.map((a,i) => {
+  const c = COLORS[i];
+  const t = {G:0,A:0,R:0}; a.thresholds.rows.forEach(r => t[r[5]]++);
+  const d = a.decided, m = a.mapping, o = a.objective, th = a.thresholds, v = a.value;
+  const head = (n) => `<div class="sec-h"><span class="n">${i+1}.${n+1}</span><h3>${SEC[n]}</h3></div>`;
+  return `
+  <article class="app" id="${a.key}" style="--accent:${c}">
+    <div class="app-head">
+      <div>
+        <p class="idx" style="color:${c}">Chapter ${i+1} of ${APPS.length}</p>
+        <h2>${esc(a.name)}${a.umbrella ? '<span class="umb">Umbrella</span>' : ''}</h2>
+        <p class="tag">${esc(a.tagline)}</p>
+        <div class="meta"><span class="chip">Board: ${esc(a.board)}</span><span class="chip">Source: ${esc(a.source)}</span></div>
+      </div>
+    </div>
+    <div class="north">
+      <div><p class="eyebrow">North-star metric</p><p class="nsv">${esc(a.northStar)}</p></div>
+      <div class="tally">${['G','A','R'].filter(k=>t[k]).map(k => `<span class="pill ${k}">${t[k]} ${STAT[k]}</span>`).join('')}</div>
+    </div>
+
+    <section class="sec${d.wide ? ' wide' : ''}">
+      <div>
+        ${head(0)}
+        <div class="trio">
+          <div><b style="color:var(--red)">Problem</b><p>${esc(d.problem)}</p></div>
+          <div><b style="color:var(--cyan)">Workflow</b><p>${esc(d.workflow)}</p></div>
+          <div><b style="color:var(--green)">How the metrics follow</b><p>${esc(d.metrics)}</p></div>
+        </div>
+      </div>
+      ${img(d.img, `${a.name} dashboard: ${d.caption}`, d.caption)}
+    </section>
+
+    <section class="sec flip">
+      <div>
+        ${head(1)}
+        <div class="flow-hd"><span>Journey step</span><span></span><span>Mixpanel event</span><span></span><span>Metric</span></div>
+        <ol class="flow">${m.rows.map(r => `<li><span>${esc(r[0])}</span><span class="arr" aria-hidden="true">${arrow}</span><span><span class="ev">${esc(r[1]).replace(/_/g,'_<wbr>').replace(/ \/ /g,' / ')}</span></span><span class="arr" aria-hidden="true">${arrow}</span><span class="met">${esc(r[2])}</span></li>`).join('')}</ol>
+      </div>
+      ${img(m.img, `${a.name} dashboard section used for the metric mapping`, 'Dashboard section for this mapping')}
+    </section>
+
+    <section class="sec">
+      <div>
+        ${head(2)}
+        <div class="objs">${o.items.map(it => `<div class="obj"><b>${esc(it[0])}</b><p>${esc(it[1])}</p></div>`).join('')}</div>
+      </div>
+      ${img(o.img, `${a.name} dashboard section for the objectives`, 'Where these objectives show on the board')}
+    </section>
+
+    <section class="sec wide">
+      <div>
+        ${head(3)}
+        <div class="tbl-wrap"><table>
+          <thead><tr><th scope="col">Metric</th><th scope="col">Green</th><th scope="col">Amber</th><th scope="col">Red</th><th scope="col">Now (synthetic)</th><th scope="col">Status</th></tr></thead>
+          <tbody>${th.rows.map(r => `<tr><td>${esc(r[0])}</td><td class="band g">${esc(r[1])}</td><td class="band a">${esc(r[2])}</td><td class="band r">${esc(r[3])}</td><td class="now tnum">${esc(r[4])}</td><td><span class="pill ${r[5]}">${STAT[r[5]]}</span></td></tr>`).join('')}</tbody>
+        </table></div>
+        ${th.action ? `<div class="action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><span><b>Action: </b>${esc(th.action)}</span></div>` : ''}
+      </div>
+      ${img(th.img, `${a.name} dashboard section behind the thresholds`, 'Charts behind the threshold readings')}
+    </section>
+
+    <section class="sec${v.wide ? ' wide' : ' flip'}">
+      <div>
+        ${head(4)}
+        <div class="vals">${v.rows.map(r => `<div class="val"><b>${esc(r[0])}</b><p>${esc(r[1])}</p></div>`).join('')}</div>
+        ${v.note ? `<p class="note">${esc(v.note)}</p>` : ''}
+      </div>
+      ${img(v.img, `${a.name} dashboard section showing the value delivered`, 'Where the value shows on the board')}
+    </section>
+  </article>`;
+}).join('');
+
+/* scorecard */
+document.getElementById('scoreTbl').innerHTML = `<thead><tr><th scope="col">App</th><th scope="col">North star</th><th scope="col">On track</th><th scope="col">Watch</th><th scope="col">Act now</th><th scope="col">Mix</th></tr></thead><tbody>` +
+  APPS.map((a,i) => { const t={G:0,A:0,R:0}; a.thresholds.rows.forEach(r=>t[r[5]]++);
+    return `<tr><td><a href="#${a.key}" style="color:${COLORS[i]};text-decoration:none">${esc(a.name)}</a></td><td class="ns-cell">${esc(a.northStar)}</td><td class="tnum" style="color:var(--green);font-weight:700">${t.G}</td><td class="tnum" style="color:var(--amber);font-weight:700">${t.A}</td><td class="tnum" style="color:var(--red);font-weight:700">${t.R}</td><td><span class="mini" role="img" aria-label="${t.G} on track, ${t.A} watch, ${t.R} act now">${['G','A','R'].map(k=>`<i class="${k}" style="flex:${t[k]}"></i>`).join('')}</span></td></tr>`; }).join('') + `</tbody>`;
+
+/* next steps */
+const NEXT = [
+  ['Separate products','Add a product property to every event. The Policy Foundry NPS currently shows Ellyra features.','R'],
+  ['Connect identities','Use one ID per farmer or user across steps, so the Agritech and AI-SPM funnels stop reading 0%.','R'],
+  ['Fix rate formulas','Exemption approval (up to 300%) and containment rate (0%) need corrected denominators.','A'],
+  ['Keep the feed live','Synthetic events stop around mid-October. Schedule the generators so trends stay current.','A'],
+  ['Validate thresholds','Replace the proposed green, amber and red bands with baselines from real usage.','G'],
+  ['Review on a cadence','Use the boards in the quarterly roadmap review and rank fixes with Cost of Delay.','G']
+];
+const PRI = {R:'Fix first',A:'Fix next',G:'Ongoing'};
+document.getElementById('nextGrid').innerHTML = NEXT.map(n => `<div class="nx"><i class="${n[2]}"></i><div><b>${n[0]}</b><p>${n[1]}</p><small>${PRI[n[2]]}</small></div></div>`).join('');
+
+/* rail highlight */
+const links = [...document.querySelectorAll('.rail a[data-k]')];
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('on', l.dataset.k === e.target.id)); }), {rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('.app').forEach(s => io.observe(s));
+}
+
+/* lightbox */
+const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap');
+const shots = [...document.querySelectorAll('[data-img]')];
+let cur = 0;
+const show = i => { cur = (i + shots.length) % shots.length; const b = shots[cur]; lbImg.src = `img/${b.dataset.img}.webp`; lbImg.alt = b.querySelector('img').alt; lbCap.textContent = `${b.dataset.cap} · synthetic data`; };
+shots.forEach((b,i) => b.addEventListener('click', () => { show(i); if (lb.showModal) lb.showModal(); }));
+document.getElementById('lbClose').addEventListener('click', () => lb.close());
+document.getElementById('lbPrev').addEventListener('click', () => show(cur - 1));
+document.getElementById('lbNext').addEventListener('click', () => show(cur + 1));
+lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
+lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+</script>
+
+</html>
