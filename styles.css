@@ -843,12 +843,14 @@ section{padding:100px 0;position:relative;}
 
 /* Desktop: right sticky pill rail + reserved gutter (keeps content clear of the rail) */
 @media (min-width:1100px){
-  :root,body{--section-rail:19.5rem;}
+  :root,body{--section-rail:14.75rem;}
   html{scroll-padding-top:120px;}
   body{padding-right:var(--section-rail);box-sizing:border-box;}
   .nav{overflow:visible;right:var(--section-rail);width:auto;}
+  /* Pull page columns toward the rail instead of centering in the leftover width */
+  .wrap,.nav-in,.fit-in{margin-left:auto;margin-right:0;}
   .section-crumbs{
-    position:fixed;top:var(--rail-top,10.5rem);right:28px;left:auto;bottom:auto;
+    position:fixed;top:var(--rail-top,10.5rem);right:14px;left:auto;bottom:auto;
     transform:none;z-index:90;
     width:auto;max-width:none;border:0;background:transparent;overflow:visible;
   }
