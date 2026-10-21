@@ -32,6 +32,7 @@
     <div role="tablist" aria-orientation="vertical" id="tabs">
       <button type="button" role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true">Profile &amp; résumé</button>
       <button type="button" role="tab" id="tab-products" aria-controls="panel-products" aria-selected="false" tabindex="-1">Product portfolio</button>
+      <button type="button" role="tab" id="tab-metrics" aria-controls="panel-metrics" aria-selected="false" tabindex="-1">Product metrics</button>
       <button type="button" role="tab" id="tab-files" aria-controls="panel-files" aria-selected="false" tabindex="-1">Files (PDFs &amp; photo)</button>
       <button type="button" role="tab" id="tab-connect" aria-controls="panel-connect" aria-selected="false" tabindex="-1">Connect to GitHub</button>
       <button type="button" role="tab" id="tab-help" aria-controls="panel-help" aria-selected="false" tabindex="-1">Help</button>
@@ -60,6 +61,14 @@
         <p>Add, edit, reorder or remove product case studies. Products are grouped by <b>arena</b> — the filter buttons on the site are built from the arenas list.</p>
       </div>
       <div id="form-products" class="form"></div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-metrics" aria-labelledby="tab-metrics" hidden>
+      <div class="panel-head">
+        <h2>Product metrics</h2>
+        <p>Edit the Product Metrics section: header, disclaimer, method steps and each app’s north star, thresholds and dashboard images. Threshold bands are action levels only — do not enter current synthetic values.</p>
+      </div>
+      <div id="form-metrics" class="form"></div>
     </section>
 
     <section class="panel" role="tabpanel" id="panel-files" aria-labelledby="tab-files" hidden>

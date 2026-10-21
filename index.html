@@ -84,21 +84,20 @@
 <nav class="nav" id="nav" aria-label="Primary">
   <div class="nav-in">
     <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span><span class="brand-name">Mayukh Ghosh</span></a>
-    <div class="nav-links" id="navlinks">
+    <div class="nav-actions">
+      <span data-slot="nav-resume"></span>
+    </div>
+  </div>
+  <div class="fit" data-slot="fit" hidden></div>
+  <div class="section-crumbs" aria-label="On this page">
+    <div class="section-crumbs-in nav-links" id="navlinks">
       <a href="#products">Portfolio</a>
       <a href="#metrics">Metrics</a>
       <a href="#experience">Experience</a>
       <a href="#how">How I work</a>
       <a href="#contact">Contact</a>
     </div>
-    <div class="nav-actions">
-      <span data-slot="nav-resume"></span>
-      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
   </div>
-  <div class="fit" data-slot="fit" hidden></div>
 </nav>
 
 <main id="main" aria-busy="true">
@@ -141,7 +140,7 @@
 
 <section id="ecosystem" class="eco" data-slot="ecosystem" hidden></section>
 
-<section id="metrics" class="alt" aria-labelledby="metrics-title" data-slot="metrics-section">
+<section id="metrics" class="alt" aria-labelledby="metrics-title">
   <div class="wrap" data-slot="metrics"></div>
 </section>
 
@@ -163,7 +162,7 @@
       <blockquote class="how-quote" data-slot="how-quote"></blockquote>
       <button type="button" class="how-more" id="how-more" aria-expanded="false" aria-controls="how-about-full" hidden>Read more</button>
       <div id="how-about-full" class="how-about-full" hidden data-slot="about-body"></div>
-      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
+      <div class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></div>
     </div>
     <div class="how-approach">
       <h3 class="how-h" data-slot="approach-title"></h3>

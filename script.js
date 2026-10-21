@@ -203,12 +203,12 @@
 
     // Amber = documents (résumé, portfolio) everywhere on the page, so recruiters can spot them at a glance.
     var cta = '';
-    if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View résumé') +
-      '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download résumé (PDF)" title="Download résumé (PDF)">' + icon('i-doc') + '</a></span>';
+    if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View Resume') +
+      '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download Resume (PDF)" title="Download Resume (PDF)">' + icon('i-doc') + '</a></span>';
     if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio PDF');
     set('hero-cta', cta);
-    set('cta-note', links.resume && links.resumeUpdated ? 'Résumé updated ' + esc(links.resumeUpdated) + ' · PDF' : '').hidden = !(links.resume && links.resumeUpdated);
-    set('nav-resume', links.resume ? docLink(links.resume, 'btn btn-doc nav-resume', 'Résumé') : '').hidden = !links.resume;
+    set('cta-note', '').hidden = true;
+    set('nav-resume', '').hidden = true;
 
     var portrait = slot('portrait');
     if (person.photo) {
@@ -233,18 +233,14 @@
   function renderFit(p) {
     var fit = p.fit || {}, el = slot('fit');
     if (!el) return;
-    var domains = arr(fit.domains);
-    if (!fit.level && !domains.length) { el.hidden = true; el.innerHTML = ''; return; }
+    if (!fit.open && !fit.level) { el.hidden = true; el.innerHTML = ''; return; }
     el.hidden = false;
-    var chips = (fit.level ? '<span class="fit-chip level">' + esc(fit.level) + '</span>' : '') +
-      domains.map(function (d) {
-        return '<span class="fit-chip" data-domain="' + esc(d.id) + '">' + esc(d.label) + '</span>';
-      }).join('');
+    var role = fit.level ? '<span class="fit-role">' + esc(fit.level) + '</span>' : '';
     var meta = [fit.mode, (p.person || {}).location, fit.notice].filter(Boolean)
       .map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="fit-dot" aria-hidden="true"></span>');
     el.innerHTML = '<div class="fit-in">' +
       (fit.open ? '<span class="fit-live"><i aria-hidden="true"></i>' + esc(fit.open) + '</span>' : '') +
-      chips +
+      role +
       (meta ? '<span class="fit-meta">' + meta + '</span>' : '') +
       '</div>';
   }
@@ -408,6 +404,7 @@
             '<div class="tile-badges">' + evidenceBadges + measured + '</div>' +
             (headline ? '<p class="tile-outcome">' + md(headline) + '</p>' : '') +
             (decisionClamp ? '<p class="tile-decision">' + md(decisionClamp) + '</p>' : '') +
+            (p.client ? '<p class="tile-client"><span class="client">' + esc(p.client) + '</span></p>' : '') +
             '<div class="acc-links">' +
               teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
@@ -473,7 +470,7 @@
   }
 
   // Experience as a colour-coded timeline: every role's headline is visible at once (for scanning);
-  // the full achievements expand per role. The first (current) role starts open.
+  // the full achievements expand per role. All roles start collapsed for a shorter first skim.
   function renderExperience(p, productIndex, arenaById) {
     var x = p.experience || {}, roles = arr(x.roles), trackById = {};
     arr(x.tracks).forEach(function (t) { trackById[t.id] = t; });
@@ -484,7 +481,7 @@
       return '<li' + colorVar('--track', t.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(t.label) + '</li>';
     }).join('')).hidden = !used.length;
     set('exp-timeline', roles.map(function (r, i) {
-      var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = i === 0;
+      var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = false;
       var bullets = arr(r.bullets);
       var rel = arr(r.related).map(function (id) {
         var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
@@ -542,7 +539,7 @@
     if (links.email) cl += '<a class="btn btn-light" href="mailto:' + esc(links.email) + '">' + icon('i-mail') + esc(links.email) + '</a>';
     if (links.linkedin) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.linkedin)) + '" target="_blank" rel="noopener">' + icon('i-in') + 'LinkedIn</a>';
     if (links.github) cl += '<a class="btn btn-ghost" href="' + esc(safeUrl(links.github)) + '" target="_blank" rel="noopener">' + icon('i-gh') + 'GitHub</a>';
-    if (links.resume) cl += docLink(links.resume, 'btn btn-doc', 'Résumé (PDF)');
+    if (links.resume) cl += docLink(links.resume, 'btn btn-doc', 'Resume (PDF)');
     if (links.portfolio) cl += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio (PDF)');
     set('contact-links', cl);
     set('foot-name', esc((p.person || {}).name) + ((p.person || {}).location ? ' · ' + esc(p.person.location) : ''));
@@ -1010,10 +1007,10 @@
 
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
-    var navMap = { ecosystem: 'products', education: 'how', pillars: 'how', ellyra: 'products', how: 'how' };
+    var navMap = { top: 'products', snapshot: 'products', ecosystem: 'products', education: 'how', pillars: 'how', ellyra: 'products', metrics: 'metrics', how: 'how' };
     function onScroll() {
       nav.classList.toggle('scrolled', window.scrollY > 12);
-      var pos = window.scrollY + 120, cur = '';
+      var pos = window.scrollY + Math.max(nav.offsetHeight, 120) + 8, cur = '';
       secs.forEach(function (s) { if (s.offsetTop <= pos) cur = s.id; });
       cur = navMap[cur] || cur;
       links.forEach(function (l) {
@@ -1024,18 +1021,6 @@
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-
-    var burger = document.getElementById('burger'), navlinks = document.getElementById('navlinks');
-    function setMenu(open) {
-      navlinks.classList.toggle('open', open);
-      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    }
-    burger.addEventListener('click', function () { setMenu(!navlinks.classList.contains('open')); });
-    navlinks.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && navlinks.classList.contains('open')) { setMenu(false); burger.focus(); }
-    });
 
     var rv = document.querySelectorAll('.rv');
     var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver;

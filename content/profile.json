@@ -27,30 +27,9 @@
     "metrics": "assets/My_Product_Metrics.pdf"
   },
   "fit": {
-    "open": "Open to",
-    "level": "Director of Product",
-    "domains": [
-      {
-        "id": "security",
-        "label": "Security"
-      },
-      {
-        "id": "payments",
-        "label": "Payments"
-      },
-      {
-        "id": "analytics",
-        "label": "Analytics"
-      },
-      {
-        "id": "healthcare",
-        "label": "Healthcare"
-      },
-      {
-        "id": "agritech",
-        "label": "Agritech"
-      }
-    ],
+    "open": "Open to Director of Product Management and similar job roles",
+    "level": "",
+    "domains": [],
     "mode": "Remote / Hybrid",
     "notice": "30-day notice"
   },
@@ -205,7 +184,7 @@
           },
           {
             "label": "Documents",
-            "value": "[R\u00e9sum\u00e9 PDF](resume.pdf) \u00b7 [Portfolio PDF](assets/portfolio.pdf) \u00b7 [Product metrics PDF](assets/My_Product_Metrics.pdf)"
+            "value": "[Resume PDF](resume.pdf) \u00b7 [Portfolio PDF](assets/portfolio.pdf) \u00b7 [Product metrics PDF](assets/My_Product_Metrics.pdf)"
           }
         ]
       }

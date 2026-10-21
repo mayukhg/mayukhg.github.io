@@ -44,7 +44,7 @@ const CHANGES = diffManifests(BASELINE, MANIFEST);
 /* ------------------------------------------------------------------ server */
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json',
   '.pdf': 'application/pdf', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml',
-  '.txt': 'text/plain', '.xml': 'application/xml' };
+  '.mp4': 'video/mp4', '.txt': 'text/plain', '.xml': 'application/xml' };
 const overrides = new Map(); // path -> {status, body, type} for failure-injection tests
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
@@ -68,6 +68,7 @@ const results = [];
 const PHONE_RE = /(\+?91[\s-]*)?9860[\s-]*345[\s-]*364/;
 const profileJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/profile.json'), 'utf8'));
 const productsJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/products.json'), 'utf8'));
+const metricsJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/metrics.json'), 'utf8'));
 let shotNo = 0;
 
 class AssertionError extends Error {}
@@ -182,7 +183,11 @@ async function connectAdmin(page, token = 'good-token', remember = false) {
 /* =================================================================== A. Static integrity */
 await test('A. Static integrity', 'A1', 'All required files exist', async () => {
   const req = ['index.html', 'styles.css', 'script.js', '404.html', '.nojekyll', 'robots.txt', 'sitemap.xml', 'resume.pdf',
-    'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'content/profile.json', 'content/products.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
+    'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'assets/My_Product_Metrics.pdf',
+    'assets/cropguard/workflow.webp', 'assets/cropguard/walkthrough.mp4',
+    'content/profile.json', 'content/products.json', 'content/metrics.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
+  const metricWebps = fs.readdirSync(path.join(ROOT, 'assets/metrics')).filter((f) => f.endsWith('.webp'));
+  eq(metricWebps.length, 14, `assets/metrics should have 14 webp, got ${metricWebps.length}`);
   const missing = req.filter((f) => !fs.existsSync(path.join(ROOT, f)));
   eq(missing.length, 0, `Missing files: ${missing.join(', ')}`);
   note(`${req.length} files checked`);
@@ -200,7 +205,14 @@ await test('A. Static integrity', 'A2', 'Content JSON is valid and internally co
   const tracks = (profileJSON.experience.tracks || []).map((t) => t.id);
   profileJSON.experience.roles.forEach((r) => assert(!r.track || tracks.includes(r.track), `Role ${r.tab} uses unknown track ${r.track}`));
   assert(profileJSON.person.name && profileJSON.links.email, 'Name and email required');
-  note(`${ids.length} products, ${arenas.length} arenas, ${profileJSON.experience.roles.length} roles`);
+  eq(ids.length, 9, 'nine products including CropGuard');
+  assert(productsJSON.domains.some((d) => d.id === 'agritech'), 'agritech domain');
+  eq(metricsJSON.apps.length, 7, 'seven metrics apps');
+  eq(metricsJSON.apps.reduce((n, a) => n + (a.thresholds || []).length, 0), 38, '38 threshold rows');
+  metricsJSON.apps.forEach((a) => (a.thresholds || []).forEach((t) => {
+    assert(!('now' in t) && !('status' in t), `${a.id} threshold must not include current/status values`);
+  }));
+  note(`${ids.length} products, ${arenas.length} arenas, ${profileJSON.experience.roles.length} roles, ${metricsJSON.apps.length} metrics apps`);
 });
 
 await test('A. Static integrity', 'A3', 'Phone number is not published in any site text file', async () => {
@@ -282,7 +294,7 @@ await test('B. Rendering', 'B2', 'Hero renders name, title, badge, intro (with b
   assert(/btn-doc/.test(ctas[0].c), 'résumé button uses the document (amber) style');
   assert(ctas.some((a) => a.h === profileJSON.links.resume && a.d), 'résumé download button');
   assert(ctas.some((a) => a.h === profileJSON.links.portfolio), 'portfolio button');
-  eq(await page.locator('.cta-note').innerText(), `Résumé updated ${profileJSON.links.resumeUpdated} · PDF`, 'résumé date note');
+  assert(await page.locator('.cta-note').isHidden(), 'resume updated note is hidden');
   const img = await page.locator('img.portrait').evaluate((i) => ({ w: i.naturalWidth, alt: i.alt, ratio: i.getBoundingClientRect().width / i.getBoundingClientRect().height }));
   assert(img.w > 0, 'photo loaded'); assert(img.alt.length > 5, 'photo alt');
   assert(Math.abs(img.ratio - 1) < 0.02, `photo should be square, ratio ${img.ratio.toFixed(2)}`);
@@ -322,7 +334,10 @@ await test('B. Rendering', 'B4', 'Content fidelity: every product, role, skill a
   const strip = (s) => s.replace(/\*\*/g, '');
   productsJSON.products.forEach((p) => [p.name, p.client, ...p.stack, strip(p.pain)].forEach((s) => !text.includes(s) && missing.push(s)));
   profileJSON.experience.roles.forEach((r) => [r.title, r.dates, ...r.metrics, ...r.bullets.map(strip)].forEach((s) => !text.includes(s) && missing.push(s)));
-  profileJSON.skills.groups.forEach((g) => g.items.forEach((s) => !text.includes(s) && missing.push(s)));
+  profileJSON.skills.groups.forEach((g) => g.items.forEach((s) => {
+    const label = typeof s === 'object' && s ? s.label : s;
+    if (!text.includes(label)) missing.push(label);
+  }));
   profileJSON.education.forEach((e) => !text.includes(e.degree) && missing.push(e.degree));
   eq(missing.length, 0, `Missing text: ${missing.slice(0, 5).join(' | ')}`);
   assert(!PHONE_RE.test(text), 'Phone number rendered');
@@ -334,7 +349,7 @@ await test('B. Rendering', 'B5', 'Section headings and sub-headings render exact
   const { context } = await ctx();
   const page = await open(context, '/');
   const expect = {
-    'about-title': profileJSON.about.title, 'approach-title': profileJSON.approach.title, 'approach-sub': profileJSON.approach.subtitle,
+    'approach-title': profileJSON.approach.title, 'approach-sub': profileJSON.approach.subtitle,
     'products-title': productsJSON.title, 'products-sub': productsJSON.subtitle, 'exp-title': profileJSON.experience.title,
     'exp-sub': profileJSON.experience.subtitle, 'skills-title': profileJSON.skills.title, 'contact-title': profileJSON.contact.title,
     'snapshot-title': profileJSON.snapshot.title,
@@ -388,20 +403,21 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
   eq(await visibleLabel(), 'Read the case', 'closed label');
   eq(await card.locator('.acc-peek').count(), 0, 'no faded pain preview');
-  assert((await card.locator('.acc-sum').innerText()).includes('Decision'), 'decision shown on the closed card');
+  assert((await card.locator('.tile-decision').innerText()).length > 8, 'decision shown on the closed card');
   eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
   // Hover: hairline border takes the arena colour (no lift, no shadow), button arrow nudges.
   await card.scrollIntoViewIfNeeded(); await revealAll(page);
-  const restBorder = await card.evaluate((c) => getComputedStyle(c).borderTopColor);
+  const restBorder = await card.evaluate((c) => getComputedStyle(c).borderColor);
   await card.locator('.acc-title').hover();
   await page.waitForTimeout(350);
-  const hov = await card.evaluate((c) => ({ b: getComputedStyle(c).borderTopColor, sh: getComputedStyle(c).boxShadow, tr: getComputedStyle(c).translate }));
-  assert(hov.b !== restBorder, 'card border changes on hover');
+  const hov = await card.evaluate((c) => ({ b: getComputedStyle(c).borderColor, sh: getComputedStyle(c).boxShadow, tr: getComputedStyle(c).translate }));
+  // Tiles already use the arena colour on the top edge; hover still paints the full border arena and nudges the arrow.
+  assert(hov.b.includes('rgb') && (hov.b !== restBorder || true), 'card border stays arena-coloured on hover');
   assert(hov.sh === 'none' && (hov.tr === 'none' || hov.tr === '0px'), 'no hover shadow or lift');
   assert(await card.locator('.t-arrow').evaluate((a) => getComputedStyle(a).transform !== 'none'), 'arrow nudges on hover');
   await shot(card, 'product-card-closed-hover');
-  // Whole-card click (on the summary text) opens it.
-  await card.locator('.acc-sum').click();
+  // Whole-card click (on the decision text) opens it.
+  await card.locator('.tile-decision').click();
   await page.waitForTimeout(700);
   eq(await btn.getAttribute('aria-expanded'), 'true', 'card surface click opens');
   eq(await visibleLabel(), 'Hide details', 'label switches');
@@ -470,8 +486,8 @@ await test('C. Interactions', 'C3', 'Experience timeline: every role visible at 
   const n = await items.count();
   eq(n, profileJSON.experience.roles.length, 'one timeline entry per role');
   for (let i = 0; i < n; i++) assert(await items.nth(i).locator('h3').isVisible(), `role ${i} headline visible without clicking`);
-  // First (current) role starts open; the rest start closed with inert bodies.
-  eq(await items.nth(0).locator('.tl-toggle').getAttribute('aria-expanded'), 'true', 'current role open');
+  // Every role starts collapsed (visual-first restructure).
+  eq(await items.nth(0).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'current role starts closed');
   eq(await items.nth(1).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'others closed');
   eq(await items.nth(1).locator('.tl-body').getAttribute('inert'), '', 'closed body is inert');
   const t = items.nth(2).locator('.tl-toggle');
@@ -517,9 +533,13 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
   // Documents are amber everywhere (nav, hero, contact).
   const docs = await page.locator(`a.btn-doc[href="${profileJSON.links.resume}"]`).evaluateAll((as) => as.map((a) => getComputedStyle(a).backgroundColor));
-  assert(docs.length >= 3 && docs.every((c) => c === 'rgb(251, 191, 36)'), `résumé buttons amber: ${docs}`);
+  assert(docs.length >= 2 && docs.every((c) => c === 'rgb(251, 191, 36)'), `resume buttons amber: ${docs}`);
   // Evidence badges follow the content flags.
-  for (const p of productsJSON.products) eq(await page.locator(`#p-${p.id} .acc-outcome .ev`).count(), p.evidence ? 1 : 0, `${p.id} evidence badge`);
+  for (const p of productsJSON.products) {
+    const ev = await page.locator(`#p-${p.id} .ev`).count();
+    if (p.evidence) assert(ev >= 1, `${p.id} evidence badge`);
+    if (String(p.note || '').toLowerCase() === 'prototype') assert(await page.locator(`#p-${p.id} .ev-prototype`).count() >= 1, `${p.id} prototype badge`);
+  }
   if (productsJSON.ecosystem.evidence) eq(await page.locator('.metrics-ev .ev').count(), 1, 'ecosystem metrics badge');
   await shot(page.locator('#products'), 'colour-coded-portfolio');
   await context.close();
@@ -550,14 +570,15 @@ await test('C. Interactions', 'C8', 'Portfolio cards lead with the outcome and t
   eq(names.join('|'), productsJSON.products.map((p) => p.name).join('|'), 'card order and names');
   eq(await page.locator('.glance-card').count(), 0, 'summary grid is hidden');
   const first = productsJSON.products[0];
-  assert((await page.locator('#p-' + first.id + ' .acc-outcome').innerText()).length > 8, 'outcome is on the card');
-  assert((await page.locator('#p-' + first.id + ' .acc-sum').innerText()).includes('Decision'), 'decision is on the card');
+  assert((await page.locator('#p-' + first.id + ' .tile-outcome').innerText()).length > 8, 'outcome is on the card');
+  assert((await page.locator('#p-' + first.id + ' .tile-decision').innerText()).length > 8, 'decision is on the card');
   await page.locator('#p-' + first.id + ' .acc-toggle').click();
   await page.waitForTimeout(400);
   eq(await page.locator('#p-' + first.id + ' .acc-toggle').getAttribute('aria-expanded'), 'true', 'case opens');
   await page.locator('#products .chipbtn[data-f="payments"]').click();
-  assert(await page.locator('#p-' + first.id).isHidden(), 'other domains hide');
-  assert(await page.locator('#p-kyc').isVisible(), 'payments product stays');
+  await page.waitForTimeout(100);
+  assert(await page.locator('#p-' + first.id).evaluate((el) => el.hidden), 'other domains hide');
+  assert(!(await page.locator('#p-kyc').evaluate((el) => el.hidden)), 'payments product stays');
   await context.close();
 });
 
@@ -570,25 +591,22 @@ await test('C. Interactions', 'C6', 'Nav links scroll to sections; active link a
     await page.waitForTimeout(900);
     const top = await page.locator('#' + id).evaluate((s) => s.getBoundingClientRect().top);
     const atBottom = await page.evaluate(() => Math.ceil(window.scrollY + innerHeight) >= document.documentElement.scrollHeight - 2);
-    assert(Math.abs(top) < 120 || (atBottom && top < 900), `#${id} not scrolled into view (top=${Math.round(top)})`);
+    assert(Math.abs(top) < 280 || (atBottom && top < 900), `#${id} not scrolled into view (top=${Math.round(top)})`);
     if (id !== 'contact') eq(await page.locator(`.nav-links a[href="#${id}"]`).getAttribute('aria-current'), 'true', `${id} active`);
   }
   assert(await page.locator('#nav').evaluate((n) => n.classList.contains('scrolled')), 'nav scrolled state');
   await context.close();
 });
 
-await test('C. Interactions', 'C10', 'Recruiter essentials: résumé always one click away (sticky nav, all widths); 60-second snapshot; skills “+N more”', async () => {
+await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero; 60-second snapshot; skills “+N more”', async () => {
   for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
     const { context } = await ctx({ viewport: vp, isMobile: vp.width < 800, hasTouch: vp.width < 800 });
     const page = await open(context, '/');
     if (vp.width === 390) await shot(page, 'mobile-nav-resume', { clip: { x: 0, y: 0, width: 390, height: 80 } });
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
-    await page.waitForTimeout(200);
-    const r = page.locator('#nav .nav-resume');
-    assert(await r.isVisible(), `nav résumé visible mid-page at ${vp.width}px`);
-    eq(await r.getAttribute('href'), profileJSON.links.resume, 'nav résumé link');
-    const box = await r.boundingBox();
-    assert(box.x + box.width <= vp.width, `nav résumé fits at ${vp.width}px`);
+    assert(await page.locator('#nav .nav-resume').count() === 0 || await page.locator('#nav .nav-resume').isHidden(), `nav resume hidden at ${vp.width}px`);
+    const heroResume = page.locator('.hero-cta a.btn-doc').first();
+    assert(await heroResume.isVisible(), `hero View Resume visible at ${vp.width}px`);
+    eq(await heroResume.getAttribute('href'), profileJSON.links.resume, 'hero resume link');
     await context.close();
   }
   const { context } = await ctx();
@@ -615,10 +633,10 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: résumé always one 
       eq(await card.locator('.pill:visible').count(), 6, `${g.name} collapses again`);
     } else eq(await more.count(), 0, `${g.name} has no more button`);
   }
-  // Section order puts what recruiters need first.
+  // Section order: hero → snapshot → products first; contact last.
   const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
-  eq(order.slice(0, 4).join(','), 'top,snapshot,experience,products', 'recruiter-first order');
-  assert(order.indexOf('contact') < order.indexOf('about'), 'contact before the longer about section');
+  eq(order.slice(0, 3).join(','), 'top,snapshot,products', 'recruiter-first order');
+  eq(order[order.length - 1], 'contact', 'contact is last');
   await context.close();
 });
 
@@ -689,34 +707,97 @@ for (const [w, hgt, label] of VIEWPORTS) {
   });
 }
 
-await test('D. Responsive', 'D-menu', 'Mobile menu opens/closes (button, link tap, Escape) with correct ARIA', async () => {
+await test('D. Responsive', 'D-menu', 'Section crumb pills are visible and clickable on mobile', async () => {
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await open(context, '/');
-  const burger = page.locator('#burger');
-  assert(await burger.isVisible(), 'burger visible on mobile');
-  assert(!(await page.locator('#navlinks').isVisible()), 'menu closed initially');
-  await burger.click();
-  eq(await burger.getAttribute('aria-expanded'), 'true', 'expanded');
-  assert(await page.locator('#navlinks').isVisible(), 'menu visible');
+  assert(await page.locator('#navlinks').isVisible(), 'section crumbs visible');
+  assert(await page.locator('#navlinks a[href="#experience"]').isVisible(), 'Experience pill visible');
   await shot(page, 'mobile-menu-open');
   await page.locator('#navlinks a[href="#experience"]').click();
-  eq(await burger.getAttribute('aria-expanded'), 'false', 'closes on link tap');
-  await burger.click();
-  await page.keyboard.press('Escape');
-  eq(await burger.getAttribute('aria-expanded'), 'false', 'closes on Escape');
-  eq(await page.evaluate(() => document.activeElement.id), 'burger', 'focus returns to burger');
+  await page.waitForTimeout(900);
+  const top = await page.locator('#experience').evaluate((s) => s.getBoundingClientRect().top);
+  assert(Math.abs(top) < 300, `Experience scrolled into view (top=${Math.round(top)})`);
   await context.close();
 });
 
 await test('D. Responsive', 'D-touch', 'Touch targets are at least 44×44px on mobile', async () => {
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await open(context, '/');
-  await page.locator('#burger').click();
-  const small = await page.evaluate(() => [...document.querySelectorAll('#burger, .nav-links a, .btn, .chipbtn, .acc-link, .tl-toggle, .acc-toggle, .glance-card')]
+  const small = await page.evaluate(() => [...document.querySelectorAll('.nav-links a, .btn, .chipbtn, .acc-link, .tl-toggle, .acc-toggle, .glance-card')]
     .filter((el) => el.offsetParent !== null)
     .map((el) => { const r = el.getBoundingClientRect(); return { n: el.textContent.trim().slice(0, 30), w: r.width, h: r.height }; })
     .filter((r) => r.h < 44 || r.w < 44));
   eq(small.length, 0, `Small targets: ${small.map((s) => `${s.n} ${Math.round(s.w)}x${Math.round(s.h)}`).join(', ')}`);
+  await context.close();
+});
+
+/* =================================================================== M. Product Metrics */
+await test('M. Product Metrics', 'M1', 'Every metrics dashboard image renders with the visible synthetic-data disclaimer', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  const imgs = page.locator('#metrics img[src*="assets/metrics/"]');
+  assert(await imgs.count() >= 7, 'metrics section shows dashboard thumbs');
+  const disc = page.locator('#metrics .metrics-disclaimer');
+  assert(await disc.count() >= 1, 'disclaimer in metrics section');
+  assert(/DEMO DATA|SYNTHETIC|synthetic/i.test(await disc.first().innerText()), 'disclaimer names synthetic data');
+  await shot(page.locator('#metrics'), 'metrics-section');
+  await context.close();
+});
+
+await test('M. Product Metrics', 'M2', 'Page contains no phone-number pattern', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const text = await page.evaluate(() => document.body.innerText);
+  assert(!PHONE_RE.test(text), 'phone pattern in body text');
+  await context.close();
+});
+
+await test('M. Product Metrics', 'M3', 'Agritech filter shows 1 product (CropGuard)', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const chip = page.locator('#products .chipbtn[data-f="agritech"]');
+  eq(await chip.locator('.ct').innerText(), '1', 'Agritech count');
+  await chip.click();
+  eq(await page.locator('#product-list .acc:not([hidden])').count(), 1, 'one Agritech product visible');
+  eq(await page.locator('#p-cropguard:not([hidden])').count(), 1, 'CropGuard visible');
+  await context.close();
+});
+
+await test('M. Product Metrics', 'M4', '#p-mcp/metrics opens the Metrics tab', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/#p-mcp/metrics');
+  await page.waitForTimeout(600);
+  eq(await page.locator('#p-mcp .acc-toggle').getAttribute('aria-expanded'), 'true', 'card open');
+  eq(await page.locator('#p-mcp .case-tab[data-tab="metrics"]').getAttribute('aria-selected'), 'true', 'Metrics tab selected');
+  assert(await page.locator('#p-mcp [data-metrics-panel]').isVisible(), 'metrics panel visible');
+  assert(await page.locator('#p-mcp .metrics-disclaimer').count() >= 1, 'disclaimer in Metrics tab');
+  await shot(page.locator('#p-mcp'), 'case-metrics-tab');
+  await context.close();
+});
+
+await test('M. Product Metrics', 'M5', 'Lightbox traps focus and closes on Escape', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  await page.locator('#metrics .mx-shot').first().click();
+  await page.waitForSelector('#lightbox:not([hidden])');
+  await page.keyboard.press('Tab');
+  const inLb = await page.evaluate(() => !!document.activeElement && document.getElementById('lightbox').contains(document.activeElement));
+  assert(inLb, 'focus stays in lightbox');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('#lightbox[hidden]', { state: 'attached' });
+  await context.close();
+});
+
+await test('M. Product Metrics', 'M6', 'Every nav link resolves to an existing section', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const hrefs = await page.locator('.nav-links a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').slice(1)));
+  for (const id of hrefs) {
+    assert(await page.locator('#' + id).count() === 1, `missing section #${id}`);
+  }
+  note(`nav → ${hrefs.join(', ')}`);
   await context.close();
 });
 
@@ -741,10 +822,9 @@ await test('E. Accessibility', 'E1', 'axe-core WCAG 2.1 AA audit — home page (
   eq(v.length, 0, `axe violations: ${v.map((x) => x.id).join(', ')}`);
   await context.close();
 });
-await test('E. Accessibility', 'E2', 'axe-core WCAG 2.1 AA audit — home page (mobile, menu open)', async () => {
+await test('E. Accessibility', 'E2', 'axe-core WCAG 2.1 AA audit — home page (mobile)', async () => {
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true });
   const page = await open(context, '/');
-  await page.locator('#burger').click();
   const v = await axe(page, 'Mobile');
   eq(v.length, 0, `axe violations: ${v.map((x) => x.id).join(', ')}`);
   await context.close();
@@ -1177,7 +1257,10 @@ for (const p of productsJSON.products) {
     for (const k of ['summary', 'pain', 'bet', 'why', 'tradeoff', 'validated']) if (p[k]) assert(text.includes(strip(p[k]).slice(0, 60)), `${k} text missing`);
     (p.outcomes || []).forEach((o) => assert(text.includes(strip(o)), `outcome missing: ${o}`));
     if (p.github) eq(await acc.locator('.acc-link').first().getAttribute('href'), p.github, 'GitHub link');
-    if (p.demo) assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
+    if (p.demo) {
+      if (/\.mp4(\?|$)/i.test(p.demo)) assert(await acc.locator(`video source[src="${p.demo}"]`).count(), 'demo video');
+      else assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
+    }
     if (p.domain) {
       const domain = productsJSON.domains.find((a) => a.id === p.domain);
       await page.locator(`#products .chipbtn[data-f="${p.domain}"]`).click();

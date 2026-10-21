@@ -8,7 +8,7 @@
   var CFG_KEY = 'portfolio-admin-config';
   var TOKEN_KEY = 'portfolio-admin-token';
   var API = 'https://api.github.com';
-  var DOCS = { profile: 'content/profile.json', products: 'content/products.json' };
+  var DOCS = { profile: 'content/profile.json', products: 'content/products.json', metrics: 'content/metrics.json' };
   var DEFAULT_CFG = { owner: 'mayukhg', repo: 'mayukhg.github.io', branch: 'main' };
 
   /* ======================================================================
@@ -19,7 +19,7 @@
 
   var GLANCE_ICONS = [['shield', 'Shield'], ['target', 'Target'], ['chip', 'Chip / AI'], ['wrench', 'Wrench / tools'], ['grid', 'Grid / modules'],
     ['trend', 'Trend / growth'], ['alert', 'Alert'], ['globe', 'Globe / trade'], ['bank', 'Bank / finance'], ['bolt', 'Lightning'],
-    ['search', 'Search'], ['layers', 'Layers / platform'], ['heart', 'Heart / health']];
+    ['search', 'Search'], ['layers', 'Layers / platform'], ['heart', 'Heart / health'], ['leaf', 'Leaf / agritech']];
 
   var SNAPSHOT_TONES = [['fit', 'Green — role fit'], ['impact', 'Violet — leadership & impact'], ['logistics', 'Slate — logistics']];
   var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production'], ['pipeline', 'Pipeline']];
@@ -42,15 +42,12 @@
       S('github', 'GitHub URL', 'url'),
       S('resume', 'Résumé PDF', 'path', { hint: 'Leave as resume.pdf; upload a new file on the Files tab. Empty hides the résumé buttons.' }),
       S('resumeUpdated', 'Résumé last updated', 'string', { hint: 'e.g. “Sep 2026” — shown under the hero buttons. Empty hides the note.' }),
-      S('portfolio', 'Portfolio PDF', 'path', { hint: 'Set automatically when you upload a portfolio PDF. Empty hides the buttons.' })
+      S('portfolio', 'Portfolio PDF', 'path', { hint: 'Set automatically when you upload a portfolio PDF. Empty hides the buttons.' }),
+      S('metrics', 'Metrics deck PDF', 'path', { hint: 'assets/My_Product_Metrics.pdf' })
     ] }),
-    S('fit', 'Recruiter fit bar', 'object', { section: true, desc: 'The pinned strip under the navigation: level, domains, work mode and notice.', fields: [
-      S('open', 'Status label', 'string', { hint: 'e.g. Open to' }),
-      S('level', 'Level', 'string', { hint: 'e.g. Director of Product' }),
-      S('domains', 'Domains', 'array', { itemTitle: function (x) { return x.label; }, fields: [
-        S('id', 'Domain ID', 'string', { required: true, hint: 'security, payments, healthcare, trade or analytics.' }),
-        S('label', 'Label', 'string', { required: true })
-      ] }),
+    S('fit', 'Recruiter fit bar', 'object', { section: true, desc: 'The pinned strip under the navigation: availability line, work mode and notice.', fields: [
+      S('open', 'Availability line', 'string', { hint: 'e.g. Open to Director of Product Management and similar job roles' }),
+      S('level', 'Optional role chip', 'string', { hint: 'Leave empty to show only the availability line.' }),
       S('mode', 'Work mode', 'string'),
       S('notice', 'Notice period', 'string')
     ] }),
@@ -157,7 +154,7 @@
       S('client', 'Implemented for', 'string'),
       S('stack', 'Built with', 'lines', { hint: 'One technology per line.' }),
       S('github', 'GitHub link', 'url'),
-      S('demo', 'Live demo link', 'url'),
+      S('demo', 'Live demo link', 'path', { hint: 'https://… or a local file like assets/cropguard/walkthrough.mp4' }),
       S('pain', 'Customer pain', 'md', { rows: 3 }),
       S('bet', 'The product bet', 'md', { rows: 3 }),
       S('whyLabel', '“Why AI” heading', 'string', { hint: 'e.g. “Why AI is the right call” or “Why not an LLM”.' }),
@@ -187,7 +184,48 @@
   /* ======================================================================
      State
      ====================================================================== */
-  var state = { profile: null, products: null, published: { profile: '', products: '' }, cfg: null, token: '', login: '' };
+
+  var METRICS_SCHEMA = [
+    S('eyebrow', 'Eyebrow', 'string'),
+    S('title', 'Title', 'string', { required: true }),
+    S('subtitle', 'Subtitle', 'text', { rows: 3 }),
+    S('disclaimer', 'Synthetic-data disclaimer', 'text', { rows: 3, required: true, hint: 'Shown in the metrics section and every Metrics tab.' }),
+    S('pdf', 'Metrics deck PDF', 'path'),
+    S('method', 'How I measure steps', 'array', { section: true, itemTitle: function (x) { return x.label; }, fields: [
+      S('id', 'Step ID', 'string', { required: true }),
+      S('label', 'Label', 'string', { required: true }),
+      S('text', 'Caption', 'string', { required: true })
+    ] }),
+    S('apps', 'Apps / boards', 'array', { section: true, open: true, itemTitle: function (x) { return x.name; }, fields: [
+      S('id', 'App ID', 'string', { required: true }),
+      S('productId', 'Linked product ID', 'string', { hint: 'mcp, policy-foundry, soc-portal, ai-spm, ellyra-pulse, cropguard, or ecosystem' }),
+      S('umbrella', 'Umbrella board', 'bool'),
+      S('name', 'Name', 'string', { required: true }),
+      S('product', 'Product label', 'string'),
+      S('northStar', 'North star', 'string', { required: true }),
+      S('summary', 'Summary', 'text', { rows: 3 }),
+      S('action', 'Action when red', 'text', { rows: 2 }),
+      S('howDecided', 'How decided', 'object', { fields: [
+        S('problem', 'Problem', 'text', { rows: 2 }),
+        S('workflow', 'Workflow', 'text', { rows: 2 }),
+        S('approach', 'Approach', 'text', { rows: 2 })
+      ] }),
+      S('thresholds', 'Threshold bands (Good / Watch / Act)', 'array', { itemTitle: function (x) { return x.metric; }, fields: [
+        S('metric', 'Metric', 'string', { required: true }),
+        S('green', 'Good band', 'string', { required: true }),
+        S('amber', 'Watch band', 'string', { required: true }),
+        S('red', 'Act band', 'string', { required: true })
+      ] }),
+      S('images', 'Dashboard images', 'array', { itemTitle: function (x) { return x.file; }, fields: [
+        S('file', 'File path', 'path', { required: true }),
+        S('alt', 'Alt text', 'string', { required: true }),
+        S('w', 'Width', 'string'),
+        S('h', 'Height', 'string')
+      ] })
+    ] })
+  ];
+
+  var state = { profile: null, products: null, metrics: null, published: { profile: '', products: '', metrics: '' }, cfg: null, token: '', login: '' };
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return [].slice.call((root || document).querySelectorAll(sel)); };
 
@@ -388,12 +426,13 @@
   function uniqueId(base, list) { var id = base, n = 2; while (list.some(function (x) { return x.id === id; })) id = base + '-' + n++; return id; }
 
   function renderForms() {
-    var fp = $('#form-profile'), fr = $('#form-products');
-    var openP = openSections(fp), openR = openSections(fr);
-    fp.innerHTML = ''; fr.innerHTML = '';
+    var fp = $('#form-profile'), fr = $('#form-products'), fm = $('#form-metrics');
+    var openP = openSections(fp), openR = openSections(fr), openM = fm ? openSections(fm) : {};
+    fp.innerHTML = ''; fr.innerHTML = ''; if (fm) fm.innerHTML = '';
     buildFields(PROFILE_SCHEMA, state.profile).forEach(function (el) { fp.appendChild(el); });
     buildFields(PRODUCTS_SCHEMA, state.products).forEach(function (el) { fr.appendChild(el); });
-    restoreSections(fp, openP); restoreSections(fr, openR);
+    if (fm && state.metrics) buildFields(METRICS_SCHEMA, state.metrics).forEach(function (el) { fm.appendChild(el); });
+    restoreSections(fp, openP); restoreSections(fr, openR); if (fm) restoreSections(fm, openM);
     refreshFiles();
     updateDirty();
   }
@@ -464,7 +503,7 @@
   /* ======================================================================
      Draft, dirty state, backup
      ====================================================================== */
-  function isDirty() { return serialize('profile') !== state.published.profile || serialize('products') !== state.published.products; }
+  function isDirty() { return ['profile','products','metrics'].some(function (d) { return state[d] && serialize(d) !== state.published[d]; }); }
   function updateDirty() {
     var d = isDirty();
     $('#dirty-flag').hidden = !d;
@@ -472,13 +511,13 @@
   }
   function saveDraft() {
     if (!isDirty()) { lsDel(DRAFT_KEY); return; }
-    lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, savedAt: new Date().toISOString() }));
+    lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, savedAt: new Date().toISOString() }));
   }
   window.addEventListener('pagehide', function () { clearTimeout(saveTimer); if (state.profile) saveDraft(); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && state.profile) { clearTimeout(saveTimer); saveDraft(); } });
 
   function download() {
-    var blob = new Blob([JSON.stringify({ profile: state.profile, products: state.products }, null, 2)], { type: 'application/json' });
+    var blob = new Blob([JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics }, null, 2)], { type: 'application/json' });
     var a = h('a', { href: URL.createObjectURL(blob), download: 'portfolio-backup-' + new Date().toISOString().slice(0, 10) + '.json' });
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
@@ -489,7 +528,7 @@
       try {
         var d = JSON.parse(r.result);
         if (!d || typeof d.profile !== 'object' || typeof d.products !== 'object' || !Array.isArray(d.products.products)) throw new Error('This file is not a portfolio backup.');
-        state.profile = d.profile; state.products = d.products;
+        state.profile = d.profile; state.products = d.products; if (d.metrics) state.metrics = d.metrics;
         renderForms(); saveDraft();
         toast('Backup restored as a draft. Review, then publish.', 'ok');
       } catch (e) { toast('Could not restore: ' + e.message, 'err'); }
@@ -573,8 +612,8 @@
   }
 
   function loadPublishedFromGitHub() {
-    return Promise.all([getFile(DOCS.profile), getFile(DOCS.products)]).then(function (r) {
-      ['profile', 'products'].forEach(function (doc, i) {
+    return Promise.all([getFile(DOCS.profile), getFile(DOCS.products), getFile(DOCS.metrics)]).then(function (r) {
+      ['profile', 'products', 'metrics'].forEach(function (doc, i) {
         if (!r[i]) return;
         var text = textFromB64(r[i].content);
         var wasDirty = isDirty();
@@ -597,7 +636,7 @@
     }
     var btn = $('#btn-publish');
     btn.disabled = true; btn.textContent = 'Publishing…';
-    var docs = ['profile', 'products'].filter(function (d) { return serialize(d) !== state.published[d]; });
+    var docs = ['profile', 'products', 'metrics'].filter(function (d) { return state[d] && serialize(d) !== state.published[d]; });
     var commits = [];
     docs.reduce(function (p, doc) {
       return p.then(function () {
@@ -709,7 +748,7 @@
     wireTabs();
     $('#btn-publish').addEventListener('click', publish);
     $('#btn-preview').addEventListener('click', function () {
-      lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, savedAt: new Date().toISOString() }));
+      lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, savedAt: new Date().toISOString() }));
       window.open('../?preview=1', '_blank', 'noopener');
     });
     $('#btn-export').addEventListener('click', download);
@@ -719,6 +758,7 @@
       if (!confirm('Discard all unpublished changes and go back to the live content?')) return;
       state.profile = JSON.parse(state.published.profile);
       state.products = JSON.parse(state.published.products);
+      if (state.published.metrics) state.metrics = JSON.parse(state.published.metrics);
       lsDel(DRAFT_KEY); notice(null); renderForms();
       toast('Draft discarded.', 'ok');
     });
@@ -770,14 +810,15 @@
     try { state.cfg = Object.assign({}, DEFAULT_CFG, JSON.parse(lsGet(CFG_KEY) || '{}')); } catch (e) { state.cfg = Object.assign({}, DEFAULT_CFG); }
     state.token = lsGet(TOKEN_KEY, sessionStorage) || lsGet(TOKEN_KEY) || '';
     wire();
-    Promise.all([loadSiteJSON(DOCS.profile), loadSiteJSON(DOCS.products)]).then(function (r) {
-      state.profile = r[0]; state.products = r[1];
+    Promise.all([loadSiteJSON(DOCS.profile), loadSiteJSON(DOCS.products), loadSiteJSON(DOCS.metrics).catch(function () { return { title: 'Product metrics', disclaimer: '', method: [], apps: [] }; })]).then(function (r) {
+      state.profile = r[0]; state.products = r[1]; state.metrics = r[2];
       state.published.profile = serialize('profile');
       state.published.products = serialize('products');
+      state.published.metrics = serialize('metrics');
       var draft = null;
       try { draft = JSON.parse(lsGet(DRAFT_KEY) || 'null'); } catch (e) { draft = null; }
       if (draft && draft.profile && draft.products) {
-        state.profile = draft.profile; state.products = draft.products;
+        state.profile = draft.profile; state.products = draft.products; if (draft.metrics) state.metrics = draft.metrics;
         if (isDirty()) notice('Restored your unpublished draft' + (draft.savedAt ? ' from ' + new Date(draft.savedAt).toLocaleString() : '') + '. Publish it, or use “Discard draft”.');
       }
       renderForms();

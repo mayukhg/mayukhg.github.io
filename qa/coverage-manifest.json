@@ -4,23 +4,27 @@
       "top",
       "snapshot",
       "products",
-      "experience",
       "ecosystem",
-      "about",
-      "approach",
-      "skills",
+      "metrics",
+      "experience",
+      "how",
+      "ellyra",
+      "pillars",
       "education",
       "contact"
     ],
     "slots": [
       "nav-resume",
+      "fit",
       "badge",
       "name",
       "role",
       "lede",
+      "thesis",
       "hero-cta",
       "cta-note",
       "portrait",
+      "traits",
       "stats",
       "snapshot-title",
       "snapshot",
@@ -29,21 +33,30 @@
       "glance",
       "filters",
       "products",
+      "ecosystem",
+      "metrics",
       "exp-title",
       "exp-sub",
+      "exp-filters",
       "exp-legend",
       "exp-timeline",
-      "ecosystem",
-      "about-title",
+      "how-quote",
       "about-body",
       "facts",
       "approach-title",
       "approach-sub",
+      "paradigm",
       "steps",
       "throughline",
       "principles",
       "skills-title",
       "skills",
+      "flagship",
+      "pillars-eyebrow",
+      "pillars-title",
+      "pillars-sub",
+      "moat",
+      "pillar-grid",
       "education",
       "writing",
       "contact-title",
@@ -53,36 +66,41 @@
     ],
     "navLinks": [
       "products",
+      "metrics",
       "experience",
-      "about",
-      "approach",
-      "skills",
+      "how",
       "contact",
       "top"
     ],
     "jsSlots": [
+      "metrics",
       "badge",
       "name",
       "role",
       "lede",
+      "thesis",
+      "traits",
       "hero-cta",
       "cta-note",
       "nav-resume",
       "portrait",
       "stats",
+      "fit",
       "snapshot-title",
       "snapshot",
-      "about-title",
+      "how-quote",
       "about-body",
       "facts",
       "approach-title",
       "approach-sub",
+      "paradigm",
       "steps",
       "throughline",
       "principles",
       "products-title",
       "products-sub",
       "filters",
+      "exp-filters",
       "products",
       "glance",
       "ecosystem",
@@ -97,7 +115,13 @@
       "contact-title",
       "contact-text",
       "contact-links",
-      "foot-name"
+      "foot-name",
+      "pillars-eyebrow",
+      "pillars-title",
+      "pillars-sub",
+      "moat",
+      "pillar-grid",
+      "flagship"
     ],
     "icons": [
       "shield",
@@ -112,7 +136,10 @@
       "bolt",
       "search",
       "heart",
-      "layers"
+      "layers",
+      "leaf",
+      "chart",
+      "info"
     ]
   },
   "admin": {
@@ -124,6 +151,10 @@
       {
         "tab": "tab-products",
         "panel": "panel-products"
+      },
+      {
+        "tab": "tab-metrics",
+        "panel": "panel-metrics"
       },
       {
         "tab": "tab-files",
@@ -225,6 +256,36 @@
         "type": "path"
       },
       {
+        "key": "metrics",
+        "label": "Metrics deck PDF",
+        "type": "path"
+      },
+      {
+        "key": "fit",
+        "label": "Recruiter fit bar",
+        "type": "object"
+      },
+      {
+        "key": "open",
+        "label": "Availability line",
+        "type": "string"
+      },
+      {
+        "key": "level",
+        "label": "Optional role chip",
+        "type": "string"
+      },
+      {
+        "key": "mode",
+        "label": "Work mode",
+        "type": "string"
+      },
+      {
+        "key": "notice",
+        "label": "Notice period",
+        "type": "string"
+      },
+      {
         "key": "stats",
         "label": "Headline numbers",
         "type": "array"
@@ -237,6 +298,21 @@
       {
         "key": "label",
         "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "company",
+        "label": "Company",
+        "type": "string"
+      },
+      {
+        "key": "status",
+        "label": "Status",
+        "type": "select"
+      },
+      {
+        "key": "statusLabel",
+        "label": "Status label",
         "type": "string"
       },
       {
@@ -435,6 +511,21 @@
         "type": "string"
       },
       {
+        "key": "duration",
+        "label": "Duration",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "label": "Scope",
+        "type": "string"
+      },
+      {
+        "key": "domains",
+        "label": "Domains",
+        "type": "lines"
+      },
+      {
         "key": "summary",
         "label": "One-line summary",
         "type": "md"
@@ -581,12 +672,32 @@
       },
       {
         "key": "arenas",
-        "label": "Arenas (filter groups)",
+        "label": "Arenas (labels)",
         "type": "array"
       },
       {
         "key": "id",
         "label": "Arena ID",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "color",
+        "label": "Colour",
+        "type": "color"
+      },
+      {
+        "key": "domains",
+        "label": "Domains (recruiter filters)",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Domain ID",
         "type": "string"
       },
       {
@@ -617,6 +728,11 @@
       {
         "key": "arena",
         "label": "Arena",
+        "type": "select"
+      },
+      {
+        "key": "domain",
+        "label": "Domain",
         "type": "select"
       },
       {
@@ -667,7 +783,7 @@
       {
         "key": "demo",
         "label": "Live demo link",
-        "type": "url"
+        "type": "path"
       },
       {
         "key": "pain",
@@ -798,6 +914,166 @@
         "key": "note",
         "label": "Footnote",
         "type": "md"
+      },
+      {
+        "key": "eyebrow",
+        "label": "Eyebrow",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Title",
+        "type": "string"
+      },
+      {
+        "key": "subtitle",
+        "label": "Subtitle",
+        "type": "text"
+      },
+      {
+        "key": "disclaimer",
+        "label": "Synthetic-data disclaimer",
+        "type": "text"
+      },
+      {
+        "key": "pdf",
+        "label": "Metrics deck PDF",
+        "type": "path"
+      },
+      {
+        "key": "method",
+        "label": "How I measure steps",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Step ID",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Caption",
+        "type": "string"
+      },
+      {
+        "key": "apps",
+        "label": "Apps / boards",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "App ID",
+        "type": "string"
+      },
+      {
+        "key": "productId",
+        "label": "Linked product ID",
+        "type": "string"
+      },
+      {
+        "key": "umbrella",
+        "label": "Umbrella board",
+        "type": "bool"
+      },
+      {
+        "key": "name",
+        "label": "Name",
+        "type": "string"
+      },
+      {
+        "key": "product",
+        "label": "Product label",
+        "type": "string"
+      },
+      {
+        "key": "northStar",
+        "label": "North star",
+        "type": "string"
+      },
+      {
+        "key": "summary",
+        "label": "Summary",
+        "type": "text"
+      },
+      {
+        "key": "action",
+        "label": "Action when red",
+        "type": "text"
+      },
+      {
+        "key": "howDecided",
+        "label": "How decided",
+        "type": "object"
+      },
+      {
+        "key": "problem",
+        "label": "Problem",
+        "type": "text"
+      },
+      {
+        "key": "workflow",
+        "label": "Workflow",
+        "type": "text"
+      },
+      {
+        "key": "approach",
+        "label": "Approach",
+        "type": "text"
+      },
+      {
+        "key": "thresholds",
+        "label": "Threshold bands (Good / Watch / Act)",
+        "type": "array"
+      },
+      {
+        "key": "metric",
+        "label": "Metric",
+        "type": "string"
+      },
+      {
+        "key": "green",
+        "label": "Good band",
+        "type": "string"
+      },
+      {
+        "key": "amber",
+        "label": "Watch band",
+        "type": "string"
+      },
+      {
+        "key": "red",
+        "label": "Act band",
+        "type": "string"
+      },
+      {
+        "key": "images",
+        "label": "Dashboard images",
+        "type": "array"
+      },
+      {
+        "key": "file",
+        "label": "File path",
+        "type": "path"
+      },
+      {
+        "key": "alt",
+        "label": "Alt text",
+        "type": "string"
+      },
+      {
+        "key": "w",
+        "label": "Width",
+        "type": "string"
+      },
+      {
+        "key": "h",
+        "label": "Height",
+        "type": "string"
       }
     ],
     "uploads": [
@@ -846,6 +1122,11 @@
       {
         "id": "ellyra-pulse",
         "name": "Ellyra Pulse",
+        "arena": "applied"
+      },
+      {
+        "id": "cropguard",
+        "name": "CropGuard",
         "arena": "applied"
       }
     ],

@@ -42,12 +42,17 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 ├── script.js               # Renders content/*.json into the page + interactions
 ├── content/
 │   ├── profile.json        # Hero, about, approach, experience, skills, education, contact
-│   └── products.json       # Arenas, product case studies, ecosystem spotlight
+│   ├── products.json       # Arenas, product case studies, ecosystem spotlight
+│   └── metrics.json        # Product Metrics section (7 boards, threshold bands, images)
 ├── admin/                  # No-code editor (GitHub API, strict CSP, noindex)
 │   ├── index.html
 │   ├── admin.js
 │   └── admin.css
-├── assets/                 # Headshot, social share card, self-hosted fonts, portfolio.pdf
+├── assets/
+│   ├── mayukh.jpg, og-card.jpg, portfolio.pdf, fonts/
+│   ├── My_Product_Metrics.pdf   # Full metrics deck (amber document button)
+│   ├── metrics/                 # 14 Mixpanel dashboard screenshots (.webp)
+│   └── cropguard/               # workflow.webp poster + walkthrough.mp4
 ├── resume.pdf              # Downloadable résumé (includes phone number by choice)
 ├── 404.html · robots.txt · sitemap.xml · .nojekyll
 ├── .githooks/pre-commit     # Runs the regression suite before every commit
@@ -70,6 +75,18 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ```
 
 The page loads its content with `fetch`, so open it through a local server rather than as a `file://` URL.
+
+## 📐 Page structure
+
+Section order: **Hero → 60-second fit → Portfolio → AI Defense Ecosystem → Product Metrics → Experience → How I work → Education → Contact**.
+
+### Product Metrics (`content/metrics.json`)
+
+- Seven Mixpanel boards (six products + the AI Defence Ecosystem umbrella).
+- Each app has a north star, how-decided notes, journey→metric mapping, objectives, **threshold bands** (Good / Watch / Act) and dashboard images.
+- **Synthetic-data rule:** every dashboard value is demo/synthetic. The site shows the disclaimer from `metrics.json` and never paints current/“now” values or red/amber/green status for live figures—only the action bands.
+- Deep link: `#p-<productId>/metrics` opens that product’s Metrics tab. `#metrics` is the section.
+- To add a metrics entry for a product: append an object to `apps` in `metrics.json` (or use **/admin → Product metrics**), set `productId` to the product’s `id`, and place screenshots under `assets/metrics/`.
 
 ## ✅ Regression suite (runs automatically)
 
