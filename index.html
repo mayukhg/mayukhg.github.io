@@ -85,11 +85,10 @@
   <div class="nav-in">
     <a href="#top" class="brand" aria-label="Mayukh Ghosh, back to top"><span class="brand-mark" aria-hidden="true">M<b>G</b></span><span class="brand-name">Mayukh Ghosh</span></a>
     <div class="nav-links" id="navlinks">
-      <a href="#pillars">Pillars</a>
-      <a href="#ellyra">Case study</a>
       <a href="#products">Portfolio</a>
       <a href="#metrics">Metrics</a>
       <a href="#experience">Experience</a>
+      <a href="#how">How I work</a>
       <a href="#contact">Contact</a>
     </div>
     <div class="nav-actions">
@@ -123,25 +122,11 @@
   </div>
 </header>
 
-<section id="pillars" aria-labelledby="pillars-title">
-  <div class="wrap">
-    <p class="eyebrow" data-slot="pillars-eyebrow"></p>
-    <h2 class="s-title" id="pillars-title" data-slot="pillars-title"></h2>
-    <p class="s-sub" data-slot="pillars-sub"></p>
-    <div class="moat" data-slot="moat"></div>
-    <div class="pillar-grid" data-slot="pillar-grid"></div>
-  </div>
-</section>
-
 <section id="snapshot" class="sn-band" aria-labelledby="snapshot-title">
   <div class="wrap">
     <h2 class="sn-title" id="snapshot-title" data-slot="snapshot-title"></h2>
     <div class="sn-grid" data-slot="snapshot"></div>
   </div>
-</section>
-
-<section id="ellyra" aria-labelledby="ellyra-title">
-  <div class="wrap" data-slot="flagship"></div>
 </section>
 
 <section id="products" class="alt">
@@ -150,7 +135,7 @@
     <p class="s-sub" data-slot="products-sub"></p>
     <div class="glance" data-slot="glance" hidden></div>
     <div class="filters" role="group" aria-label="Filter by domain" data-slot="filters"></div>
-    <div id="product-list" data-slot="products"></div>
+    <div id="product-list" class="product-tiles" data-slot="products"></div>
   </div>
 </section>
 
@@ -170,6 +155,45 @@
   </div>
 </section>
 
+<section id="how" class="alt" aria-labelledby="how-title">
+  <div class="wrap">
+    <p class="eyebrow">About, approach and skills</p>
+    <h2 class="s-title" id="how-title">How I work</h2>
+    <div class="how-about">
+      <blockquote class="how-quote" data-slot="how-quote"></blockquote>
+      <button type="button" class="how-more" id="how-more" aria-expanded="false" aria-controls="how-about-full" hidden>Read more</button>
+      <div id="how-about-full" class="how-about-full" hidden data-slot="about-body"></div>
+      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
+    </div>
+    <div class="how-approach">
+      <h3 class="how-h" data-slot="approach-title"></h3>
+      <p class="s-sub" data-slot="approach-sub"></p>
+      <div class="paradigm" data-slot="paradigm" hidden></div>
+      <ol class="process process-icons" data-slot="steps"></ol>
+      <p class="throughline" data-slot="throughline"></p>
+      <div class="principles" data-slot="principles"></div>
+    </div>
+    <div class="how-skills">
+      <h3 class="how-h" data-slot="skills-title"></h3>
+      <div class="skill-grid" data-slot="skills"></div>
+    </div>
+  </div>
+</section>
+
+<section id="ellyra" aria-labelledby="ellyra-title">
+  <div class="wrap" data-slot="flagship"></div>
+</section>
+
+<section id="pillars" aria-labelledby="pillars-title">
+  <div class="wrap">
+    <p class="eyebrow" data-slot="pillars-eyebrow"></p>
+    <h2 class="s-title" id="pillars-title" data-slot="pillars-title"></h2>
+    <p class="s-sub" data-slot="pillars-sub"></p>
+    <div class="moat" data-slot="moat"></div>
+    <div class="pillar-grid" data-slot="pillar-grid"></div>
+  </div>
+</section>
+
 <section id="education">
   <div class="wrap">
     <h2 class="s-title">Education &amp; writing</h2>
@@ -177,35 +201,6 @@
       <div class="card"><h3>Education</h3><ul class="edu-list" data-slot="education"></ul></div>
       <div class="card" data-slot="writing"></div>
     </div>
-  </div>
-</section>
-
-<section id="about" class="alt">
-  <div class="wrap">
-    <h2 class="s-title" data-slot="about-title"></h2>
-    <div class="about-grid">
-      <div class="about-body" data-slot="about-body"></div>
-      <aside class="about-side" aria-label="Quick facts"><dl class="facts" data-slot="facts"></dl></aside>
-    </div>
-  </div>
-</section>
-
-<section id="approach">
-  <div class="wrap">
-    <p class="eyebrow">How I build an AI product</p>
-    <h2 class="s-title" data-slot="approach-title"></h2>
-    <p class="s-sub" data-slot="approach-sub"></p>
-    <div class="paradigm" data-slot="paradigm" hidden></div>
-    <ol class="process" data-slot="steps"></ol>
-    <p class="throughline" data-slot="throughline"></p>
-    <div class="principles" data-slot="principles"></div>
-  </div>
-</section>
-
-<section id="skills" class="alt">
-  <div class="wrap">
-    <h2 class="s-title" data-slot="skills-title"></h2>
-    <div class="skill-grid" data-slot="skills"></div>
   </div>
 </section>
 

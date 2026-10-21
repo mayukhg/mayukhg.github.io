@@ -801,3 +801,38 @@ section{padding:100px 0;position:relative;}
   .js .rv{opacity:1!important;transform:none!important;}
   .lightbox,.umbrella-drawer,.burger{display:none!important;}
 }
+
+/* ---------- Phase 2: visual tiles & How I work ---------- */
+.product-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+@media (max-width:960px){.product-tiles{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:620px){.product-tiles{grid-template-columns:1fr;}}
+.acc.tile{display:flex;flex-direction:column;margin:0;border-top:3px solid var(--arena,var(--accent));}
+.acc.tile .acc-face{display:flex;flex-direction:column;gap:12px;padding:0;align-items:stretch;}
+.acc.tile .acc-main{padding:4px 4px 8px;display:flex;flex-direction:column;gap:8px;}
+.tile-thumb{aspect-ratio:16/9;overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--line);background:#0a0a0a;}
+.tile-thumb img{width:100%;height:100%;object-fit:cover;object-position:top left;}
+.tile-pattern{display:flex;align-items:center;justify-content:center;background:
+  linear-gradient(135deg, rgba(255,255,255,.04), transparent 40%),
+  repeating-linear-gradient(-45deg, transparent, transparent 10px, color-mix(in srgb, var(--arena,#9cc4ff) 28%, transparent) 10px, color-mix(in srgb, var(--arena,#9cc4ff) 28%, transparent) 11px);
+}
+.tile-ico{width:48px;height:48px;color:var(--arena,#9cc4ff);}
+.tile-ico svg{width:48px;height:48px;}
+.tile-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.tile-outcome{font-family:var(--display);font-size:1.15rem;font-weight:700;color:var(--ink);line-height:1.3;margin:0;}
+.tile-decision{
+  margin:0;font-size:.9rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.acc.tile .acc-result{display:none;}
+.acc.tile.open .acc-body{margin-top:8px;}
+
+.how-about{display:grid;grid-template-columns:1.4fr .8fr;gap:28px;margin:28px 0 40px;align-items:start;}
+@media (max-width:800px){.how-about{grid-template-columns:1fr;}}
+.how-quote{margin:0;padding:0;border:0;font-family:var(--display);font-size:clamp(1.15rem,2.2vw,1.45rem);color:var(--ink);line-height:1.45;font-weight:600;}
+.how-quote p{margin:0 0 .75rem;}
+.how-more{font:inherit;font-size:.9rem;font-weight:600;color:var(--accent);background:transparent;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.how-about-full{margin-top:14px;}
+.how-h{font-size:1.35rem;margin:28px 0 10px;}
+.process-icons .step{text-align:center;}
+.process-icons .step-icon{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;margin-bottom:10px;color:var(--accent);}
+.process-icons .step-icon svg{width:22px;height:22px;}
+.tl-item .exp-summary{display:none;}

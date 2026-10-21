@@ -11,7 +11,7 @@
       "Cybersecurity"
     ],
     "badge": "Architecting the moat of trust",
-    "lede": "I architect AI systems that earn trust before they earn adoption. Raw model capability is a commodity. The moat is verifiability, a closed loop, and a human still in the path. At **Qualys** I lead **3 PMs** taking an Agentic AI security suite to general availability (**$1.5M POC pipeline**, **40%** of pilots became paid PoCs). At **BP** I secured **$2M+** and built the AI Defense Ecosystem across **15+ business units**.",
+    "lede": "I architect AI that earns trust. At **Qualys** I lead **3 PMs** shipping Agentic AI security (**$1.5M** POC pipeline). At **BP** I secured **$2M+** across **15+** BUs.",
     "location": "Pune, India",
     "portraitCaption": "20+ years \u00b7 Product & Platform",
     "photo": "assets/mayukh.jpg",
@@ -174,20 +174,8 @@
         "tone": "impact",
         "items": [
           {
-            "label": "Savings",
-            "value": "**$2.4M** / year \u00b7 BP \u00b7 In production"
-          },
-          {
-            "label": "Pipeline",
-            "value": "**$1.5M** POC \u00b7 Qualys \u00b7 Pipeline"
-          },
-          {
             "label": "Traction",
             "value": "15+ pilots, 40% became paid POCs"
-          },
-          {
-            "label": "Investment",
-            "value": "**$2M+** won from the C-suite at BP"
           },
           {
             "label": "Scope",

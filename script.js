@@ -263,8 +263,26 @@
 
   function renderAbout(p) {
     var a = p.about || {};
-    set('about-title', esc(a.title));
-    set('about-body', arr(a.paragraphs).map(function (t) { return '<p>' + md(t) + '</p>'; }).join(''));
+    var paras = arr(a.paragraphs);
+    // Two-line pull quote from the first sentence of each paragraph.
+    var quotes = paras.map(function (t) {
+      var plain = String(t).replace(/\*\*/g, '');
+      var m = plain.match(/^[^.!?]+[.!?]/);
+      return m ? m[0].trim() : plain;
+    }).filter(Boolean).slice(0, 2);
+    set('how-quote', quotes.map(function (q) { return '<p>' + esc(q) + '</p>'; }).join(''));
+    set('about-body', paras.map(function (t) { return '<p>' + md(t) + '</p>'; }).join(''));
+    var more = document.getElementById('how-more');
+    var full = document.getElementById('how-about-full');
+    if (more && full && paras.length) {
+      more.hidden = false;
+      more.onclick = function () {
+        var open = more.getAttribute('aria-expanded') !== 'true';
+        more.setAttribute('aria-expanded', open ? 'true' : 'false');
+        full.hidden = !open;
+        more.textContent = open ? 'Show less' : 'Read more';
+      };
+    }
     set('facts', arr(a.facts).map(function (f) {
       return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
     }).join(''));
@@ -284,7 +302,10 @@
         }).join('')
         : '';
     }
-    set('steps', arr(a.steps).map(function (s) { return '<li class="step"><h3>' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></li>'; }).join(''));
+    var stepIcons = ['g-search', 'g-target', 'g-chip', 'g-layers', 'g-trend', 'g-bolt'];
+    set('steps', arr(a.steps).map(function (st, i) {
+      return '<li class="step"><span class="step-icon" aria-hidden="true"><svg><use href="#' + stepIcons[i % stepIcons.length] + '"/></svg></span><h3>' + esc(st.title) + '</h3><p>' + esc(st.text) + '</p></li>';
+    }).join(''));
     slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 6));
     set('throughline', md(a.throughline)).hidden = !a.throughline;
     set('principles', arr(a.principles).map(function (s) { return '<div class="principle"><h3>' + esc(s.title) + '</h3><p>' + md(s.text) + '</p></div>'; }).join(''));
@@ -331,7 +352,6 @@
       if (p.tradeoff) decide += '<div style="--i:' + n++ + '"><h4>Key trade-off</h4><p>' + md(p.tradeoff) + '</p></div>';
       if (p.validated) decide += '<div style="--i:' + n++ + '"><h4>Validated with</h4><p>' + md(p.validated) + '</p></div>';
       if (arr(p.outcomes).length) decide += '<div style="--i:' + n++ + '"><h4>Value &amp; outcomes</h4><ul>' + arr(p.outcomes).map(function (o) { return '<li>' + md(o) + '</li>'; }).join('') + '</ul></div>';
-      var face = (p.tradeoff ? '<p class="acc-sum"><span class="acc-decision-l">Decision.</span> ' + md(p.tradeoff) + '</p>' : '<p class="acc-sum">' + md(p.summary) + '</p>');
       var mx = METRICS_BY_PRODUCT[p.id];
       var measured = mx ? '<button type="button" class="badge-measured" data-open-metrics="' + esc(id) + '" aria-label="Open metrics for ' + esc(p.name) + '">' + icon('g-chart') + 'Measured</button>' : '';
       var noteBadge = '';
@@ -369,12 +389,25 @@
       } else {
         bodyInner = caseHtml;
       }
-      return '<article class="acc" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
+      var thumbSrc = p.thumbnail || p.poster || (mx && arr(mx.images)[0] && arr(mx.images)[0].file);
+      var arenaCol = dom.color || a.color || '#9cc4ff';
+      var thumbHtml;
+      if (thumbSrc) {
+        thumbHtml = '<div class="tile-thumb"><img src="' + esc(safeUrl(thumbSrc)) + '" alt="" width="640" height="360" loading="lazy"></div>';
+      } else {
+        var icn = (['shield','target','chip','wrench','grid','trend','alert','globe','bank','bolt','search','layers','heart','leaf'].indexOf(p.icon) > -1) ? p.icon : 'layers';
+        thumbHtml = '<div class="tile-thumb tile-pattern" style="--arena:' + arenaCol + '" aria-hidden="true"><span class="tile-ico"><svg><use href="#g-' + icn + '"/></svg></span></div>';
+      }
+      var decisionClamp = p.tradeoff || p.summary || '';
+      return '<article class="acc tile" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
         '<div class="acc-face">' +
+          thumbHtml +
           '<div class="acc-main">' +
             '<span class="kicker">' + esc(p.kicker || dom.label || a.label || '') + '</span>' +
-            '<h3 class="acc-title">' + esc(p.name) + ' ' + measured + '</h3>' +
-            face +
+            '<h3 class="acc-title">' + esc(p.name) + '</h3>' +
+            '<div class="tile-badges">' + evidenceBadges + measured + '</div>' +
+            (headline ? '<p class="tile-outcome">' + md(headline) + '</p>' : '') +
+            (decisionClamp ? '<p class="tile-decision">' + md(decisionClamp) + '</p>' : '') +
             '<div class="acc-links">' +
               teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
@@ -383,8 +416,6 @@
               '</button>' +
             '</div>' +
           '</div>' +
-          (headline ? '<div class="acc-result"><span class="acc-outcome-l">Outcome</span><p class="acc-outcome"><span class="acc-outcome-t">' + md(headline) + '</span>' + evidenceBadges + '</p>' +
-            (p.client ? '<div class="acc-meta"><span class="client">' + esc(p.client) + '</span></div>' : '') + '</div>' : '') +
         '</div>' +
         '<div class="acc-body" id="b-' + esc(id) + '" role="region" aria-label="' + esc(p.name) + ' details" inert><div class="acc-inner">' +
           bodyInner +
@@ -979,7 +1010,7 @@
 
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
-    var navMap = { ecosystem: 'products', education: 'skills' };
+    var navMap = { ecosystem: 'products', education: 'how', pillars: 'how', ellyra: 'products', how: 'how' };
     function onScroll() {
       nav.classList.toggle('scrolled', window.scrollY > 12);
       var pos = window.scrollY + 120, cur = '';
