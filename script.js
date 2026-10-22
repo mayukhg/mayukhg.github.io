@@ -337,6 +337,43 @@
       }).join('');
   }
 
+  function walkthroughPanelHtml(productId, wt) {
+    var chapters = arr(wt.chapters);
+    var disc = (WALKTHROUGHS && WALKTHROUGHS.disclaimer) || 'Demo environment · synthetic data';
+    var chBtns = chapters.map(function (ch, i) {
+      return '<button type="button" class="wt-chapter" data-start="' + esc(ch.start) + '" data-i="' + i + '"' +
+        ' data-label="' + esc(ch.label) + '" data-decision="' + esc(ch.decision) + '" data-metric="' + esc(ch.metric) + '"' +
+        (i === 0 ? ' aria-current="step"' : '') + '>' +
+        '<span class="wt-ch-time">' + esc(ch.time) + '</span>' +
+        '<span class="wt-ch-label">' + esc(ch.label) + '</span>' +
+        '<span class="wt-ch-decision"><b>Decision.</b> ' + esc(ch.decision) + '</span>' +
+        '<span class="wt-ch-metric"><b>Metric.</b> ' + esc(ch.metric) + '</span>' +
+      '</button>';
+    }).join('');
+    var first = chapters[0] || {};
+    return '<div class="wt-panel" data-wt-product="' + esc(productId) + '">' +
+      '<div class="wt-media">' +
+        '<div class="wt-video-wrap">' +
+          '<span class="wt-demo" role="note">' + esc(disc) + '</span>' +
+          '<video class="wt-video" controls playsinline preload="metadata" poster="' + esc(safeUrl(wt.poster)) + '">' +
+            '<source src="' + esc(safeUrl(wt.video)) + '" type="video/mp4">' +
+          '</video>' +
+        '</div>' +
+        '<div class="wt-now" aria-live="polite">' +
+          '<p class="wt-now-kicker">Now showing</p>' +
+          '<p class="wt-now-title"><span class="wt-now-n">1</span>. <span class="wt-now-label">' + esc(first.label || '') + '</span></p>' +
+          '<p class="wt-now-decision"><b>Decision.</b> <span>' + esc(first.decision || '') + '</span></p>' +
+          '<p class="wt-now-metric"><b>Metric that watches this step.</b> <span>' + esc(first.metric || '') + '</span></p>' +
+        '</div>' +
+        '<p class="wt-hint">Select a chapter to jump to that step. The chapter list is the text version of the video.</p>' +
+      '</div>' +
+      '<div class="wt-chapters">' +
+        '<h4 class="wt-ch-head">Chapters · user journey</h4>' +
+        '<div class="wt-ch-list">' + chBtns + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderProducts(d) {
     var arenas = arr(d.arenas), products = arr(d.products);
     var arenaById = {}, domainById = {};
@@ -355,10 +392,12 @@
       var headline = p.headline || arr(p.outcomes)[0];
       var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
-      var teardown = (d.flagship && d.flagship.productId === p.id) ? '<a class="acc-tear" href="#ellyra">Architecture teardown</a>' : '';
+      var wt = WT_BY_PRODUCT[p.id];
+      var teardown = (d.flagship && d.flagship.productId === p.id)
+        ? '<a class="acc-tear" href="#p-' + esc(id) + '-walkthrough">Architecture teardown</a>'
+        : '';
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
-      var isVideo = p.demo && /\.mp4(\?|$)/i.test(p.demo);
-      if (p.demo && !isVideo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
+      if (p.demo && !/\.mp4(\?|$)/i.test(p.demo)) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
         .filter(function (x) { return x[1]; })
         .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
@@ -376,44 +415,54 @@
         else noteBadge = '<p class="note">' + md(p.note) + '</p>';
       }
       var evidenceBadges = evBadge(p.evidence) + (noteKey === 'prototype' ? noteBadge : '');
-      var videoBlock = isVideo
-        ? '<figure class="acc-video"><video controls preload="none" poster="' + esc(safeUrl(p.poster || p.thumbnail || 'assets/cropguard/workflow.webp')) + '">' +
-            '<source src="' + esc(safeUrl(p.demo)) + '" type="video/mp4"></video>' +
-            '<figcaption>Walkthrough (click to play — does not autoplay)</figcaption></figure>'
-        : '';
-      var figure = (p.thumbnail || p.poster)
+      // Walkthrough tab replaces the old inline Case-tab video; keep workflow figure only.
+      var figure = (p.thumbnail || (!wt && p.poster))
         ? '<figure class="acc-figure"><img src="' + esc(safeUrl(p.thumbnail || p.poster)) + '" alt="' + esc(p.name) + ' architecture workflow" width="1200" height="675" loading="lazy"></figure>'
         : '';
       var caseHtml =
         (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
-        figure + videoBlock +
+        figure +
         ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
         (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
         (decide ? '<div class="decide">' + decide + '</div>' : '') +
         (noteBadge && noteKey !== 'prototype' ? noteBadge : '');
       var bodyInner;
-      if (mx) {
-        var caseId = 'case-' + id, mxId = 'mx-' + id;
+      var hasTabs = !!(wt || mx);
+      if (hasTabs) {
+        var wtId = 'wt-' + id, caseId = 'case-' + id, mxId = 'mx-' + id;
+        var defaultTab = wt ? 'walkthrough' : 'case';
+        var tabs = '';
+        if (wt) {
+          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + wtId + '" aria-controls="' + wtId + '" aria-selected="' + (defaultTab === 'walkthrough' ? 'true' : 'false') + '" tabindex="' + (defaultTab === 'walkthrough' ? '0' : '-1') + '" data-tab="walkthrough">Walkthrough</button>';
+        }
+        tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="' + (defaultTab === 'case' ? 'true' : 'false') + '" tabindex="' + (defaultTab === 'case' ? '0' : '-1') + '" data-tab="case">Case</button>';
+        if (mx) {
+          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>';
+        }
         bodyInner =
-          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' case and metrics">' +
-            '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="true" tabindex="0" data-tab="case">Case</button>' +
-            '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>' +
-          '</div>' +
-          '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '">' + caseHtml + '</div>' +
-          '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>';
+          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' walkthrough, case and metrics">' + tabs + '</div>' +
+          (wt ? '<div class="case-panel" role="tabpanel" id="' + wtId + '" aria-labelledby="tab-' + wtId + '"' + (defaultTab === 'walkthrough' ? '' : ' hidden') + '>' + walkthroughPanelHtml(p.id, wt) + '</div>' : '') +
+          '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '"' + (defaultTab === 'case' ? '' : ' hidden') + '>' + caseHtml + '</div>' +
+          (mx ? '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>' : '');
       } else {
         bodyInner = caseHtml;
       }
       var thumbSrc = p.thumbnail || p.poster || (mx && arr(mx.images)[0] && arr(mx.images)[0].file);
       var arenaCol = dom.color || a.color || '#9cc4ff';
       var thumbHtml;
-      if (thumbSrc) {
+      if (wt && wt.teaser) {
+        thumbHtml = '<div class="tile-thumb tile-thumb-video">' +
+          '<video class="tile-teaser" muted playsinline loop preload="none" poster="' + esc(safeUrl(wt.poster || thumbSrc || '')) + '" src="' + esc(safeUrl(wt.teaser)) + '" aria-hidden="true"></video>' +
+          '<span class="tile-wt-badge" aria-hidden="true">▶ Walkthrough · ' + esc(wt.duration || '') + '</span>' +
+        '</div>';
+      } else if (thumbSrc) {
         thumbHtml = '<div class="tile-thumb"><img src="' + esc(safeUrl(thumbSrc)) + '" alt="" width="640" height="360" loading="lazy"></div>';
       } else {
         var icn = (['shield','target','chip','wrench','grid','trend','alert','globe','bank','bolt','search','layers','heart','leaf'].indexOf(p.icon) > -1) ? p.icon : 'layers';
         thumbHtml = '<div class="tile-thumb tile-pattern" style="--arena:' + arenaCol + '" aria-hidden="true"><span class="tile-ico"><svg><use href="#g-' + icn + '"/></svg></span></div>';
       }
       var decisionClamp = p.tradeoff || p.summary || '';
+      var openLabel = wt ? 'Watch the case' : 'Read the case';
       return '<article class="acc tile" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
         '<div class="acc-face">' +
           thumbHtml +
@@ -427,7 +476,7 @@
             '<div class="acc-links">' +
               teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
-                '<span class="t-labels"><span class="t-open">Read the case</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
+                '<span class="t-labels"><span class="t-open">' + openLabel + '</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
                 '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
               '</button>' +
             '</div>' +
@@ -471,15 +520,38 @@
     function list(title, items) {
       return arr(items).length ? '<div class="eco-col"><h3>' + esc(title) + '</h3><ul>' + arr(items).map(function (t) { return '<li>' + md(t) + '</li>'; }).join('') + '</ul></div>' : '';
     }
+    var ecoWt = WALKTHROUGHS && WALKTHROUGHS.ecosystem;
+    var disc = (WALKTHROUGHS && WALKTHROUGHS.disclaimer) || 'Demo environment · synthetic data';
+    var tour = ecoWt
+      ? '<div class="eco-tour">' +
+          '<div class="eco-video-wrap">' +
+            '<span class="wt-demo" role="note">' + esc(disc) + '</span>' +
+            '<video class="eco-video" controls playsinline preload="none" poster="' + esc(safeUrl(ecoWt.poster)) + '">' +
+              '<source src="' + esc(safeUrl(ecoWt.video)) + '" type="video/mp4">' +
+            '</video>' +
+            (ecoWt.title ? '<p class="eco-video-title">' + esc(ecoWt.title) + (ecoWt.duration ? ' · ' + esc(ecoWt.duration) : '') + '</p>' : '') +
+            (ecoWt.text ? '<p class="eco-video-text">' + esc(ecoWt.text) + '</p>' : '') +
+          '</div>' +
+          '<div class="pillars">' + arr(e.pillars).map(function (x) {
+            return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
+          }).join('') + '</div>' +
+        '</div>' +
+        '<p class="eco-loop">One trust layer: Detect feeds Prevent; Protect is watched by Detect.</p>'
+      : '<div class="pillars">' + arr(e.pillars).map(function (x) {
+          return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
+        }).join('') + '</div>';
+    var why = (arr(e.opportunity).length || arr(e.differentiator).length)
+      ? '<details class="eco-why"><summary>Why this platform</summary><div class="eco-cols">' +
+          list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) +
+        '</div></details>'
+      : '';
     el.innerHTML = '<div class="wrap">' +
       '<p class="eyebrow">' + esc(e.eyebrow || 'Spotlight') + '</p>' +
       '<h2 class="s-title">' + esc(e.title) + '</h2>' +
       '<p class="s-sub">' + esc(e.subtitle) + '</p>' +
-      '<div class="pillars">' + arr(e.pillars).map(function (x) {
-        return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
-      }).join('') + '</div>' +
+      tour +
       (e.spine ? '<p class="spine">' + md(e.spine) + '</p>' : '') +
-      '<div class="eco-cols">' + list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) + '</div>' +
+      why +
       (EVIDENCE[e.evidence] && arr(e.metrics).length ? '<p class="metrics-ev">' + evBadge(e.evidence) + '</p>' : '') +
       '<div class="metrics">' + arr(e.metrics).map(function (m) {
         return '<div class="metric"><span class="n">' + esc(m.value) + '</span><span class="l">' + esc(m.label) + '</span><span class="c">' + esc(m.caption) + '</span></div>';
@@ -763,19 +835,26 @@
       if (card.hidden) applyFilter('all');
       card.classList.add('in');
       setAcc(card, true);
-      if (tab === 'metrics') selectCaseTab(card, 'metrics');
-      else if (card.querySelector('.case-tab')) selectCaseTab(card, 'case');
+      var which = tab || 'case';
+      if (which === 'walkthrough' && !card.querySelector('.case-tab[data-tab="walkthrough"]')) which = 'case';
+      if (which === 'metrics' && !card.querySelector('.case-tab[data-tab="metrics"]')) which = 'case';
+      if (card.querySelector('.case-tab')) {
+        if (which === 'case' && card.querySelector('.case-tab[data-tab="walkthrough"]') && !tab) which = 'walkthrough';
+        selectCaseTab(card, which);
+      }
       var y = 0, el = card;
       while (el) { y += el.offsetTop; el = el.offsetParent; }
       window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
-      var focusEl = tab === 'metrics' ? card.querySelector('.case-tab[data-tab="metrics"]') : card.querySelector('.acc-toggle');
+      var focusEl = card.querySelector('.case-tab[data-tab="' + which + '"]') || card.querySelector('.acc-toggle');
       if (focusEl) focusEl.focus({ preventScroll: true });
       return true;
     }
     function openFromHash() {
       var raw = decodeURIComponent(location.hash.slice(1));
+      var wt = raw.match(/^(p-[\w-]+)-walkthrough$/);
+      if (wt) { openProduct(wt[1], 'walkthrough'); return; }
       var m = raw.match(/^(p-[\w-]+)(?:\/(metrics))?$/);
-      if (m) openProduct(m[1], m[2] || 'case');
+      if (m) openProduct(m[1], m[2] || null);
     }
 
     /* Case / Metrics tabs */
@@ -814,6 +893,72 @@
         if (!pid) return;
         openProduct('p-' + slug(pid), 'metrics');
         history.pushState(null, '', '#p-' + slug(pid) + '/metrics');
+      });
+    });
+
+    /* Tile hover/focus teasers — never on load, touch, or reduced motion */
+    var canHoverTeaser = window.matchMedia('(hover: hover)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.acc.tile').forEach(function (tile) {
+      var teaser = tile.querySelector('.tile-teaser');
+      if (!teaser) return;
+      function playTeaser() {
+        if (!canHoverTeaser) return;
+        var p = teaser.play();
+        if (p && p.catch) p.catch(function () { /* autoplay policy */ });
+      }
+      function pauseTeaser() {
+        teaser.pause();
+        try { teaser.currentTime = 0; } catch (e) { /* ignore */ }
+      }
+      tile.addEventListener('mouseenter', playTeaser);
+      tile.addEventListener('mouseleave', pauseTeaser);
+      tile.addEventListener('focusin', playTeaser);
+      tile.addEventListener('focusout', function (e) {
+        if (!tile.contains(e.relatedTarget)) pauseTeaser();
+      });
+    });
+
+    /* Walkthrough chapters + Now showing */
+    document.querySelectorAll('.wt-panel').forEach(function (panel) {
+      var video = panel.querySelector('.wt-video');
+      var chapters = [].slice.call(panel.querySelectorAll('.wt-chapter'));
+      var nowN = panel.querySelector('.wt-now-n');
+      var nowLabel = panel.querySelector('.wt-now-label');
+      var nowDecision = panel.querySelector('.wt-now-decision span');
+      var nowMetric = panel.querySelector('.wt-now-metric span');
+      if (!video || !chapters.length) return;
+      function paintChapter(i) {
+        var ch = chapters[i];
+        if (!ch) return;
+        chapters.forEach(function (c, j) {
+          if (j === i) c.setAttribute('aria-current', 'step');
+          else c.removeAttribute('aria-current');
+        });
+        if (nowN) nowN.textContent = String(i + 1);
+        if (nowLabel) nowLabel.textContent = ch.getAttribute('data-label') || '';
+        if (nowDecision) nowDecision.textContent = ch.getAttribute('data-decision') || '';
+        if (nowMetric) nowMetric.textContent = ch.getAttribute('data-metric') || '';
+      }
+      function chapterIndexAt(t) {
+        var idx = 0;
+        for (var i = 0; i < chapters.length; i++) {
+          if (t + 0.05 >= parseFloat(chapters[i].getAttribute('data-start'))) idx = i;
+        }
+        return idx;
+      }
+      chapters.forEach(function (btn, i) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var start = parseFloat(btn.getAttribute('data-start')) || 0;
+          video.currentTime = start;
+          paintChapter(i);
+          var p = video.play();
+          if (p && p.catch) p.catch(function () { /* ignore */ });
+        });
+      });
+      video.addEventListener('timeupdate', function () {
+        paintChapter(chapterIndexAt(video.currentTime));
       });
     });
 

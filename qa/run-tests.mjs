@@ -85,7 +85,12 @@ async function ctx(opts = {}) {
 function watch(page, errors) {
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
-  page.on('requestfailed', (r) => errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`));
+  page.on('requestfailed', (r) => {
+    const err = r.failure()?.errorText || '';
+    // Browsers often abort speculative video preload (metadata/none) when navigating or cancelling; not a real failure.
+    if (/ERR_ABORTED/i.test(err) && /\.(mp4|webm|ogg)(\?|$)/i.test(r.url())) return;
+    errors.push(`requestfailed: ${r.url()} ${err}`);
+  });
   page.on('response', (r) => { if (r.status() >= 400 && !r.url().startsWith('https://api.github.com')) errors.push(`HTTP ${r.status()}: ${r.url()}`); });
 }
 async function open(context, url, waitFor = 'html.ready') {
@@ -372,6 +377,9 @@ await test('C. Interactions', 'C1', 'Product card accordion expands and collapse
   await head.click(); await page.waitForTimeout(500);
   eq(await head.getAttribute('aria-expanded'), 'true', 'expanded');
   assert((await card.locator('.acc-body').evaluate((b) => b.getBoundingClientRect().height)) > 200, 'body visible');
+  if (await card.locator('.case-tab[data-tab="case"]').count()) {
+    await card.locator('.case-tab[data-tab="case"]').click();
+  }
   assert(await card.locator('.acc-body').getByText('Customer pain').isVisible(), 'details visible');
   await revealAll(page);
   await shot(card, 'product-card-expanded');
@@ -402,7 +410,8 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(parseFloat(chrome.clientRadius) || 0, 0, 'client is plain text, not a pill');
   assert(chrome.btnBg !== 'rgba(0, 0, 0, 0)', 'button filled');
   assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
-  eq(await visibleLabel(), 'Read the case', 'closed label');
+  const closedLabel = await visibleLabel();
+  assert(closedLabel === 'Read the case' || closedLabel === 'Watch the case', `closed label — got ${closedLabel}`);
   eq(await card.locator('.acc-peek').count(), 0, 'no faded pain preview');
   assert((await card.locator('.tile-decision').innerText()).length > 8, 'decision shown on the closed card');
   eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
@@ -424,6 +433,10 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(await visibleLabel(), 'Hide details', 'label switches');
   eq(await card.locator('.acc-body').getAttribute('inert'), null, 'open content is interactive');
   assert(await card.locator('.t-arrow').evaluate((a) => /matrix\(0, -1, 1, 0/.test(getComputedStyle(a).transform) || /matrix\(6\.\d+e-17, -1/.test(getComputedStyle(a).transform)), 'arrow turns to point up');
+  if (await card.locator('.case-tab[data-tab="case"]').count()) {
+    await card.locator('.case-tab[data-tab="case"]').click();
+    await page.waitForTimeout(200);
+  }
   // Staggered reveal: later blocks start later.
   const delays = await card.locator('.snap, .decide > div').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).transitionDelay)));
   assert(delays.every((d, i) => i === 0 || d > delays[i - 1]), `stagger delays increase: ${delays}`);
@@ -1253,14 +1266,23 @@ for (const p of productsJSON.products) {
     eq(await acc.locator('.acc-title').innerText(), p.name, 'card name');
     await acc.locator('.acc-toggle').click();
     await page.waitForFunction((id) => document.querySelector(`#${id} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
-    const text = (await acc.innerText()).replace(/\s+/g, ' ');
+    if (await acc.locator('.case-tab[data-tab="case"]').count()) {
+      await acc.locator('.case-tab[data-tab="case"]').click();
+    }
+    // textContent includes hidden tab panels; innerText does not.
+    const text = (await acc.evaluate((el) => el.textContent)).replace(/\s+/g, ' ');
     const strip = (s) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
     for (const k of ['summary', 'pain', 'bet', 'why', 'tradeoff', 'validated']) if (p[k]) assert(text.includes(strip(p[k]).slice(0, 60)), `${k} text missing`);
     (p.outcomes || []).forEach((o) => assert(text.includes(strip(o)), `outcome missing: ${o}`));
     if (p.github) eq(await acc.locator('.acc-link').first().getAttribute('href'), p.github, 'GitHub link');
     if (p.demo) {
-      if (/\.mp4(\?|$)/i.test(p.demo)) assert(await acc.locator(`video source[src="${p.demo}"]`).count(), 'demo video');
-      else assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
+      if (/\.mp4(\?|$)/i.test(p.demo)) {
+        assert(
+          (await acc.locator(`video source[src="${p.demo}"]`).count()) ||
+          (await acc.locator(`video[src="${p.demo}"]`).count()),
+          'demo video'
+        );
+      } else assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
     }
     if (p.domain) {
       const domain = productsJSON.domains.find((a) => a.id === p.domain);
