@@ -181,7 +181,7 @@
           },
           {
             "label": "Documents",
-            "value": "[Resume PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf) · [Product metrics PDF](assets/My_Product_Metrics.pdf)"
+            "value": "[Resume PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf) · [Product metrics site](metrics/) · [Product metrics PDF](assets/My_Product_Metrics.pdf)"
           }
         ]
       }

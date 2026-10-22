@@ -792,9 +792,10 @@ await test('M. Product Metrics', 'M4', '#p-mcp/metrics opens the Metrics tab', a
 
 await test('M. Product Metrics', 'M5', 'Lightbox traps focus and closes on Escape', async () => {
   const { context } = await ctx();
-  const page = await open(context, '/?static=1');
+  const page = await open(context, '/?static=1#p-soc-portal/metrics');
   await revealAll(page);
-  await page.locator('#metrics .mx-shot').first().click();
+  await page.waitForTimeout(500);
+  await page.locator('#p-soc-portal .mx-shot').first().click();
   await page.waitForSelector('#lightbox:not([hidden])');
   await page.keyboard.press('Tab');
   const inLb = await page.evaluate(() => !!document.activeElement && document.getElementById('lightbox').contains(document.activeElement));

@@ -147,6 +147,15 @@
           '</button>';
         }).join('') + '</div></div>' : '');
   }
+  var METRICS_SITE_KEY = {
+    'agent-val': 'val',
+    'soc-portal': 'soc',
+    'ai-spm': 'spm',
+    'policy-foundry': 'pf',
+    'ellyra-pulse': 'ell',
+    'cropguard': 'agr',
+    'defence-ecosystem': 'def'
+  };
   function renderMetrics(m, products) {
     var el = slot('metrics');
     var sec = document.getElementById('metrics');
@@ -158,22 +167,30 @@
     var method = '<ol class="method-flow" aria-label="How I measure">' + arr(m.method).map(function (step, i) {
       return '<li><span class="m-step">Step ' + (i + 1) + '</span><span class="m-label">' + esc(step.label) + '</span><span class="m-text">' + esc(step.text) + '</span></li>';
     }).join('') + '</ol>';
-    var tiles = '<div class="metrics-grid">' + arr(m.apps).map(function (app) {
+    var tiles = '<div class="metrics-grid metrics-grid-compact">' + arr(m.apps).map(function (app) {
       var prod = productById[app.productId] || {};
       var arena = arenaById[prod.arena] || {};
       var color = colorVar('--arena', arena.color);
       var img = arr(app.images)[0];
-      var openTarget = app.umbrella ? 'data-umbrella="' + esc(app.id) + '"' : 'data-product="' + esc(app.productId || '') + '"';
-      return '<article class="m-tile' + (app.umbrella ? ' umbrella' : '') + '"' + color + '>' +
+      var siteKey = METRICS_SITE_KEY[app.id] || app.id;
+      var thr = arr(app.thresholds)[0];
+      var band = thr
+        ? '<div class="m-band-row" aria-label="' + esc(thr.metric) + ' thresholds">' +
+            '<span class="band band-good"><b>Good</b><span>' + esc(thr.green) + '</span></span>' +
+            '<span class="band band-watch"><b>Watch</b><span>' + esc(thr.amber) + '</span></span>' +
+            '<span class="band band-act"><b>Act</b><span>' + esc(thr.red) + '</span></span>' +
+          '</div>'
+        : '';
+      return '<a class="m-tile m-tile-compact' + (app.umbrella ? ' umbrella' : '') + '" href="metrics/#' + esc(siteKey) + '"' + color + '>' +
+        (img ? '<span class="m-thumb-sm"><img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy"></span>' : '') +
         '<h3>' + esc(app.name) + '</h3>' +
         '<p class="m-star">' + esc(app.northStar) + '</p>' +
-        (img ? '<button type="button" class="m-thumb mx-shot" data-app="' + esc(app.id) + '" data-i="0" aria-label="Enlarge ' + esc(app.name) + ' dashboard">' +
-          '<img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy">' +
-        '</button>' : '') +
-        thresholdLadder(app.thresholds, 3) +
-        '<button type="button" class="m-open" ' + openTarget + '>See how it\'s measured</button>' +
-      '</article>';
-    }).join('') + '</div>';
+        band +
+      '</a>';
+    }).join('') +
+      '<a class="m-tile m-tile-all" href="metrics/">All 38 metrics →</a>' +
+    '</div>';
+    var pdfHref = m.pdf || 'assets/My_Product_Metrics.pdf';
     el.innerHTML =
       '<div class="metrics-head">' +
         (m.eyebrow ? '<p class="eyebrow">' + esc(m.eyebrow) + '</p>' : '') +
@@ -182,7 +199,10 @@
         metricsDisclaimer(m.disclaimer) +
       '</div>' +
       method + tiles +
-      (m.pdf ? '<div class="metrics-deck">' + docLink(m.pdf, 'btn btn-doc', 'Download the full metrics deck (PDF)') + '</div>' : '') +
+      '<div class="metrics-cta">' +
+        '<a class="btn btn-doc" href="metrics/">Explore the full metrics site →</a>' +
+        '<p class="metrics-meta">7 chapters · 38 metrics · 29 dashboards · <a href="' + esc(safeUrl(pdfHref)) + '" target="_blank" rel="noopener">PDF</a></p>' +
+      '</div>' +
       '<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Dashboard image">' +
         '<div class="lightbox-dialog" tabindex="-1">' +
           '<button type="button" class="lightbox-close" aria-label="Close">×</button>' +
@@ -225,6 +245,7 @@
     if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View Resume') +
       '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download Resume (PDF)" title="Download Resume (PDF)">' + icon('i-doc') + '</a></span>';
     if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio PDF');
+    cta += '<a class="btn btn-doc-ghost" href="metrics/">' + icon('g-chart') + 'How I measure products</a>';
     set('hero-cta', cta);
     set('cta-note', '').hidden = true;
     set('nav-resume', '').hidden = true;
