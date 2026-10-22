@@ -1285,6 +1285,16 @@
         "arena": "defence"
       },
       {
+        "id": "ellyra-pulse",
+        "name": "Ellyra Pulse",
+        "arena": "applied"
+      },
+      {
+        "id": "cropguard",
+        "name": "CropGuard",
+        "arena": "applied"
+      },
+      {
         "id": "mcp",
         "name": "Exploit Validation & Remediation MCP Server",
         "arena": "agentic"
@@ -1302,16 +1312,6 @@
       {
         "id": "kyc",
         "name": "KYC-as-a-Service",
-        "arena": "applied"
-      },
-      {
-        "id": "ellyra-pulse",
-        "name": "Ellyra Pulse",
-        "arena": "applied"
-      },
-      {
-        "id": "cropguard",
-        "name": "CropGuard",
         "arena": "applied"
       }
     ],
