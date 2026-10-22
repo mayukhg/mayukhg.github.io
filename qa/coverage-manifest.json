@@ -154,6 +154,10 @@
         "panel": "panel-metrics"
       },
       {
+        "tab": "tab-walkthroughs",
+        "panel": "panel-walkthroughs"
+      },
+      {
         "tab": "tab-files",
         "panel": "panel-files"
       },
@@ -1071,6 +1075,101 @@
         "key": "h",
         "label": "Height",
         "type": "string"
+      },
+      {
+        "key": "disclaimer",
+        "label": "Demo / synthetic disclaimer",
+        "type": "text"
+      },
+      {
+        "key": "ecosystem",
+        "label": "Ecosystem tour",
+        "type": "object"
+      },
+      {
+        "key": "video",
+        "label": "Video path",
+        "type": "path"
+      },
+      {
+        "key": "poster",
+        "label": "Poster path",
+        "type": "path"
+      },
+      {
+        "key": "duration",
+        "label": "Duration",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Title",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Caption",
+        "type": "text"
+      },
+      {
+        "key": "products",
+        "label": "Product walkthroughs",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Product ID",
+        "type": "string"
+      },
+      {
+        "key": "video",
+        "label": "Full walkthrough video",
+        "type": "path"
+      },
+      {
+        "key": "teaser",
+        "label": "Hover teaser video",
+        "type": "path"
+      },
+      {
+        "key": "poster",
+        "label": "Poster image",
+        "type": "path"
+      },
+      {
+        "key": "duration",
+        "label": "Duration label",
+        "type": "string"
+      },
+      {
+        "key": "chapters",
+        "label": "Chapters",
+        "type": "array"
+      },
+      {
+        "key": "start",
+        "label": "Start (seconds)",
+        "type": "string"
+      },
+      {
+        "key": "time",
+        "label": "Time label",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Chapter label",
+        "type": "string"
+      },
+      {
+        "key": "decision",
+        "label": "Decision",
+        "type": "text"
+      },
+      {
+        "key": "metric",
+        "label": "Metric that watches this step",
+        "type": "text"
       }
     ],
     "uploads": [

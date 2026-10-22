@@ -8,7 +8,7 @@
   var CFG_KEY = 'portfolio-admin-config';
   var TOKEN_KEY = 'portfolio-admin-token';
   var API = 'https://api.github.com';
-  var DOCS = { profile: 'content/profile.json', products: 'content/products.json', metrics: 'content/metrics.json' };
+  var DOCS = { profile: 'content/profile.json', products: 'content/products.json', metrics: 'content/metrics.json', walkthroughs: 'content/walkthroughs.json' };
   var DEFAULT_CFG = { owner: 'mayukhg', repo: 'mayukhg.github.io', branch: 'main' };
 
   /* ======================================================================
@@ -154,7 +154,7 @@
       S('client', 'Implemented for', 'string'),
       S('stack', 'Built with', 'lines', { hint: 'One technology per line.' }),
       S('github', 'GitHub link', 'url'),
-      S('demo', 'Live demo link', 'path', { hint: 'https://… or a local file like assets/cropguard/walkthrough.mp4' }),
+      S('demo', 'Live demo link', 'path', { hint: 'https://… URL. Product videos live in content/walkthroughs.json.' }),
       S('pain', 'Customer pain', 'md', { rows: 3 }),
       S('bet', 'The product bet', 'md', { rows: 3 }),
       S('whyLabel', '“Why AI” heading', 'string', { hint: 'e.g. “Why AI is the right call” or “Why not an LLM”.' }),
@@ -225,7 +225,68 @@
     ] })
   ];
 
-  var state = { profile: null, products: null, metrics: null, published: { profile: '', products: '', metrics: '' }, cfg: null, token: '', login: '' };
+  var WALKTHROUGHS_SCHEMA = [
+    S('disclaimer', 'Demo / synthetic disclaimer', 'text', { rows: 2, required: true, hint: 'Shown on every walkthrough video.' }),
+    S('ecosystem', 'Ecosystem tour', 'object', { section: true, fields: [
+      S('video', 'Video path', 'path', { required: true }),
+      S('poster', 'Poster path', 'path'),
+      S('duration', 'Duration', 'string'),
+      S('title', 'Title', 'string'),
+      S('text', 'Caption', 'text', { rows: 3 })
+    ] }),
+    S('products', 'Product walkthroughs', 'array', { section: true, open: true, itemTitle: function (x) { return x.id; }, fields: [
+      S('id', 'Product ID', 'string', { required: true, hint: 'Must match a product id (soc-portal, ai-spm, …).' }),
+      S('video', 'Full walkthrough video', 'path', { required: true }),
+      S('teaser', 'Hover teaser video', 'path', { required: true }),
+      S('poster', 'Poster image', 'path', { required: true }),
+      S('duration', 'Duration label', 'string', { required: true, hint: 'e.g. 0:47' }),
+      S('chapters', 'Chapters', 'array', { itemTitle: function (x) { return x.label; }, fields: [
+        S('start', 'Start (seconds)', 'string', { required: true }),
+        S('time', 'Time label', 'string', { required: true }),
+        S('label', 'Chapter label', 'string', { required: true }),
+        S('decision', 'Decision', 'text', { rows: 2, required: true }),
+        S('metric', 'Metric that watches this step', 'text', { rows: 2, required: true })
+      ] })
+    ] })
+  ];
+
+  function walkthroughsToForm(raw) {
+    if (!raw) return { disclaimer: '', ecosystem: {}, products: [] };
+    var products = [];
+    var src = raw.products || {};
+    Object.keys(src).forEach(function (id) {
+      var p = Object.assign({ id: id }, src[id]);
+      p.chapters = (p.chapters || []).map(function (ch) {
+        return Object.assign({}, ch, { start: String(ch.start) });
+      });
+      products.push(p);
+    });
+    return { disclaimer: raw.disclaimer || '', ecosystem: raw.ecosystem || {}, products: products };
+  }
+  function walkthroughsFromForm(form) {
+    var products = {};
+    (form.products || []).forEach(function (p) {
+      if (!p || !p.id) return;
+      products[p.id] = {
+        video: p.video || '',
+        teaser: p.teaser || '',
+        poster: p.poster || '',
+        duration: p.duration || '',
+        chapters: (p.chapters || []).map(function (ch) {
+          return {
+            start: parseFloat(ch.start) || 0,
+            time: ch.time || '',
+            label: ch.label || '',
+            decision: ch.decision || '',
+            metric: ch.metric || ''
+          };
+        })
+      };
+    });
+    return { disclaimer: form.disclaimer || '', ecosystem: form.ecosystem || {}, products: products };
+  }
+
+  var state = { profile: null, products: null, metrics: null, walkthroughs: null, published: { profile: '', products: '', metrics: '', walkthroughs: '' }, cfg: null, token: '', login: '' };
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return [].slice.call((root || document).querySelectorAll(sel)); };
 
@@ -241,7 +302,11 @@
     [].concat(kids || []).forEach(function (c) { if (c != null) el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
     return el;
   }
-  function serialize(doc) { return JSON.stringify(state[doc], null, 2) + '\n'; }
+  function serialize(doc) {
+    var data = state[doc];
+    if (doc === 'walkthroughs') data = walkthroughsFromForm(data);
+    return JSON.stringify(data, null, 2) + '\n';
+  }
   function clone(x) { return JSON.parse(JSON.stringify(x)); }
   function slugify(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
@@ -426,13 +491,14 @@
   function uniqueId(base, list) { var id = base, n = 2; while (list.some(function (x) { return x.id === id; })) id = base + '-' + n++; return id; }
 
   function renderForms() {
-    var fp = $('#form-profile'), fr = $('#form-products'), fm = $('#form-metrics');
-    var openP = openSections(fp), openR = openSections(fr), openM = fm ? openSections(fm) : {};
-    fp.innerHTML = ''; fr.innerHTML = ''; if (fm) fm.innerHTML = '';
+    var fp = $('#form-profile'), fr = $('#form-products'), fm = $('#form-metrics'), fw = $('#form-walkthroughs');
+    var openP = openSections(fp), openR = openSections(fr), openM = fm ? openSections(fm) : {}, openW = fw ? openSections(fw) : {};
+    fp.innerHTML = ''; fr.innerHTML = ''; if (fm) fm.innerHTML = ''; if (fw) fw.innerHTML = '';
     buildFields(PROFILE_SCHEMA, state.profile).forEach(function (el) { fp.appendChild(el); });
     buildFields(PRODUCTS_SCHEMA, state.products).forEach(function (el) { fr.appendChild(el); });
     if (fm && state.metrics) buildFields(METRICS_SCHEMA, state.metrics).forEach(function (el) { fm.appendChild(el); });
-    restoreSections(fp, openP); restoreSections(fr, openR); if (fm) restoreSections(fm, openM);
+    if (fw && state.walkthroughs) buildFields(WALKTHROUGHS_SCHEMA, state.walkthroughs).forEach(function (el) { fw.appendChild(el); });
+    restoreSections(fp, openP); restoreSections(fr, openR); if (fm) restoreSections(fm, openM); if (fw) restoreSections(fw, openW);
     refreshFiles();
     updateDirty();
   }
@@ -467,6 +533,9 @@
       else if (!empty && f.check === 'productIds') {
         var bad = v.filter(function (id) { return productIds.indexOf(id) === -1; });
         if (bad.length) msg = 'Unknown product ID: ' + bad.join(', ');
+      }
+      else if (!empty && f.key === 'id' && el.closest('#form-walkthroughs') && productIds.indexOf(v) === -1) {
+        msg = 'Unknown product ID — must match products.json.';
       }
       if (msg) {
         el.classList.add('invalid');
@@ -503,7 +572,7 @@
   /* ======================================================================
      Draft, dirty state, backup
      ====================================================================== */
-  function isDirty() { return ['profile','products','metrics'].some(function (d) { return state[d] && serialize(d) !== state.published[d]; }); }
+  function isDirty() { return ['profile','products','metrics','walkthroughs'].some(function (d) { return state[d] && serialize(d) !== state.published[d]; }); }
   function updateDirty() {
     var d = isDirty();
     $('#dirty-flag').hidden = !d;
@@ -511,13 +580,13 @@
   }
   function saveDraft() {
     if (!isDirty()) { lsDel(DRAFT_KEY); return; }
-    lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, savedAt: new Date().toISOString() }));
+    lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, walkthroughs: state.walkthroughs, savedAt: new Date().toISOString() }));
   }
   window.addEventListener('pagehide', function () { clearTimeout(saveTimer); if (state.profile) saveDraft(); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && state.profile) { clearTimeout(saveTimer); saveDraft(); } });
 
   function download() {
-    var blob = new Blob([JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics }, null, 2)], { type: 'application/json' });
+    var blob = new Blob([JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, walkthroughs: state.walkthroughs }, null, 2)], { type: 'application/json' });
     var a = h('a', { href: URL.createObjectURL(blob), download: 'portfolio-backup-' + new Date().toISOString().slice(0, 10) + '.json' });
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
@@ -529,6 +598,7 @@
         var d = JSON.parse(r.result);
         if (!d || typeof d.profile !== 'object' || typeof d.products !== 'object' || !Array.isArray(d.products.products)) throw new Error('This file is not a portfolio backup.');
         state.profile = d.profile; state.products = d.products; if (d.metrics) state.metrics = d.metrics;
+        if (d.walkthroughs) state.walkthroughs = Array.isArray(d.walkthroughs.products) ? d.walkthroughs : walkthroughsToForm(d.walkthroughs);
         renderForms(); saveDraft();
         toast('Backup restored as a draft. Review, then publish.', 'ok');
       } catch (e) { toast('Could not restore: ' + e.message, 'err'); }
@@ -612,13 +682,14 @@
   }
 
   function loadPublishedFromGitHub() {
-    return Promise.all([getFile(DOCS.profile), getFile(DOCS.products), getFile(DOCS.metrics)]).then(function (r) {
-      ['profile', 'products', 'metrics'].forEach(function (doc, i) {
+    return Promise.all([getFile(DOCS.profile), getFile(DOCS.products), getFile(DOCS.metrics), getFile(DOCS.walkthroughs)]).then(function (r) {
+      ['profile', 'products', 'metrics', 'walkthroughs'].forEach(function (doc, i) {
         if (!r[i]) return;
         var text = textFromB64(r[i].content);
         var wasDirty = isDirty();
-        state.published[doc] = JSON.stringify(JSON.parse(text), null, 2) + '\n';
-        if (!wasDirty) state[doc] = JSON.parse(text);
+        var parsed = JSON.parse(text);
+        state.published[doc] = JSON.stringify(doc === 'walkthroughs' ? walkthroughsFromForm(walkthroughsToForm(parsed)) : parsed, null, 2) + '\n';
+        if (!wasDirty) state[doc] = doc === 'walkthroughs' ? walkthroughsToForm(parsed) : parsed;
       });
       renderForms();
     });
@@ -636,7 +707,7 @@
     }
     var btn = $('#btn-publish');
     btn.disabled = true; btn.textContent = 'Publishing…';
-    var docs = ['profile', 'products', 'metrics'].filter(function (d) { return state[d] && serialize(d) !== state.published[d]; });
+    var docs = ['profile', 'products', 'metrics', 'walkthroughs'].filter(function (d) { return state[d] && serialize(d) !== state.published[d]; });
     var commits = [];
     docs.reduce(function (p, doc) {
       return p.then(function () {
@@ -748,7 +819,7 @@
     wireTabs();
     $('#btn-publish').addEventListener('click', publish);
     $('#btn-preview').addEventListener('click', function () {
-      lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, savedAt: new Date().toISOString() }));
+      lsSet(DRAFT_KEY, JSON.stringify({ profile: state.profile, products: state.products, metrics: state.metrics, walkthroughs: state.walkthroughs, savedAt: new Date().toISOString() }));
       window.open('../?preview=1', '_blank', 'noopener');
     });
     $('#btn-export').addEventListener('click', download);
@@ -759,6 +830,7 @@
       state.profile = JSON.parse(state.published.profile);
       state.products = JSON.parse(state.published.products);
       if (state.published.metrics) state.metrics = JSON.parse(state.published.metrics);
+      if (state.published.walkthroughs) state.walkthroughs = walkthroughsToForm(JSON.parse(state.published.walkthroughs));
       lsDel(DRAFT_KEY); notice(null); renderForms();
       toast('Draft discarded.', 'ok');
     });
@@ -810,15 +882,23 @@
     try { state.cfg = Object.assign({}, DEFAULT_CFG, JSON.parse(lsGet(CFG_KEY) || '{}')); } catch (e) { state.cfg = Object.assign({}, DEFAULT_CFG); }
     state.token = lsGet(TOKEN_KEY, sessionStorage) || lsGet(TOKEN_KEY) || '';
     wire();
-    Promise.all([loadSiteJSON(DOCS.profile), loadSiteJSON(DOCS.products), loadSiteJSON(DOCS.metrics).catch(function () { return { title: 'Product metrics', disclaimer: '', method: [], apps: [] }; })]).then(function (r) {
+    Promise.all([
+      loadSiteJSON(DOCS.profile),
+      loadSiteJSON(DOCS.products),
+      loadSiteJSON(DOCS.metrics).catch(function () { return { title: 'Product metrics', disclaimer: '', method: [], apps: [] }; }),
+      loadSiteJSON(DOCS.walkthroughs).catch(function () { return { disclaimer: '', ecosystem: {}, products: {} }; })
+    ]).then(function (r) {
       state.profile = r[0]; state.products = r[1]; state.metrics = r[2];
+      state.walkthroughs = walkthroughsToForm(r[3]);
       state.published.profile = serialize('profile');
       state.published.products = serialize('products');
       state.published.metrics = serialize('metrics');
+      state.published.walkthroughs = serialize('walkthroughs');
       var draft = null;
       try { draft = JSON.parse(lsGet(DRAFT_KEY) || 'null'); } catch (e) { draft = null; }
       if (draft && draft.profile && draft.products) {
         state.profile = draft.profile; state.products = draft.products; if (draft.metrics) state.metrics = draft.metrics;
+        if (draft.walkthroughs) state.walkthroughs = Array.isArray(draft.walkthroughs.products) ? draft.walkthroughs : walkthroughsToForm(draft.walkthroughs);
         if (isDirty()) notice('Restored your unpublished draft' + (draft.savedAt ? ' from ' + new Date(draft.savedAt).toLocaleString() : '') + '. Publish it, or use “Discard draft”.');
       }
       renderForms();

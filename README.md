@@ -43,7 +43,9 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 ├── content/
 │   ├── profile.json        # Hero, about, approach, experience, skills, education, contact
 │   ├── products.json       # Arenas, product case studies, ecosystem spotlight
-│   └── metrics.json        # Product Metrics section (7 boards, threshold bands, images)
+│   ├── metrics.json        # Product Metrics section (7 boards, threshold bands, images)
+│   └── walkthroughs.json   # Product + ecosystem walkthrough videos, teasers, chapters
+├── metrics/                # Standalone metrics microsite (7 chapters, Mixpanel boards)
 ├── admin/                  # No-code editor (GitHub API, strict CSP, noindex)
 │   ├── index.html
 │   ├── admin.js
@@ -52,7 +54,8 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 │   ├── mayukh.jpg, og-card.jpg, portfolio.pdf, fonts/
 │   ├── My_Product_Metrics.pdf   # Full metrics deck (amber document button)
 │   ├── metrics/                 # 14 Mixpanel dashboard screenshots (.webp)
-│   └── cropguard/               # workflow.webp poster + walkthrough.mp4
+│   └── cropguard/               # workflow.webp thumbnail
+│   └── walkthroughs/            # Full walkthroughs, 7s teasers, posters
 ├── resume.pdf              # Downloadable résumé (includes phone number by choice)
 ├── 404.html · robots.txt · sitemap.xml · .nojekyll
 ├── .githooks/pre-commit     # Runs the regression suite before every commit
@@ -78,7 +81,19 @@ The page loads its content with `fetch`, so open it through a local server rathe
 
 ## 📐 Page structure
 
-Section order: **Hero → 60-second fit → Portfolio → AI Defense Ecosystem → Product Metrics → Experience → How I work → Education → Contact**.
+Section order: **Hero → 60-second fit → Portfolio → AI Defense Ecosystem → Product Metrics → Experience → How I work → Three pillars → Education → Contact**.
+
+### Walkthroughs (`content/walkthroughs.json`)
+
+- Keys under `products` must match product `id`s in `products.json` (`soc-portal`, `ai-spm`, `policy-foundry`, `ellyra-pulse`, `cropguard`).
+- Each product entry needs `video`, `teaser` (≈7s muted loop), `poster`, `duration`, and `chapters[]` with `start`, `time`, `label`, `decision`, `metric`.
+- Tile hover/focus plays the teaser only when `(hover: hover)` and motion is allowed; otherwise the poster shows. Full walkthroughs use `preload="metadata"` and never autoplay.
+- Deep link: `#p-<id>-walkthrough` opens the Walkthrough tab. Edit via **/admin → Walkthroughs**.
+
+### Metrics microsite (`metrics/`)
+
+- Standalone Mixpanel board chapters at `/metrics/`, with a slim bar back to the portfolio (`← Portfolio` → `/#metrics`).
+- Home-page Product Metrics section shows 7 compact tiles linking to `metrics/#val|soc|spm|pf|ell|agr|def` plus “All 38 metrics”.
 
 ### Product Metrics (`content/metrics.json`)
 

@@ -1411,6 +1411,110 @@ await test(R, 'R-admin-fields', `Every editor form field (${new Set(MANIFEST.adm
   await context.close();
 });
 
+/* =================================================================== W. Walkthroughs + metrics site */
+await test('W. Walkthroughs', 'W1', 'No video autoplays on load; every video uses preload none or metadata', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  const info = await page.evaluate(() => [...document.querySelectorAll('video')].map((v) => ({
+    preload: v.getAttribute('preload'),
+    paused: v.paused,
+    src: v.currentSrc || v.getAttribute('src') || (v.querySelector('source') && v.querySelector('source').src) || '',
+  })));
+  assert(info.length >= 5, `expected walkthrough videos, got ${info.length}`);
+  assert(info.every((v) => v.paused), 'a video was playing on load');
+  assert(info.every((v) => v.preload === 'none' || v.preload === 'metadata'), `bad preload: ${info.map((v) => v.preload).join(',')}`);
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W2', 'Reduced motion: hovering a tile does not play the teaser', async () => {
+  const { context } = await ctx({ reducedMotion: 'reduce' });
+  const page = await open(context, '/');
+  const tile = page.locator('#p-soc-portal');
+  await tile.scrollIntoViewIfNeeded();
+  await tile.hover();
+  await page.waitForTimeout(400);
+  const playing = await tile.locator('.tile-teaser').evaluate((v) => !v.paused && !v.ended && v.currentTime > 0);
+  eq(playing, false, 'teaser played under reduced motion');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W3', '#p-soc-portal-walkthrough opens Walkthrough tab; chapter 3 seeks near its start', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/#p-soc-portal-walkthrough');
+  await page.waitForTimeout(700);
+  eq(await page.locator('#p-soc-portal .acc-toggle').getAttribute('aria-expanded'), 'true', 'card open');
+  eq(await page.locator('#p-soc-portal .case-tab[data-tab="walkthrough"]').getAttribute('aria-selected'), 'true', 'Walkthrough tab');
+  const ch3 = page.locator('#p-soc-portal .wt-chapter').nth(2);
+  const start = parseFloat(await ch3.getAttribute('data-start'));
+  await ch3.click();
+  await page.waitForTimeout(300);
+  const t = await page.locator('#p-soc-portal .wt-video').evaluate((v) => v.currentTime);
+  assert(Math.abs(t - start) <= 1, `currentTime ${t} vs start ${start}`);
+  await shot(page.locator('#p-soc-portal'), 'walkthrough-tab-open');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W4', 'metrics/ loads and ← Portfolio link resolves', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/metrics/', null);
+  await page.waitForSelector('.pf-bar', { timeout: 10000 });
+  const href = await page.locator('.pf-links a').first().getAttribute('href');
+  assert(/#metrics|\.\.\/#metrics|\.\.\//.test(href), `portfolio link: ${href}`);
+  const res = await page.request.get(BASE + '/metrics/');
+  eq(res.status(), 200, 'metrics status');
+  await shot(page, 'metrics-microsite', { fullPage: false });
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W5', 'Every video and dashboard image has a visible demo/synthetic label nearby', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  await page.locator('#p-soc-portal .acc-toggle').click();
+  await page.waitForTimeout(400);
+  assert(await page.locator('#p-soc-portal .wt-demo').count() >= 1, 'walkthrough demo label');
+  assert(/DEMO DATA|SYNTHETIC|synthetic|Demo environment/i.test(await page.locator('#metrics .metrics-disclaimer').first().innerText()), 'metrics disclaimer');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W6', 'No phone-number pattern on home or metrics/', async () => {
+  const { context } = await ctx();
+  const home = await open(context, '/');
+  assert(!PHONE_RE.test(await home.evaluate(() => document.body.innerText)), 'phone on home');
+  const metrics = await open(context, '/metrics/', null);
+  await metrics.waitForSelector('body');
+  assert(!PHONE_RE.test(await metrics.evaluate(() => document.body.innerText)), 'phone on metrics');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W7', 'Every nav link and rail pill resolves', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const hrefs = await page.locator('.nav-links a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').slice(1)));
+  for (const id of hrefs) assert(await page.locator('#' + id).count() === 1, `missing #${id}`);
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W8', 'axe zero serious/critical on home, open Walkthrough tab, and metrics/', async () => {
+  async function serious(page, label) {
+    const v = await axe(page, label);
+    const bad = v.filter((x) => x.impact === 'serious' || x.impact === 'critical');
+    eq(bad.length, 0, `${label}: ${bad.map((x) => x.id).join(', ')}`);
+  }
+  const { context } = await ctx();
+  const home = await open(context, '/?static=1');
+  await revealAll(home);
+  await serious(home, 'Home');
+  await home.goto(BASE + '/#p-soc-portal-walkthrough', { waitUntil: 'networkidle' });
+  await home.waitForTimeout(600);
+  await serious(home, 'Walkthrough tab');
+  await home.goto(BASE + '/metrics/', { waitUntil: 'networkidle' });
+  await home.waitForSelector('.pf-bar');
+  await serious(home, 'metrics/');
+  await context.close();
+});
+
 await test(R, 'R-manifest', 'Regression suite is in sync with the code (coverage manifest updated)', async () => {
   fs.writeFileSync(MANIFEST_OUT, JSON.stringify(MANIFEST, null, 2) + '\n');
   note(`${CHANGES.total} features tracked · ${CHANGES.added.length} added, ${CHANGES.removed.length} removed since the last baseline`);
