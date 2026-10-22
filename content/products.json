@@ -56,29 +56,29 @@
       "name": "AI Policy Foundry",
       "arena": "defence",
       "domain": "security",
-      "kicker": "AI Defense Ecosystem \u00b7 Prevent",
+      "kicker": "AI Defense Ecosystem · Prevent",
       "icon": "shield",
       "tagline": "Autonomous cloud-security policy from live threat intel and your own risk register.",
       "summary": "Generates cloud-security policy from the organisation's own risk register. Audit-ready in minutes, not weeks.",
-      "headline": "Policy review cycles cut from 1\u20133 weeks to 30 minutes",
+      "headline": "Policy review cycles cut from 1–3 weeks to 30 minutes",
       "evidence": "production",
       "client": "BP",
       "stack": [
         "GPT-4 multi-agent",
         "React + TypeScript",
         "Node / Express",
-        "PostgreSQL \u00b7 Redis"
+        "PostgreSQL · Redis"
       ],
       "github": "https://github.com/mayukhg/ai-policy-foundry",
       "demo": "",
-      "pain": "Cloud security policy is written by hand: 1\u20133 weeks per policy, 60\u201375% coverage. Providers ship new services faster than policy keeps up, so gaps (and risk) accumulate.",
+      "pain": "Cloud security policy is written by hand: 1–3 weeks per policy, 60–75% coverage. Providers ship new services faster than policy keeps up, so gaps (and risk) accumulate.",
       "bet": "A multi-agent system that generates, validates and continuously updates policy from live threat intel **and** the organisation's own uploaded risk/control docs.",
       "whyLabel": "Why AI is the right call",
       "why": "Inputs are unstructured (threat feeds, regulations, risk registers) and the mapping is non-deterministic. Templates can't do that; it needs language understanding and reasoning. Grounding in the organisation's own documents lifts accuracy from ~65% to ~95%.",
       "tradeoff": "Deprioritised multi-cloud breadth to first get per-clause traceability right. An auditor won't trust a policy they can't trace back to a specific control.",
       "validated": "BP's cloud-security policy-management team. Their weeks-long manual cycles and creeping coverage gaps drove risk-register grounding + continuous auto-update.",
       "outcomes": [
-        "Policy review cycles cut from 1\u20133 weeks to 30 minutes",
+        "Policy review cycles cut from 1–3 weeks to 30 minutes",
         "95%+ policy accuracy and $2.4M annual savings",
         "Roadmap: threat correlation, batch docs, OCR"
       ],
@@ -89,7 +89,7 @@
       "name": "AI SOC Portal",
       "arena": "defence",
       "domain": "security",
-      "kicker": "AI Defense Ecosystem \u00b7 Detect & Respond",
+      "kicker": "AI Defense Ecosystem · Detect & Respond",
       "icon": "target",
       "tagline": "Auditable, AI-native SOC triage and threat hunting. Every verdict can be replayed.",
       "summary": "An AI-native SOC workspace where every machine verdict can be traced, evaluated and audited. Trust is a product requirement.",
@@ -104,7 +104,7 @@
       ],
       "github": "https://github.com/mayukhg/ai-soc-portal",
       "demo": "",
-      "pain": "Most \u201cAI for SOC\u201d just wires an LLM to the alert queue. But a Tier-1 analyst won't act on a verdict they can't interrogate, and a CISO won't sign off on a control they can't evidence. Trust, not capability, blocks adoption.",
+      "pain": "Most “AI for SOC” just wires an LLM to the alert queue. But a Tier-1 analyst won't act on a verdict they can't interrogate, and a CISO won't sign off on a control they can't evidence. Trust, not capability, blocks adoption.",
       "bet": "Agentic triage, threat hunting and incident response over live telemetry, built so every conclusion is replayable. ~Half the repo is reasoning, evaluation and audit infrastructure.",
       "whyLabel": "Why AI is the right call",
       "why": "Yes for triage, correlation and natural-language hunting, where LLM + RAG work well. But only when paired with an explainability, evaluation and audit layer. Raw AI alone is a non-starter in a regulated SOC.",
@@ -122,7 +122,7 @@
       "name": "AI Security Posture Management (AI-SPM)",
       "arena": "defence",
       "domain": "security",
-      "kicker": "AI Defense Ecosystem \u00b7 Protect",
+      "kicker": "AI Defense Ecosystem · Protect",
       "icon": "chip",
       "tagline": "Posture management for your own AI/ML assets, drift and compliance evidence.",
       "summary": "Governs and secures the organisation's own AI/ML assets across their lifecycle. Built with applied ML, not an LLM.",
@@ -157,8 +157,8 @@
       "domain": "security",
       "kicker": "Agentic Platform Extension",
       "icon": "wrench",
-      "tagline": "A governed MCP server for the validate \u2192 approve \u2192 remediate loop.",
-      "summary": "A governed MCP bridge that lets AI agents run the validate \u2192 approve \u2192 remediate \u2192 re-verify loop, with a human approving each fix.",
+      "tagline": "A governed MCP server for the validate → approve → remediate loop.",
+      "summary": "A governed MCP bridge that lets AI agents run the validate → approve → remediate → re-verify loop, with a human approving each fix.",
       "headline": "Cuts mean-time-to-remediate",
       "evidence": "pipeline",
       "client": "Qualys",
@@ -172,7 +172,7 @@
       "pain": "Vulnerability management is a broken loop. An alert fires, but proving the CVE is exploitable, getting approval, patching and re-verifying happen manually across tools. And no one lets AI touch remediation without guardrails.",
       "bet": "A standard MCP server so a conversational AI can safely drive a closed-loop workflow. Engineers reach it from their chat and IDE.",
       "whyLabel": "Why AI is the right call",
-      "why": "AI handles the natural-language request and the orchestration, turning \u201cverify this CVE and patch if real\u201d into safe, stateful tool calls. Validation & remediation stay deterministic; approval stays human. AI orchestrates, it doesn't decide.",
+      "why": "AI handles the natural-language request and the orchestration, turning “verify this CVE and patch if real” into safe, stateful tool calls. Validation & remediation stay deterministic; approval stays human. AI orchestrates, it doesn't decide.",
       "tradeoff": "Kept validation and remediation deterministic and left approval to a human. Deprioritised full autonomy so security teams can actually adopt it.",
       "validated": "Direct Qualys customer feedback asking to stay flexible across their own and 3rd-party tooling. That drove an open, standard MCP design over a closed, one-off integration.",
       "outcomes": [
@@ -191,7 +191,7 @@
       "icon": "grid",
       "tagline": "Conversational risk triage across 8 security modules, fully audited.",
       "summary": "One conversation that joins 8 security modules into a ranked, evidence-backed, auditable remediation plan.",
-      "headline": "Weekly risk report: hours \u2192 minutes",
+      "headline": "Weekly risk report: hours → minutes",
       "evidence": "pipeline",
       "client": "Qualys",
       "stack": [
@@ -202,14 +202,14 @@
       ],
       "github": "https://github.com/mayukhg/unified-risk-copilot",
       "demo": "",
-      "pain": "Teams run 8+ modules (VM, WAS, PC, TotalCloud, Container, Cloud Agent, Patch, CSAM) in separate UIs. No single \u201cwhat to fix first\u201d view, the CISO's weekly report is a manual spreadsheet, and managers want data without write access.",
-      "bet": "A \u201cWeekly Risk Copilot\u201d on the official MCP server: an LLM joins all 8 modules into one ranked narrative, with allow-listing, read-only mode, audit logging and approval-gated remediation built in.",
+      "pain": "Teams run 8+ modules (VM, WAS, PC, TotalCloud, Container, Cloud Agent, Patch, CSAM) in separate UIs. No single “what to fix first” view, the CISO's weekly report is a manual spreadsheet, and managers want data without write access.",
+      "bet": "A “Weekly Risk Copilot” on the official MCP server: an LLM joins all 8 modules into one ranked narrative, with allow-listing, read-only mode, audit logging and approval-gated remediation built in.",
       "whyLabel": "Why AI is the right call",
       "why": "Cross-domain correlation, natural-language querying and report writing suit an LLM: the join logic is fuzzy and the output is prose. Governance is deterministic guardrails; remediation is human-approved.",
       "tradeoff": "Shipped read-only + approval-gated first. Deprioritised write/automation to earn trust before letting AI act across 8 modules.",
       "validated": "The same Qualys customer signal (stay flexible across the stack) led to wrapping the official MCP server, not building yet another siloed console.",
       "outcomes": [
-        "Weekly risk report: hours \u2192 minutes",
+        "Weekly risk report: hours → minutes",
         "Defensible, fully audited, safe self-service",
         "Roadmap: live qualys-cli, more agent actions"
       ],
@@ -220,7 +220,7 @@
       "name": "HS Code Prediction API",
       "arena": "applied",
       "domain": "trade",
-      "kicker": "Applied AI \u00b7 Trade & Customs",
+      "kicker": "Applied AI · Trade & Customs",
       "icon": "globe",
       "tagline": "Customs classification with classic ML, not an LLM.",
       "summary": "Predicts customs codes from a plain-text product description, using classic ML instead of an LLM.",
@@ -252,7 +252,7 @@
       "name": "KYC-as-a-Service",
       "arena": "applied",
       "domain": "payments",
-      "kicker": "Applied AI \u00b7 Financial Services",
+      "kicker": "Applied AI · Financial Services",
       "icon": "bank",
       "tagline": "Verifiable, privacy-preserving credit scoring, with AI on a blockchain.",
       "summary": "Verifiable, privacy-preserving credit-risk scoring: AI wrapped in blockchain provenance and federated learning.",
@@ -285,7 +285,7 @@
       "name": "Ellyra Pulse",
       "arena": "applied",
       "domain": "healthcare",
-      "kicker": "Applied AI \u00b7 Healthcare",
+      "kicker": "Applied AI · Healthcare",
       "icon": "heart",
       "tagline": "Safety-gated patient sentiment for a medical AI: PHI-safe, clinical trust first.",
       "summary": "Safety-gated NPS and sentiment intelligence for a medical AI companion. Safety signals reach a clinician in minutes, not a weekly report.",
@@ -305,7 +305,7 @@
       "pain": "One aggregate NPS hides three very different failures: a UI annoyance, a cold tone, or an AI answer that broke someone's trust in their own care. Verbatims routinely carry PHI, and a genuine safety miss (a misread decimal on a blood panel) sits in a weekly report instead of reaching a clinician in minutes.",
       "bet": "A feedback pipeline where a clinical risk gate runs before any survey fires, PHI is redacted before storage or any model call, and aspect-level sentiment separates detractor volume from detractor severity. Safety signals page clinical on-call instead of becoming one more dashboard row.",
       "whyLabel": "Why AI is the right call",
-      "why": "Medical verbatims are unstructured and multi-aspect: \u201caccurate, but felt cold\u201d is two signals. Aspect-based sentiment across clinical trust, tone, OCR quality and actionability surfaces the rare, trust-breaking failures a theme-frequency count buries. Safety routing stays deterministic: models add evidence, never gate a P0.",
+      "why": "Medical verbatims are unstructured and multi-aspect: “accurate, but felt cold” is two signals. Aspect-based sentiment across clinical trust, tone, OCR quality and actionability surfaces the rare, trust-breaking failures a theme-frequency count buries. Safety routing stays deterministic: models add evidence, never gate a P0.",
       "tradeoff": "Chose an auditable, rule-based safety gate over a smarter LLM classifier, and shipped schema, routing and dashboard before deeper analysis (SHAP drivers, root-cause quadrant). A clinician must be able to see exactly why a case was paged.",
       "validated": "Ellyra's clinical and product teams. An NPS score that can't tell a UI gripe from a broken-trust safety miss, plus PHI in free-text feedback, drove the pre-survey risk gate and redact-before-storage design.",
       "outcomes": [
@@ -320,37 +320,37 @@
       "name": "CropGuard",
       "arena": "applied",
       "domain": "agritech",
-      "kicker": "Applied AI \u00b7 Agritech",
+      "kicker": "Applied AI · Agritech",
       "icon": "leaf",
-      "tagline": "Ambient WhatsApp and voice crop insurance for Indian farmers \u2014 parametric drought claims without opening a browser.",
+      "tagline": "Ambient WhatsApp and voice crop insurance for Indian farmers — parametric drought claims without opening a browser.",
       "summary": "Farmers buy drought cover and settle claims over WhatsApp or voice. Parametric rainfall rules, photo + location evidence, and an insurer console on Express, React, and Postgres.",
-      "headline": "WhatsApp / voice onboarding \u2192 policy \u2192 field evidence \u2192 automated parametric payout",
+      "headline": "WhatsApp / voice onboarding → policy → field evidence → automated parametric payout",
       "evidence": "",
       "client": "Independent build",
       "stack": [
         "React + Vite",
         "Node / Express",
-        "PostgreSQL \u00b7 Drizzle",
+        "PostgreSQL · Drizzle",
         "WhatsApp Cloud API",
         "Parametric claim engine",
-        "Vitest \u00b7 Playwright"
+        "Vitest · Playwright"
       ],
       "github": "https://github.com/mayukhg/agritech_crop_insurance",
-      "demo": "assets/cropguard/walkthrough.mp4",
+      "demo": "assets/walkthroughs/crop-walkthrough.mp4",
       "pain": "Smallholder farmers in India cannot buy or claim crop insurance through desktop portals. Drought cover is paperwork-heavy, claims are slow, and insurers lack reliable field evidence. Voice and WhatsApp are how farmers already work; the insurance stack is not.",
       "bet": "An ambient gateway on WhatsApp and voice over a parametric drought engine: multilingual intent routing, photo + geofenced location evidence, dry-day / rainfall-deficit triggers, and a farmer/insurer console for the same orchestrator.",
       "whyLabel": "Why AI is the right call",
-      "why": "Intent detection, multilingual voice notes, and metadata extraction from free-form farmer messages need language understanding. Payout decisions stay deterministic (coverage \u00d7 shortfall / threshold). Photos never auto-pay \u2014 evidence is inspected; AI routes and extracts.",
+      "why": "Intent detection, multilingual voice notes, and metadata extraction from free-form farmer messages need language understanding. Payout decisions stay deterministic (coverage × shortfall / threshold). Photos never auto-pay — evidence is inspected; AI routes and extracts.",
       "tradeoff": "Shipped mock ASR/TTS/vision/payment providers behind interfaces so demos and tests run offline. Deprioritised live Meta / UPI / IMD rails until the claim loop and evidence geofence were trustworthy.",
       "validated": "AgriTech crop-insurance advisory: farmer acquisition friction on web portals and insurer need for geo-verified field evidence drove WhatsApp-first onboarding and a parametric worker instead of manual claim desks.",
       "outcomes": [
-        "End-to-end ambient path: onboard \u2192 quote \u2192 purchase \u2192 evidence \u2192 parametric payout",
+        "End-to-end ambient path: onboard → quote → purchase → evidence → parametric payout",
         "500 m geofence on field photos vs land holdings; photos never auto-pay",
         "Synthetic demo world + Vitest goldens + Playwright E2E for regression"
       ],
       "note": "Prototype",
       "thumbnail": "assets/cropguard/workflow.webp",
-      "poster": "assets/cropguard/workflow.webp"
+      "poster": "assets/walkthroughs/crop-poster.webp"
     }
   ],
   "ecosystem": {
@@ -380,10 +380,10 @@
     "opportunity": [
       "AI-security spend is growing but split across point tools. No one owns the whole lifecycle.",
       "Regulation (EU AI Act, NIST AI RMF) requires every enterprise to govern its AI. That buyer need is mandatory and growing.",
-      "\u201cAI as defender\u201d and \u201cAI as attack surface\u201d treated as one problem. Few competitors frame it this way."
+      "“AI as defender” and “AI as attack surface” treated as one problem. Few competitors frame it this way."
     ],
     "differentiator": [
-      "Full-lifecycle coverage (prevent \u2192 protect \u2192 detect & respond) vs. single-point competitors.",
+      "Full-lifecycle coverage (prevent → protect → detect & respond) vs. single-point competitors.",
       "Trust as a first-class product layer, grounded in the customer's own risk register and AI assets.",
       "Agentic actions are governed and approved by a human, never an autonomous black box. Land in one pillar, expand across the loop."
     ],
@@ -391,7 +391,7 @@
       {
         "value": "30 min",
         "label": "policy review cycle",
-        "caption": "down from 1\u20133 weeks (AI Policy Foundry)"
+        "caption": "down from 1–3 weeks (AI Policy Foundry)"
       },
       {
         "value": "$2.4M",

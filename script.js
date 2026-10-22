@@ -64,15 +64,34 @@
       try {
         var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
         if (d && d.profile && d.products) {
-          return Promise.resolve({ profile: d.profile, products: d.products, metrics: d.metrics || null, preview: true });
+          return Promise.resolve({
+            profile: d.profile,
+            products: d.products,
+            metrics: d.metrics || null,
+            walkthroughs: d.walkthroughs || null,
+            preview: true
+          });
         }
       } catch (e) { /* fall through to published content */ }
     }
     return Promise.all([
       loadJSON('content/profile.json'),
       loadJSON('content/products.json'),
-      loadJSON('content/metrics.json').catch(function () { return null; })
-    ]).then(function (r) { return { profile: r[0], products: r[1], metrics: r[2], preview: false }; });
+      loadJSON('content/metrics.json').catch(function () { return null; }),
+      loadJSON('content/walkthroughs.json').catch(function () { return null; })
+    ]).then(function (r) {
+      return { profile: r[0], products: r[1], metrics: r[2], walkthroughs: r[3], preview: false };
+    });
+  }
+
+  /* ---------- walkthrough helpers ---------- */
+  var WALKTHROUGHS = null;
+  var WT_BY_PRODUCT = {};
+  function indexWalkthroughs(w) {
+    WALKTHROUGHS = w;
+    WT_BY_PRODUCT = {};
+    if (!w || !w.products) return;
+    Object.keys(w.products).forEach(function (id) { WT_BY_PRODUCT[id] = w.products[id]; });
   }
 
   /* ---------- metrics helpers ---------- */
@@ -650,6 +669,7 @@
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
     arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
     indexMetrics(c.metrics);
+    indexWalkthroughs(c.walkthroughs);
     renderHero(c.profile, arr(c.products.products).length);
     renderFit(c.profile);
     renderPillars(c.profile, productIndex);

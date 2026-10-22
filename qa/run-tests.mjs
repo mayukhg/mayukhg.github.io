@@ -184,8 +184,9 @@ async function connectAdmin(page, token = 'good-token', remember = false) {
 await test('A. Static integrity', 'A1', 'All required files exist', async () => {
   const req = ['index.html', 'styles.css', 'script.js', '404.html', '.nojekyll', 'robots.txt', 'sitemap.xml', 'resume.pdf',
     'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'assets/My_Product_Metrics.pdf',
-    'assets/cropguard/workflow.webp', 'assets/cropguard/walkthrough.mp4',
-    'content/profile.json', 'content/products.json', 'content/metrics.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
+    'assets/cropguard/workflow.webp', 'assets/walkthroughs/crop-walkthrough.mp4', 'assets/walkthroughs/crop-poster.webp',
+    'content/profile.json', 'content/products.json', 'content/metrics.json', 'content/walkthroughs.json',
+    'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
   const metricWebps = fs.readdirSync(path.join(ROOT, 'assets/metrics')).filter((f) => f.endsWith('.webp'));
   eq(metricWebps.length, 14, `assets/metrics should have 14 webp, got ${metricWebps.length}`);
   const missing = req.filter((f) => !fs.existsSync(path.join(ROOT, f)));

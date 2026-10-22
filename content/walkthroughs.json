@@ -1,0 +1,297 @@
+{
+  "disclaimer": "Demo environment · synthetic data. Walkthroughs show demo builds, not production customer data.",
+  "ecosystem": {
+    "video": "assets/walkthroughs/ecosystem-montage.mp4",
+    "poster": "assets/walkthroughs/ecosystem-poster.webp",
+    "duration": "0:27",
+    "title": "One loop across three products",
+    "text": "A policy is generated from the risk register, the AI assets it governs are registered and monitored, and an incident is triaged with an AI assistant grounded in alert records."
+  },
+  "products": {
+    "soc-portal": {
+      "video": "assets/walkthroughs/soc-walkthrough.mp4",
+      "teaser": "assets/walkthroughs/soc-teaser.mp4",
+      "poster": "assets/walkthroughs/soc-poster.webp",
+      "duration": "0:47",
+      "chapters": [
+        {
+          "start": 5,
+          "time": "0:05",
+          "label": "Alert feed, triaged by severity",
+          "decision": "Severity-first queue, with owner and status on every alert.",
+          "metric": "Per-alert triage conversion · Good ≥ 98%"
+        },
+        {
+          "start": 15,
+          "time": "0:15",
+          "label": "Incident with linked alerts",
+          "decision": "Related alerts roll into one incident and keep the comment trail for audit.",
+          "metric": "End-to-end median time to resolve · Good ≤ 8h"
+        },
+        {
+          "start": 18,
+          "time": "0:18",
+          "label": "AI assistant grounded in alert records",
+          "decision": "Answers only from alert records. No invented hosts or indicators.",
+          "metric": "AI acceptance rate and % positive AI feedback"
+        },
+        {
+          "start": 33,
+          "time": "0:33",
+          "label": "KPI metrics for analysts",
+          "decision": "MTTD, MTTR and false-positive rate shown against targets, not hidden in a report.",
+          "metric": "False positive rate · Good ≤ 30%"
+        },
+        {
+          "start": 36,
+          "time": "0:36",
+          "label": "Threat intelligence",
+          "decision": "Indicators link to live alerts instead of sitting in a separate feed.",
+          "metric": "Incidents created, by severity"
+        },
+        {
+          "start": 39,
+          "time": "0:39",
+          "label": "Role-based reports",
+          "decision": "Scheduled executive summaries so leaders don’t need the console.",
+          "metric": "Alerts worked per day, daily active analysts"
+        }
+      ]
+    },
+    "ai-spm": {
+      "video": "assets/walkthroughs/spm-walkthrough.mp4",
+      "teaser": "assets/walkthroughs/spm-teaser.mp4",
+      "poster": "assets/walkthroughs/spm-poster.webp",
+      "duration": "1:47",
+      "chapters": [
+        {
+          "start": 0,
+          "time": "0:00",
+          "label": "Sign up with role and department",
+          "decision": "Capture the role at sign-up so each persona lands on the right view.",
+          "metric": "Signup → onboarding · Good ≥ 60%"
+        },
+        {
+          "start": 5,
+          "time": "0:05",
+          "label": "Posture dashboard",
+          "decision": "One posture trend and the live alerts above the fold.",
+          "metric": "North star: accounts running assessments every week"
+        },
+        {
+          "start": 21,
+          "time": "0:21",
+          "label": "Register an AI asset",
+          "decision": "Every model and dataset carries environment, risk level and data classification.",
+          "metric": "Assets registered, by type and risk level"
+        },
+        {
+          "start": 53,
+          "time": "0:53",
+          "label": "Real-time monitoring",
+          "decision": "Applied ML and rules, not an LLM, so blocking stays fast and cheap.",
+          "metric": "Critical vs high alert time to resolve · Good: critical faster"
+        },
+        {
+          "start": 74,
+          "time": "1:14",
+          "label": "Add a compliance framework",
+          "decision": "Frameworks such as NIST AI RMF are data, so a new regulation needs no code.",
+          "metric": "Policy violations, by type"
+        },
+        {
+          "start": 84,
+          "time": "1:24",
+          "label": "Run an assessment",
+          "decision": "A score per asset per framework, with recommendations.",
+          "metric": "Week-4 assessment retention · Good ≥ 40%"
+        }
+      ]
+    },
+    "policy-foundry": {
+      "video": "assets/walkthroughs/pf-walkthrough.mp4",
+      "teaser": "assets/walkthroughs/pf-teaser.mp4",
+      "poster": "assets/walkthroughs/pf-poster.webp",
+      "duration": "1:42",
+      "chapters": [
+        {
+          "start": 0,
+          "time": "0:00",
+          "label": "Executive briefing",
+          "decision": "Lead with the business case and ROI before the product.",
+          "metric": "Claim to test: policies in under 24 hours"
+        },
+        {
+          "start": 20,
+          "time": "0:20",
+          "label": "Policy dashboard",
+          "decision": "Active policies, pending reviews and the live threat feed in one view.",
+          "metric": "Policy lifecycle funnel, draft → enforced"
+        },
+        {
+          "start": 30,
+          "time": "0:30",
+          "label": "Upload the risk register",
+          "decision": "Generate from the organisation’s own risk register, not generic templates.",
+          "metric": "Policies drafted (funnel step 1)"
+        },
+        {
+          "start": 36,
+          "time": "0:36",
+          "label": "Configure and generate",
+          "decision": "Structured inputs (service, business unit, environment, framework) constrain the agents.",
+          "metric": "Draft → enforced median · Good ≤ 1 day"
+        },
+        {
+          "start": 61,
+          "time": "1:01",
+          "label": "Clause-level traceability",
+          "decision": "Every clause traces back to a risk and a control. Traceability came before multi-cloud breadth.",
+          "metric": "Compliance pass rate · Good ≥ 90%"
+        },
+        {
+          "start": 66,
+          "time": "1:06",
+          "label": "Edit, export and rate",
+          "decision": "A person edits and rates every policy before it ships.",
+          "metric": "User satisfaction and NPS"
+        },
+        {
+          "start": 81,
+          "time": "1:21",
+          "label": "Threat intelligence correlation",
+          "decision": "New CVEs flag the policies they affect.",
+          "metric": "Not instrumented yet: candidate metric"
+        }
+      ]
+    },
+    "ellyra-pulse": {
+      "video": "assets/walkthroughs/ell-walkthrough.mp4",
+      "teaser": "assets/walkthroughs/ell-teaser.mp4",
+      "poster": "assets/walkthroughs/ell-poster.webp",
+      "duration": "1:22",
+      "chapters": [
+        {
+          "start": 0,
+          "time": "0:00",
+          "label": "Executive scorecard",
+          "decision": "Split relationship NPS from per-interaction NPS.",
+          "metric": "NPS (promoters − detractors) · Good ≥ 0"
+        },
+        {
+          "start": 8,
+          "time": "0:08",
+          "label": "Medical AI trust KPIs",
+          "decision": "Domain measures NPS can’t capture: anxiety relief, comprehension, inaccuracy flags.",
+          "metric": "Target: inaccuracy flags < 0.2%"
+        },
+        {
+          "start": 16,
+          "time": "0:16",
+          "label": "Survey funnel and feature NPS",
+          "decision": "NPS by feature and cohort, to find where trust breaks.",
+          "metric": "Detractor share · Good ≤ 30%"
+        },
+        {
+          "start": 20,
+          "time": "0:20",
+          "label": "Root cause and aspect sentiment",
+          "decision": "Separate detractor volume from detractor severity, by aspect.",
+          "metric": "NPS by feature and aspect"
+        },
+        {
+          "start": 28,
+          "time": "0:28",
+          "label": "Closed-loop verbatim hub",
+          "decision": "Every detractor gets an owner and an SLA.",
+          "metric": "Per-alert triage median · Good ≤ 5 min"
+        },
+        {
+          "start": 41,
+          "time": "0:41",
+          "label": "Page clinical on-call",
+          "decision": "Safety signals page a clinician, decided by rules a person can audit.",
+          "metric": "Safety flags routed · 15-min SLA"
+        },
+        {
+          "start": 49,
+          "time": "0:49",
+          "label": "Closed-loop pipeline",
+          "decision": "Risk gate → PHI redaction → aspect sentiment → routing, in that order.",
+          "metric": "North star: zero unrouted safety signals"
+        },
+        {
+          "start": 69,
+          "time": "1:09",
+          "label": "Session telemetry",
+          "decision": "Product telemetry sits beside the survey data.",
+          "metric": "Activation funnel"
+        }
+      ]
+    },
+    "cropguard": {
+      "video": "assets/walkthroughs/crop-walkthrough.mp4",
+      "teaser": "assets/walkthroughs/crop-teaser.mp4",
+      "poster": "assets/walkthroughs/crop-poster.webp",
+      "duration": "1:36",
+      "chapters": [
+        {
+          "start": 0,
+          "time": "0:00",
+          "label": "The farmer never opens a browser",
+          "decision": "WhatsApp and voice are the product. The web is the insurer’s console.",
+          "metric": "Purchase funnel, by channel and language"
+        },
+        {
+          "start": 5,
+          "time": "0:05",
+          "label": "Onboard in one message",
+          "decision": "Identity from the WhatsApp number and survey number. No Aadhaar on the channel.",
+          "metric": "farmer_onboarded → policy_purchased"
+        },
+        {
+          "start": 24,
+          "time": "0:24",
+          "label": "File a claim by voice note",
+          "decision": "Regional-language voice; below 0.70 confidence it falls back to a person.",
+          "metric": "Messages and calls, by language"
+        },
+        {
+          "start": 33,
+          "time": "0:33",
+          "label": "A photo is evidence, not a payout",
+          "decision": "A 500 m geofence checks the photo, and photos never trigger payment.",
+          "metric": "Location pin attach rate · Good ≥ 90%"
+        },
+        {
+          "start": 43,
+          "time": "0:43",
+          "label": "Advice before a loss",
+          "decision": "Weather and market nudges keep farmers engaged between claims.",
+          "metric": "Messages and calls over time"
+        },
+        {
+          "start": 53,
+          "time": "0:53",
+          "label": "Automatic parametric payout",
+          "decision": "21 dry days under 5 mm pays without anyone filing a claim.",
+          "metric": "Median time to payout · Good ≤ 6h"
+        },
+        {
+          "start": 62,
+          "time": "1:02",
+          "label": "Same answers on a keypad phone",
+          "decision": "A basic-phone voice menu for farmers without WhatsApp.",
+          "metric": "Voice calls, by language"
+        },
+        {
+          "start": 67,
+          "time": "1:07",
+          "label": "Underwriter desk",
+          "decision": "The insurer sees the rule and the rainfall, not just a decision.",
+          "metric": "Claim approval rate, insurer daily users"
+        }
+      ]
+    }
+  }
+}
