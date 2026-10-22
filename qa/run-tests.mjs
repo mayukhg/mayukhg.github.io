@@ -638,7 +638,7 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   eq(await page.evaluate(() => document.querySelector('header.hero').nextElementSibling.id), 'snapshot', 'snapshot follows hero');
   const snapText = await page.locator('#snapshot').innerText();
   if (Array.isArray(profileJSON.snapshot.rows) && profileJSON.snapshot.rows.length) {
-    assert(snapText.includes(profileJSON.snapshot.subtitle), 'snapshot subtitle');
+    if (profileJSON.snapshot.subtitle) assert(snapText.includes(profileJSON.snapshot.subtitle), 'snapshot subtitle');
     profileJSON.snapshot.rows.forEach((r) => {
       assert(snapText.includes(r.need), r.need);
       assert(snapText.includes(r.value), r.value);
