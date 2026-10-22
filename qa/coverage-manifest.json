@@ -25,7 +25,6 @@
       "portrait",
       "traits",
       "stats",
-      "snapshot-title",
       "snapshot",
       "products-title",
       "products-sub",
@@ -85,7 +84,6 @@
       "portrait",
       "stats",
       "fit",
-      "snapshot-title",
       "snapshot",
       "how-quote",
       "about-body",
@@ -328,8 +326,98 @@
         "type": "string"
       },
       {
+        "key": "subtitle",
+        "label": "Subtitle",
+        "type": "text"
+      },
+      {
+        "key": "chips",
+        "label": "Availability chips",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "tone",
+        "label": "Tone",
+        "type": "select"
+      },
+      {
+        "key": "columns",
+        "label": "Table column headers (4)",
+        "type": "lines"
+      },
+      {
+        "key": "rows",
+        "label": "Match rows",
+        "type": "array"
+      },
+      {
+        "key": "need",
+        "label": "You need",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "label": "Result value",
+        "type": "string"
+      },
+      {
+        "key": "unit",
+        "label": "Result unit",
+        "type": "string"
+      },
+      {
+        "key": "tone",
+        "label": "Result colour",
+        "type": "select"
+      },
+      {
+        "key": "proof",
+        "label": "Proof link",
+        "type": "object"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "href",
+        "label": "Href",
+        "type": "string"
+      },
+      {
+        "key": "footnote",
+        "label": "Footer note",
+        "type": "string"
+      },
+      {
+        "key": "docs",
+        "label": "Document buttons",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "href",
+        "label": "Href",
+        "type": "string"
+      },
+      {
+        "key": "style",
+        "label": "Style",
+        "type": "select"
+      },
+      {
         "key": "groups",
-        "label": "Groups (columns)",
+        "label": "Legacy groups (kept for older JSON; omit when empty)",
         "type": "array"
       },
       {

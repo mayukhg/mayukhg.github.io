@@ -286,15 +286,71 @@
   }
 
   function renderSnapshot(p) {
-    var sn = p.snapshot || {}, groups = arr(sn.groups);
-    document.getElementById('snapshot').hidden = !groups.length;
-    set('snapshot-title', esc(sn.title || 'At a glance'));
-    set('snapshot', groups.map(function (g) {
-      var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
-      return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
-        return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
-      }).join('') + '</dl></div>';
-    }).join(''));
+    var sn = p.snapshot || {}, rows = arr(sn.rows), groups = arr(sn.groups);
+    var sec = document.getElementById('snapshot');
+    if (!rows.length && !groups.length) { sec.hidden = true; set('snapshot', ''); return; }
+    sec.hidden = false;
+
+    // New requirements-match table (option A). Fall back to the older 3-column cards when only groups exist.
+    if (rows.length) {
+      var chips = arr(sn.chips).map(function (c) {
+        var tone = /^[a-z0-9-]+$/.test(c.tone || '') ? ' data-tone="' + c.tone + '"' : '';
+        var bullet = c.tone === 'fit' ? '<span class="sn-chip-dot" aria-hidden="true">●</span>' : '';
+        return '<span class="sn-chip"' + tone + '>' + bullet + esc(c.label) + '</span>';
+      }).join('');
+      var cols = arr(sn.columns);
+      while (cols.length < 4) cols.push('');
+      var check = '<svg class="sn-check" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="currentColor" opacity=".18"/><path d="M4.6 8.2 7 10.6 11.5 5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var body = rows.map(function (r) {
+        var tone = /^[a-z0-9-]+$/.test(r.tone || '') ? r.tone : 'impact';
+        var proof = r.proof || {};
+        var href = safeUrl(proof.href);
+        return '<tr>' +
+          '<th scope="row"><span class="sn-need">' + check + '<span>' + esc(r.need) + '</span></span></th>' +
+          '<td>' + esc(r.done) + '</td>' +
+          '<td class="sn-val" data-tone="' + tone + '"><span class="sn-num">' + esc(r.value) + '</span><span class="sn-unit">' + esc(r.unit) + '</span></td>' +
+          '<td>' + (proof.label ? '<a class="sn-proof" href="' + esc(href) + '">' + esc(proof.label) + ' <span aria-hidden="true">→</span></a>' : '') + '</td>' +
+        '</tr>';
+      }).join('');
+      var docs = arr(sn.docs).map(function (d) {
+        var style = d.style || 'link';
+        var cls = style === 'primary' ? 'btn btn-doc' : style === 'doc' ? 'btn btn-doc-ghost' : 'btn btn-ghost';
+        if (style === 'primary' || style === 'doc') return docLink(d.href, cls, esc(d.label));
+        return '<a class="' + cls + '" href="' + esc(safeUrl(d.href)) + '"' + ext(d.href) + '>' + esc(d.label) + '</a>';
+      }).join('');
+      set('snapshot',
+        '<div class="sn-head">' +
+          '<div class="sn-head-copy">' +
+            '<h2 class="sn-title" id="snapshot-title" data-slot="snapshot-title">' + esc(sn.title || 'At a glance') + '</h2>' +
+            (sn.subtitle ? '<p class="sn-sub">' + esc(sn.subtitle) + '</p>' : '') +
+          '</div>' +
+          (chips ? '<div class="sn-chips" aria-label="Availability">' + chips + '</div>' : '') +
+        '</div>' +
+        '<table class="sn-match">' +
+          '<caption class="sr-only">How my experience matches a Director of Product role</caption>' +
+          '<thead><tr>' +
+            '<th scope="col">' + esc(cols[0]) + '</th>' +
+            '<th scope="col">' + esc(cols[1]) + '</th>' +
+            '<th scope="col">' + esc(cols[2]) + '</th>' +
+            '<th scope="col">' + esc(cols[3]) + '</th>' +
+          '</tr></thead>' +
+          '<tbody>' + body + '</tbody>' +
+        '</table>' +
+        '<div class="sn-foot">' +
+          (sn.footnote ? '<p class="sn-footnote">' + esc(sn.footnote) + '</p>' : '<span></span>') +
+          (docs ? '<div class="sn-docs">' + docs + '</div>' : '') +
+        '</div>');
+      return;
+    }
+
+    set('snapshot',
+      '<h2 class="sn-title" id="snapshot-title" data-slot="snapshot-title">' + esc(sn.title || 'At a glance') + '</h2>' +
+      '<div class="sn-grid">' + groups.map(function (g) {
+        var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
+        return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
+          return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
+        }).join('') + '</dl></div>';
+      }).join('') + '</div>');
   }
 
   function renderAbout(p) {
@@ -808,7 +864,7 @@
     renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .sn-head, .sn-match, .sn-foot, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
       .forEach(function (el) { el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');

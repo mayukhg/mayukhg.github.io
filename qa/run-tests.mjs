@@ -317,14 +317,18 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
     glance: document.querySelectorAll('.glance-card').length,
     pillars: document.querySelectorAll('.pillar').length, metrics: document.querySelectorAll('.metric').length,
     roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.career-bar li').length,
-    snapshot: document.querySelectorAll('.sn-card').length, snapItems: document.querySelectorAll('.sn-item').length,
+    snapshot: document.querySelectorAll('.sn-match tbody tr, .sn-card').length,
+    snapItems: document.querySelectorAll('.sn-match tbody tr, .sn-item').length,
     skills: document.querySelectorAll('.skills-top .pill').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
+  const snapRows = Array.isArray(profileJSON.snapshot.rows) ? profileJSON.snapshot.rows : [];
+  const snapGroups = Array.isArray(profileJSON.snapshot.groups) ? profileJSON.snapshot.groups : [];
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
     products: productsJSON.products.length, glance: productsJSON.overview?.show === false ? 0 : productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
     roles: profileJSON.experience.roles.length, skills: Math.min(10, profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0)),
     legend: 3,
-    snapshot: profileJSON.snapshot.groups.length, snapItems: profileJSON.snapshot.groups.reduce((n, g) => n + g.items.length, 0),
+    snapshot: snapRows.length || snapGroups.length,
+    snapItems: snapRows.length || snapGroups.reduce((n, g) => n + g.items.length, 0),
     edu: profileJSON.education.length,
     contact: 1 + ['linkedin', 'github', 'resume', 'portfolio'].filter((k) => profileJSON.links[k]).length };
   for (const k in exp) eq(counts[k], exp[k], `${k} count`);
@@ -542,9 +546,14 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase());
   assert(!domainColours.has(accent), 'link/focus accent is not reused as a domain colour');
   eq(await page.locator('#products .chipbtn[data-f] .swatch').count(), productsJSON.domains.length, 'filter chips show domain swatches');
-  // Snapshot groups: one colour per group.
-  const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
-  eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
+  // Snapshot results: one tone colour per row (or legacy group cards).
+  if (await page.locator('.sn-match .sn-val').count()) {
+    const tones = await page.locator('.sn-match .sn-val .sn-num').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
+    eq(new Set(tones).size, tones.length, 'snapshot result tones are distinct colours');
+  } else {
+    const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
+    eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
+  }
   // Documents are amber everywhere (nav, hero, contact).
   const docs = await page.locator(`a.btn-doc[href="${profileJSON.links.resume}"]`).evaluateAll((as) => as.map((a) => getComputedStyle(a).backgroundColor));
   assert(docs.length >= 2 && docs.every((c) => c === 'rgb(251, 191, 36)'), `resume buttons amber: ${docs}`);
@@ -628,7 +637,16 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   // Snapshot sits directly under the hero.
   eq(await page.evaluate(() => document.querySelector('header.hero').nextElementSibling.id), 'snapshot', 'snapshot follows hero');
   const snapText = await page.locator('#snapshot').innerText();
-  profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
+  if (Array.isArray(profileJSON.snapshot.rows) && profileJSON.snapshot.rows.length) {
+    assert(snapText.includes(profileJSON.snapshot.subtitle), 'snapshot subtitle');
+    profileJSON.snapshot.rows.forEach((r) => {
+      assert(snapText.includes(r.need), r.need);
+      assert(snapText.includes(r.value), r.value);
+      assert(snapText.includes(r.proof.label), r.proof.label);
+    });
+  } else {
+    profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
+  }
   const docLinks = await page.locator('#snapshot a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   assert(docLinks.includes(profileJSON.links.resume) && docLinks.includes(profileJSON.links.portfolio), `snapshot document links: ${docLinks}`);
   await revealAll(page);
@@ -1408,6 +1426,73 @@ await test(R, 'R-admin-fields', `Every editor form field (${new Set(MANIFEST.adm
   const jsErrors = errors.filter((e) => e.startsWith('pageerror'));
   eq(jsErrors.length, 0, `Preview of fully-edited draft threw: ${jsErrors.join(' | ')}`);
   assert((await preview.locator('h1').innerText()).includes('qap'), 'edited name rendered');
+  await context.close();
+});
+
+/* =================================================================== S. 60-second fit (requirements match) */
+await test('S. Snapshot fit', 'S1', '#snapshot table.sn-match has 6 body rows with values and resolving proof links', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const rows = page.locator('#snapshot table.sn-match tbody tr');
+  eq(await rows.count(), 6, 'six match rows');
+  for (let i = 0; i < 6; i++) {
+    const row = rows.nth(i);
+    const value = (await row.locator('.sn-num').innerText()).trim();
+    assert(value.length > 0, `row ${i} value`);
+    const href = await row.locator('a.sn-proof').getAttribute('href');
+    assert(href, `row ${i} proof href`);
+    if (href.startsWith('#')) {
+      const id = href.slice(1).replace(/-walkthrough$/, '').replace(/\/metrics$/, '');
+      assert(await page.locator(`[id="${id}"]`).count() === 1, `missing ${href}`);
+    } else {
+      const res = await page.request.get(new URL(href, BASE).href);
+      assert(res.status() < 400, `proof ${href} → ${res.status()}`);
+    }
+  }
+  await shot(page.locator('#snapshot'), 'snapshot-fit-desktop');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S2', 'Clicking the “MCP Server case” proof opens #p-mcp', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  await page.locator('#snapshot a.sn-proof', { hasText: 'MCP Server case' }).click();
+  await page.waitForTimeout(700);
+  eq(await page.locator('#p-mcp .acc-toggle').getAttribute('aria-expanded'), 'true', 'MCP case open');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S3', 'At 390px the snapshot has no horizontal overflow', async () => {
+  const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await open(context, '/');
+  await revealAll(page);
+  const o = await page.locator('#snapshot').evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth }));
+  assert(o.sw <= o.cw + 1, `snapshot overflows: ${o.sw} > ${o.cw}`);
+  const pageO = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+  assert(pageO.sw <= pageO.cw + 1, `page overflows at 390: ${pageO.sw} > ${pageO.cw}`);
+  await shot(page.locator('#snapshot'), 'snapshot-fit-mobile');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S4', 'Page contains no 94% and no phone-number pattern', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const text = await page.evaluate(() => document.body.innerText);
+  assert(!/94\s*%/.test(text), '94% found on page');
+  assert(!PHONE_RE.test(text), 'phone pattern on page');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S5', 'axe shows no serious or critical issues in #snapshot', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  await revealAll(page);
+  await page.addScriptTag({ content: AXE_SRC });
+  const bad = await page.evaluate(async () => {
+    const res = await window.axe.run(document.querySelector('#snapshot'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
+    return res.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id);
+  });
+  eq(bad.length, 0, `axe: ${bad.join(', ')}`);
   await context.close();
 });
 

@@ -130,72 +130,109 @@
   ],
   "snapshot": {
     "title": "The 60-second fit",
-    "groups": [
+    "subtitle": "Director-level scope since 2021. The title caught up in 2026. Here is what the role asks for, and where I have already done it.",
+    "chips": [
       {
-        "name": "Role fit",
-        "tone": "fit",
-        "items": [
-          {
-            "label": "Now",
-            "value": "Director of PM, Qualys"
-          },
-          {
-            "label": "Open to",
-            "value": "Director, AI product"
-          },
-          {
-            "label": "Domains",
-            "value": "Security · Payments · Analytics · Healthcare · Agritech"
-          },
-          {
-            "label": "Markets",
-            "value": "B2B enterprise and B2C"
-          },
-          {
-            "label": "Edge",
-            "value": "Judgment, cross-domain rigor, and shipping. Trust is engineered into the pipeline."
-          }
-        ]
+        "label": "Open to Director of Product roles",
+        "tone": "fit"
       },
       {
-        "name": "Proof",
+        "label": "Pune · Remote / Hybrid"
+      },
+      {
+        "label": "30-day notice"
+      }
+    ],
+    "columns": [
+      "You need",
+      "I've done it",
+      "Result",
+      "Proof"
+    ],
+    "rows": [
+      {
+        "need": "Lead and grow PMs",
+        "done": "Lead 3 PMs at Qualys; hired 3 PMs across Qualys and BP; mentoring PMs since 2021.",
+        "value": "3",
+        "unit": "PMs led and hired",
         "tone": "impact",
-        "items": [
-          {
-            "label": "Traction",
-            "value": "15+ pilots, 40% became paid POCs"
-          },
-          {
-            "label": "Scope",
-            "value": "3 PMs direct · 25 people matrix at BP"
-          },
-          {
-            "label": "Measurement",
-            "value": "7 products instrumented · 38 metrics with action thresholds (Mixpanel)"
-          }
-        ]
+        "proof": {
+          "label": "Experience",
+          "href": "#experience"
+        }
       },
       {
-        "name": "Logistics",
-        "tone": "logistics",
-        "items": [
-          {
-            "label": "Based",
-            "value": "Pune, India"
-          },
-          {
-            "label": "Mode",
-            "value": "Remote / Hybrid"
-          },
-          {
-            "label": "Notice",
-            "value": "30 days, negotiable"
-          },
-          {
-            "label": "Documents",
-            "value": "[Resume PDF](resume.pdf) · [Portfolio PDF](assets/portfolio.pdf) · [Product metrics site](metrics/) · [Product metrics PDF](assets/My_Product_Metrics.pdf)"
-          }
-        ]
+        "need": "Own strategy at scale",
+        "done": "Set GenAI and cloud-security strategy across BP's global business units on one shared roadmap.",
+        "value": "15+",
+        "unit": "business units",
+        "tone": "defence",
+        "proof": {
+          "label": "AI Defense Ecosystem",
+          "href": "#ecosystem"
+        }
+      },
+      {
+        "need": "Turn product into revenue",
+        "done": "Took Qualys' agentic AI suite from 15+ enterprise pilots to GA; 40% became paid POCs.",
+        "value": "$1.5M",
+        "unit": "POC pipeline",
+        "tone": "fit",
+        "proof": {
+          "label": "MCP Server case",
+          "href": "#p-mcp"
+        }
+      },
+      {
+        "need": "Win executive investment",
+        "done": "Built the business case for an AI security platform that addressed $10M+ in risk exposure.",
+        "value": "$2M+",
+        "unit": "C-suite funding",
+        "tone": "glow",
+        "proof": {
+          "label": "Policy Foundry case",
+          "href": "#p-policy-foundry"
+        }
+      },
+      {
+        "need": "Ship AI that moves a metric",
+        "done": "Policy reviews cut from 1–3 weeks to 30 minutes; SOC triage more than 60% faster.",
+        "value": "$2.4M",
+        "unit": "saved per year",
+        "tone": "agentic",
+        "proof": {
+          "label": "Watch the walkthrough",
+          "href": "#p-soc-portal-walkthrough"
+        }
+      },
+      {
+        "need": "Build trust into AI",
+        "done": "Clause-level audit trails and NIST / EU AI Act evidence designed into the product, not added later.",
+        "value": "0.90+",
+        "unit": "RAGAS groundedness",
+        "tone": "applied",
+        "proof": {
+          "label": "Three pillars",
+          "href": "#pillars"
+        }
+      }
+    ],
+    "footnote": "20+ years in technology · 8+ in product · PMP · AWS Solutions Architect & Security",
+    "docs": [
+      {
+        "label": "Resume PDF",
+        "href": "resume.pdf",
+        "style": "primary"
+      },
+      {
+        "label": "Portfolio PDF",
+        "href": "assets/portfolio.pdf",
+        "style": "doc"
+      },
+      {
+        "label": "Product metrics site",
+        "href": "metrics/",
+        "style": "link"
       }
     ]
   },

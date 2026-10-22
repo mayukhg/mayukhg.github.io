@@ -21,7 +21,16 @@
     ['trend', 'Trend / growth'], ['alert', 'Alert'], ['globe', 'Globe / trade'], ['bank', 'Bank / finance'], ['bolt', 'Lightning'],
     ['search', 'Search'], ['layers', 'Layers / platform'], ['heart', 'Heart / health'], ['leaf', 'Leaf / agritech']];
 
-  var SNAPSHOT_TONES = [['fit', 'Green — role fit'], ['impact', 'Violet — leadership & impact'], ['logistics', 'Slate — logistics']];
+  var SNAPSHOT_TONES = [
+    ['impact', 'Violet — impact'],
+    ['defence', 'Indigo — defence / scale'],
+    ['fit', 'Green — fit / revenue'],
+    ['glow', 'Amber — investment'],
+    ['agentic', 'Teal — agentic AI'],
+    ['applied', 'Rose — applied AI'],
+    ['logistics', 'Slate — logistics (legacy)']
+  ];
+  var SNAPSHOT_DOC_STYLES = [['primary', 'Primary (amber filled)'], ['doc', 'Document (amber outline)'], ['link', 'Link (neutral outline)']];
   var EVIDENCE_OPTIONS = [['modelled', 'Modelled estimate'], ['production', 'In production'], ['pipeline', 'Pipeline']];
 
   var PROFILE_SCHEMA = [
@@ -58,13 +67,36 @@
       S('status', 'Status', 'select', { options: function () { return [['capital', 'Capital'], ['pipeline', 'Pipeline'], ['market', 'Time-to-Market'], ['org', 'Org'], ['direct', 'Direct'], ['production', 'In production']]; } }),
       S('statusLabel', 'Status label', 'string', { hint: 'Short tag, e.g. Pipeline or In production.' })
     ] }),
-    S('snapshot', '60-second snapshot', 'object', { section: true, desc: 'The colour-coded panel right under the hero: what a recruiter needs in one glance.', fields: [
+    S('snapshot', '60-second snapshot', 'object', { section: true, desc: 'Requirements-match table under the hero: what the role asks for, and where you have already done it.', fields: [
       S('title', 'Heading', 'string'),
-      S('groups', 'Groups (columns)', 'array', { itemTitle: function (x) { return x.name; }, fields: [
-        S('name', 'Group name', 'string', { required: true }),
+      S('subtitle', 'Subtitle', 'text'),
+      S('chips', 'Availability chips', 'array', { itemTitle: function (x) { return x.label; }, fields: [
+        S('label', 'Label', 'string', { required: true }),
+        S('tone', 'Tone', 'select', { options: function () { return SNAPSHOT_TONES; } })
+      ] }),
+      S('columns', 'Table column headers (4)', 'lines', { hint: 'Exactly four lines: You need / I\'ve done it / Result / Proof.' }),
+      S('rows', 'Match rows', 'array', { itemTitle: function (x) { return x.need || x.value; }, fields: [
+        S('need', 'You need', 'string', { required: true }),
+        S('done', 'I\'ve done it', 'text', { required: true }),
+        S('value', 'Result value', 'string', { required: true, hint: 'e.g. $1.5M' }),
+        S('unit', 'Result unit', 'string', { hint: 'e.g. POC pipeline' }),
+        S('tone', 'Result colour', 'select', { options: function () { return SNAPSHOT_TONES; } }),
+        S('proof', 'Proof link', 'object', { fields: [
+          S('label', 'Label', 'string', { required: true }),
+          S('href', 'Href', 'string', { required: true, hint: '#experience, #p-mcp, metrics/, …' })
+        ] })
+      ] }),
+      S('footnote', 'Footer note', 'string'),
+      S('docs', 'Document buttons', 'array', { itemTitle: function (x) { return x.label; }, fields: [
+        S('label', 'Label', 'string', { required: true }),
+        S('href', 'Href', 'string', { required: true }),
+        S('style', 'Style', 'select', { options: function () { return SNAPSHOT_DOC_STYLES; } })
+      ] }),
+      S('groups', 'Legacy groups (kept for older JSON; omit when empty)', 'array', { omitIfEmpty: true, itemTitle: function (x) { return x.name; }, fields: [
+        S('name', 'Group name', 'string'),
         S('tone', 'Colour', 'select', { options: function () { return SNAPSHOT_TONES; } }),
         S('items', 'Rows', 'array', { itemTitle: function (x) { return x.label; }, fields: [
-          S('label', 'Label', 'string', { required: true }), S('value', 'Value', 'md', { required: true })
+          S('label', 'Label', 'string'), S('value', 'Value', 'md')
         ] })
       ] })
     ] }),
@@ -302,9 +334,19 @@
     [].concat(kids || []).forEach(function (c) { if (c != null) el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
     return el;
   }
+  function pruneProfileForSave(p) {
+    var sn = p && p.snapshot;
+    if (!sn) return p;
+    if (Array.isArray(sn.groups) && sn.groups.length === 0) delete sn.groups;
+    (sn.chips || []).forEach(function (c) {
+      if (c && (c.tone === '' || c.tone == null)) delete c.tone;
+    });
+    return p;
+  }
   function serialize(doc) {
     var data = state[doc];
     if (doc === 'walkthroughs') data = walkthroughsFromForm(data);
+    if (doc === 'profile') data = pruneProfileForSave(clone(data));
     return JSON.stringify(data, null, 2) + '\n';
   }
   function clone(x) { return JSON.parse(JSON.stringify(x)); }

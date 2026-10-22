@@ -1,24 +1,24 @@
 # Validation Report — Portfolio Site & Editor
 
-**Run:** 2026-10-21 11:19 UTC · **Mode:** full (selective: C5, C6, D-320, D-390, D-1024, D-menu, R-code, R-product-cropguard, G6, G7, G8 — 93 other tests not run) · **Browser:** Chromium (Playwright 1.56.1) · **Accessibility engine:** axe-core 4.11.0
+**Run:** 2026-10-22 06:08 UTC · **Mode:** full (selective: S1, S2, S3, S4, S5, B3, B5, C4, C10, D-390 — 107 other tests not run) · **Browser:** Chromium (Playwright 1.56.1) · **Accessibility engine:** axe-core 4.11.0
 
 ## Summary
 
 | Result | Count |
 |---|---|
-| ✅ Passed | **11** |
+| ✅ Passed | **10** |
 | ❌ Failed | **0** |
-| Total test cases | 11 |
-| Screenshots captured | 6 |
+| Total test cases | 10 |
+| Screenshots captured | 7 |
 
 **Overall status: PASS** — every test case passed.
 
 | Area | Passed | Failed |
 |---|---|---|
+| B. Rendering | 2 | 0 |
 | C. Interactions | 2 | 0 |
-| D. Responsive | 4 | 0 |
-| G. Admin editor | 3 | 0 |
-| R. Auto-discovered regression | 2 | 0 |
+| D. Responsive | 1 | 0 |
+| S. Snapshot fit | 5 | 0 |
 
 ## Regression coverage (self-updating)
 
@@ -26,54 +26,54 @@ The suite discovers features from the code on every run (`qa/lib/discover.mjs`) 
 
 | | Count |
 |---|---|
-| Features tracked | 245 |
-| Added since last baseline | 1 — `admin-field:demo:path` |
-| Removed since last baseline | 2 — `slot:metrics-section`, `admin-field:demo:url` |
-| Auto-generated test cases this run | 2 |
+| Features tracked | 262 |
+| Added since last baseline | 10 — `admin-field:chips:array`, `admin-field:columns:lines`, `admin-field:rows:array`, `admin-field:need:string`, `admin-field:unit:string`, `admin-field:proof:object`, `admin-field:href:string`, `admin-field:footnote:string`, `admin-field:docs:array`, `admin-field:style:select` |
+| Removed since last baseline | 1 — `slot:snapshot-title` |
+| Auto-generated test cases this run | 0 |
 
 ## Test cases
+
+### B. Rendering
+
+| ID | Test case | Result | Time | Details / evidence |
+|---|---|---|---|---|
+| B3 | Every section renders the expected number of items from content JSON | ✅ Pass | 0.8s | facts=8, steps=6, principles=0, products=9, glance=0, pillars=3, metrics=4, roles=7, legend=3, snapshot=6, snapItems=6, skills=10, edu=3, contact=5 |
+| B5 | Section headings and sub-headings render exactly as written in the content files | ✅ Pass | 0.8s | [01-products-heading.png](screenshots/01-products-heading.png) |
 
 ### C. Interactions
 
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
-| C5 | Deep links open products (URL hash, filtered state, experience “related product” links) | ✅ Pass | 2.5s |  |
-| C6 | Nav links scroll to sections; active link and scrolled state update | ✅ Pass | 5.4s |  |
+| C4 | Colour coding: career tracks, product arenas, snapshot groups and documents each use their own labelled colour | ✅ Pass | 1.0s | [02-colour-coded-portfolio.png](screenshots/02-colour-coded-portfolio.png) |
+| C10 | Recruiter essentials: View Resume in hero; 60-second snapshot; skills “+N more” | ✅ Pass | 2.9s | [03-mobile-nav-resume.png](screenshots/03-mobile-nav-resume.png)<br>[04-snapshot-panel.png](screenshots/04-snapshot-panel.png) |
 
 ### D. Responsive
 
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
-| D-1024 | No horizontal overflow and correct layout at 1024px (laptop) | ✅ Pass | 1.5s | [01-laptop-1024-full-page.jpg](screenshots/01-laptop-1024-full-page.jpg) |
-| D-390 | No horizontal overflow and correct layout at 390px (mobile) | ✅ Pass | 1.4s | [02-mobile-390-full-page.jpg](screenshots/02-mobile-390-full-page.jpg) |
-| D-320 | No horizontal overflow and correct layout at 320px (small-mobile) | ✅ Pass | 1.4s | [03-small-mobile-320-full-page.jpg](screenshots/03-small-mobile-320-full-page.jpg) |
-| D-menu | Section crumb pills are visible and clickable on mobile | ✅ Pass | 1.6s | [04-mobile-menu-open.png](screenshots/04-mobile-menu-open.png) |
+| D-390 | No horizontal overflow and correct layout at 390px (mobile) | ✅ Pass | 1.4s | [05-mobile-390-full-page.jpg](screenshots/05-mobile-390-full-page.jpg) |
 
-### G. Admin editor
+### S. Snapshot fit
 
 | ID | Test case | Result | Time | Details / evidence |
 |---|---|---|---|---|
-| G6 | Connect flow: bad token shows a friendly error; valid token connects | ✅ Pass | 1.0s | [05-admin-connected.png](screenshots/05-admin-connected.png) |
-| G7 | Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state | ✅ Pass | 0.9s | [06-admin-published.png](screenshots/06-admin-published.png) |
-| G8 | Publish detects a remote change and asks before overwriting (cancel = no commit) | ✅ Pass | 1.3s |  |
-
-### R. Auto-discovered regression
-
-| ID | Test case | Result | Time | Details / evidence |
-|---|---|---|---|---|
-| R-code | Code consistency: every slot rendered by script.js exists in index.html (and vice versa); icons match editor options | ✅ Pass | 0.0s | 49 slots, 16 icons, 14 editor icon options |
-| R-product-cropguard | Product “CropGuard”: the case opens with the right content and links | ✅ Pass | 2.0s |  |
+| S1 | #snapshot table.sn-match has 6 body rows with values and resolving proof links | ✅ Pass | 0.8s | [06-snapshot-fit-desktop.png](screenshots/06-snapshot-fit-desktop.png) |
+| S2 | Clicking the “MCP Server case” proof opens #p-mcp | ✅ Pass | 2.3s |  |
+| S3 | At 390px the snapshot has no horizontal overflow | ✅ Pass | 0.9s | [07-snapshot-fit-mobile.png](screenshots/07-snapshot-fit-mobile.png) |
+| S4 | Page contains no 94% and no phone-number pattern | ✅ Pass | 0.7s |  |
+| S5 | axe shows no serious or critical issues in #snapshot | ✅ Pass | 0.9s |  |
 
 ## Screenshots
 
 All screenshots are in [`qa/screenshots/`](screenshots/).
 
-- [01-laptop-1024-full-page.jpg](screenshots/01-laptop-1024-full-page.jpg) — D-1024: No horizontal overflow and correct layout at 1024px (laptop)
-- [02-mobile-390-full-page.jpg](screenshots/02-mobile-390-full-page.jpg) — D-390: No horizontal overflow and correct layout at 390px (mobile)
-- [03-small-mobile-320-full-page.jpg](screenshots/03-small-mobile-320-full-page.jpg) — D-320: No horizontal overflow and correct layout at 320px (small-mobile)
-- [04-mobile-menu-open.png](screenshots/04-mobile-menu-open.png) — D-menu: Section crumb pills are visible and clickable on mobile
-- [05-admin-connected.png](screenshots/05-admin-connected.png) — G6: Connect flow: bad token shows a friendly error; valid token connects
-- [06-admin-published.png](screenshots/06-admin-published.png) — G7: Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state
+- [01-products-heading.png](screenshots/01-products-heading.png) — B5: Section headings and sub-headings render exactly as written in the content files
+- [02-colour-coded-portfolio.png](screenshots/02-colour-coded-portfolio.png) — C4: Colour coding: career tracks, product arenas, snapshot groups and documents each use their own labelled colour
+- [03-mobile-nav-resume.png](screenshots/03-mobile-nav-resume.png) — C10: Recruiter essentials: View Resume in hero; 60-second snapshot; skills “+N more”
+- [04-snapshot-panel.png](screenshots/04-snapshot-panel.png) — C10: Recruiter essentials: View Resume in hero; 60-second snapshot; skills “+N more”
+- [05-mobile-390-full-page.jpg](screenshots/05-mobile-390-full-page.jpg) — D-390: No horizontal overflow and correct layout at 390px (mobile)
+- [06-snapshot-fit-desktop.png](screenshots/06-snapshot-fit-desktop.png) — S1: #snapshot table.sn-match has 6 body rows with values and resolving proof links
+- [07-snapshot-fit-mobile.png](screenshots/07-snapshot-fit-mobile.png) — S3: At 390px the snapshot has no horizontal overflow
 
 ## Scope & method
 
