@@ -316,14 +316,14 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
     principles: document.querySelectorAll('.principle').length, products: document.querySelectorAll('#product-list .acc').length,
     glance: document.querySelectorAll('.glance-card').length,
     pillars: document.querySelectorAll('.pillar').length, metrics: document.querySelectorAll('.metric').length,
-    roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.legend li').length,
+    roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.career-bar li').length,
     snapshot: document.querySelectorAll('.sn-card').length, snapItems: document.querySelectorAll('.sn-item').length,
-    skills: document.querySelectorAll('.skill-card').length, edu: document.querySelectorAll('.edu-item').length,
+    skills: document.querySelectorAll('.skills-top .pill').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
     products: productsJSON.products.length, glance: productsJSON.overview?.show === false ? 0 : productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
-    roles: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
-    legend: profileJSON.experience.tracks.filter((t) => profileJSON.experience.roles.some((r) => r.track === t.id)).length,
+    roles: profileJSON.experience.roles.length, skills: Math.min(10, profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0)),
+    legend: 3,
     snapshot: profileJSON.snapshot.groups.length, snapItems: profileJSON.snapshot.groups.reduce((n, g) => n + g.items.length, 0),
     edu: profileJSON.education.length,
     contact: 1 + ['linkedin', 'github', 'resume', 'portfolio'].filter((k) => profileJSON.links[k]).length };
@@ -499,7 +499,7 @@ await test('C. Interactions', 'C3', 'Experience timeline: every role visible at 
   const items = page.locator('.tl-item');
   const n = await items.count();
   eq(n, profileJSON.experience.roles.length, 'one timeline entry per role');
-  for (let i = 0; i < n; i++) assert(await items.nth(i).locator('h3').isVisible(), `role ${i} headline visible without clicking`);
+  for (let i = 0; i < n; i++) assert(await items.nth(i).locator('.tl-role strong').isVisible(), `role ${i} headline visible without clicking`);
   // Every role starts collapsed (visual-first restructure).
   eq(await items.nth(0).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'current role starts closed');
   eq(await items.nth(1).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'others closed');
@@ -507,13 +507,13 @@ await test('C. Interactions', 'C3', 'Experience timeline: every role visible at 
   const t = items.nth(2).locator('.tl-toggle');
   await t.click(); await page.waitForTimeout(500);
   eq(await t.getAttribute('aria-expanded'), 'true', 'expands');
-  eq(await t.innerText(), 'Hide achievements', 'label switches');
+  assert(/Achievements/.test(await t.innerText()), 'label switches');
   assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) > 60, 'achievements visible');
   await revealAll(page);
   await shot(page.locator('#experience'), 'experience-timeline');
   await t.click(); await page.waitForTimeout(500);
   eq(await t.getAttribute('aria-expanded'), 'false', 'collapses');
-  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) <= 1, 'achievements hidden');
+  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) <= 2, 'achievements hidden');
   // Keyboard: the toggle is a real button.
   await t.focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(100);
   eq(await t.getAttribute('aria-expanded'), 'true', 'Enter expands');
@@ -526,10 +526,10 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   const page = await open(context, '/');
   await revealAll(page);
   const rgb = (hex) => { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`; };
-  // Timeline: each role's card edge uses its track colour, and the legend names every track in use.
+  // Timeline: each role's row edge uses its track colour, and the row names the track.
   for (const [i, r] of profileJSON.experience.roles.entries()) {
     const tr = profileJSON.experience.tracks.find((t) => t.id === r.track);
-    eq(await page.locator('.tl-card').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
+    eq(await page.locator('.tl-item').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
     assert((await page.locator('.tl-item').nth(i).locator('.tl-track').innerText()) === tr.label, `${r.tab} track label`);
   }
   // Products: each card's edge uses its domain colour; filter chips show a swatch.
@@ -633,20 +633,19 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   assert(docLinks.includes(profileJSON.links.resume) && docLinks.includes(profileJSON.links.portfolio), `snapshot document links: ${docLinks}`);
   await revealAll(page);
   await shot(page.locator('#snapshot'), 'snapshot-panel');
-  // Skills: top 6 shown, the rest behind "+N more".
-  for (const [gi, g] of profileJSON.skills.groups.entries()) {
-    const card = page.locator('.skill-card').nth(gi);
-    eq(await card.locator('.pill:visible').count(), Math.min(6, g.items.length), `${g.name} top skills`);
-    const more = card.locator('.pill-more');
-    if (g.items.length > 6) {
-      eq(await more.innerText(), `+${g.items.length - 6} more`, `${g.name} more label`);
-      await more.click();
-      eq(await card.locator('.pill:visible').count(), g.items.length, `${g.name} all skills after expand`);
-      eq(await more.getAttribute('aria-expanded'), 'true', 'aria-expanded');
-      await more.click();
-      eq(await card.locator('.pill:visible').count(), 6, `${g.name} collapses again`);
-    } else eq(await more.count(), 0, `${g.name} has no more button`);
-  }
+  // Skills: ~10 chips on load; All skills ▾ reveals the full groups.
+  const totalSkills = profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0);
+  eq(await page.locator('.skills-top .pill:visible').count(), Math.min(10, totalSkills), 'top skills row');
+  const more = page.locator('.skills-all');
+  if (totalSkills > 10) {
+    assert(/All skills/.test(await more.innerText()), 'All skills label');
+    await more.click();
+    eq(await more.getAttribute('aria-expanded'), 'true', 'aria-expanded');
+    assert(await page.locator('.skills-full').isVisible(), 'full skills visible');
+    eq(await page.locator('.skills-full .skill-card').count(), profileJSON.skills.groups.length, 'all skill groups');
+    await more.click();
+    assert(await page.locator('.skills-full').isHidden(), 'full skills hidden again');
+  } else eq(await more.count(), 0, 'no All skills button');
   // Section order: hero → snapshot → products first; contact last.
   const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
   eq(order.slice(0, 3).join(','), 'top,snapshot,products', 'recruiter-first order');

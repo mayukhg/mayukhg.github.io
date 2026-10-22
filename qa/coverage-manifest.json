@@ -8,7 +8,6 @@
       "metrics",
       "experience",
       "how",
-      "ellyra",
       "pillars",
       "education",
       "contact"
@@ -46,12 +45,11 @@
       "approach-title",
       "approach-sub",
       "paradigm",
-      "steps",
       "throughline",
       "principles",
+      "steps",
       "skills-title",
       "skills",
-      "flagship",
       "pillars-eyebrow",
       "pillars-title",
       "pillars-sub",
@@ -120,8 +118,7 @@
       "pillars-title",
       "pillars-sub",
       "moat",
-      "pillar-grid",
-      "flagship"
+      "pillar-grid"
     ],
     "icons": [
       "shield",

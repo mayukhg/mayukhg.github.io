@@ -300,14 +300,26 @@
   function renderAbout(p) {
     var a = p.about || {};
     var paras = arr(a.paragraphs);
-    // Two-line pull quote from the first sentence of each paragraph.
-    var quotes = paras.map(function (t) {
+    // First two sentences visible; full about + facts behind Read more.
+    var preview = [];
+    paras.forEach(function (t) {
       var plain = String(t).replace(/\*\*/g, '');
-      var m = plain.match(/^[^.!?]+[.!?]/);
-      return m ? m[0].trim() : plain;
-    }).filter(Boolean).slice(0, 2);
-    set('how-quote', quotes.map(function (q) { return '<p>' + esc(q) + '</p>'; }).join(''));
-    set('about-body', paras.map(function (t) { return '<p>' + md(t) + '</p>'; }).join(''));
+      var parts = plain.match(/[^.!?]+[.!?]+/g) || [plain];
+      parts.forEach(function (s) { if (preview.length < 2) preview.push(s.trim()); });
+    });
+    set('how-quote', preview.map(function (q) { return '<p>' + esc(q) + '</p>'; }).join(''));
+    var factsHtml = arr(a.facts).length
+      ? '<dl class="facts how-facts-toggle">' + arr(a.facts).map(function (f) {
+          return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
+        }).join('') + '</dl>'
+      : '';
+    set('about-body', paras.map(function (t) { return '<p>' + md(t) + '</p>'; }).join('') + factsHtml);
+    set('facts', '');
+    var factsSlot = slot('facts');
+    if (factsSlot) {
+      var side = factsSlot.closest('.about-side');
+      if (side) side.hidden = true;
+    }
     var more = document.getElementById('how-more');
     var full = document.getElementById('how-about-full');
     if (more && full && paras.length) {
@@ -319,9 +331,6 @@
         more.textContent = open ? 'Show less' : 'Read more';
       };
     }
-    set('facts', arr(a.facts).map(function (f) {
-      return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
-    }).join(''));
   }
 
   function renderApproach(p) {
@@ -342,9 +351,12 @@
     set('steps', arr(a.steps).map(function (st, i) {
       return '<li class="step"><span class="step-icon" aria-hidden="true"><svg><use href="#' + stepIcons[i % stepIcons.length] + '"/></svg></span><h3>' + esc(st.title) + '</h3><p>' + esc(st.text) + '</p></li>';
     }).join(''));
-    slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 6));
+    slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 3));
     set('throughline', md(a.throughline)).hidden = !a.throughline;
-    set('principles', arr(a.principles).map(function (s) { return '<div class="principle"><h3>' + esc(s.title) + '</h3><p>' + md(s.text) + '</p></div>'; }).join(''));
+    // Principle cards removed — hero traits already cover this.
+    set('principles', '');
+    var prin = slot('principles');
+    if (prin) prin.hidden = true;
   }
 
   function domainFilters(d) {
@@ -440,13 +452,15 @@
       var figure = (p.thumbnail || (!wt && p.poster))
         ? '<figure class="acc-figure"><img src="' + esc(safeUrl(p.thumbnail || p.poster)) + '" alt="' + esc(p.name) + ' architecture workflow" width="1200" height="675" loading="lazy"></figure>'
         : '';
+      var teardownBlock = (d.flagship && d.flagship.productId === p.id) ? flagshipTeardownHtml(d.flagship) : '';
       var caseHtml =
         (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
         figure +
         ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
         (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
         (decide ? '<div class="decide">' + decide + '</div>' : '') +
-        (noteBadge && noteKey !== 'prototype' ? noteBadge : '');
+        (noteBadge && noteKey !== 'prototype' ? noteBadge : '') +
+        teardownBlock;
       var bodyInner;
       var hasTabs = !!(wt || mx);
       if (hasTabs) {
@@ -581,40 +595,49 @@
       '</div>';
   }
 
-  // Experience as a colour-coded timeline: every role's headline is visible at once (for scanning);
-  // the full achievements expand per role. All roles start collapsed for a shorter first skim.
+  // Compact experience: career bar + one row per role; achievements collapsed by default.
   function renderExperience(p, productIndex, arenaById) {
     var x = p.experience || {}, roles = arr(x.roles), trackById = {};
     arr(x.tracks).forEach(function (t) { trackById[t.id] = t; });
     set('exp-title', esc(x.title));
     set('exp-sub', esc(x.subtitle));
-    var used = arr(x.tracks).filter(function (t) { return roles.some(function (r) { return r.track === t.id; }); });
-    set('exp-legend', used.map(function (t) {
-      return '<li' + colorVar('--track', t.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(t.label) + '</li>';
-    }).join('')).hidden = !used.length;
+    var career = [
+      { label: 'Quality', span: '2005–13', years: 8, color: '#7dd3a7' },
+      { label: 'Architecture', span: '2013–21', years: 8, color: '#9cc4ff' },
+      { label: 'Product leadership', span: '2021–now', years: 5, color: '#fbbf24' }
+    ];
+    var totalYears = career.reduce(function (s, c) { return s + c.years; }, 0);
+    var legend = slot('exp-legend');
+    if (legend) {
+      legend.hidden = false;
+      legend.className = 'career-bar';
+      legend.setAttribute('aria-label', 'Career stages');
+      legend.innerHTML = career.map(function (c) {
+        return '<li style="--track:' + c.color + ';flex:' + c.years + '"><span class="cb-label">' + esc(c.label) + '</span><span class="cb-span">' + esc(c.span) + '</span></li>';
+      }).join('');
+    }
     set('exp-timeline', roles.map(function (r, i) {
       var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = false;
       var bullets = arr(r.bullets);
       var rel = arr(r.related).map(function (id) {
         var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
-        return prod ? '<a href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(prod.name) + '</a>' : '';
+        return prod ? '<a class="exp-rel" href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '>' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean);
-      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
-        '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
-        '<div class="tl-card">' +
-          (t.label ? '<span class="tl-track">' + esc(t.label) + '</span>' : '') +
-          '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
-          (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
-          (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
-          (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
-          (r.scope ? '<p class="scope-row"><span class="scope">' + esc(r.scope) + '</span></p>' : '') +
+      return '<li class="tl-item tl-row' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
+        '<div class="tl-row-main">' +
+          '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
+          '<span class="tl-role">' +
+            (t.label ? '<span class="tl-track">' + esc(t.label) + '</span> ' : '') +
+            '<strong class="exp-title">' + esc(r.title) + '</strong>' + (r.company ? ' <span class="tl-at">@ ' + esc(r.company) + '</span>' : '') +
+            (r.dates ? ' <span class="pill-date">' + esc(r.dates) + '</span>' : '') +
+          '</span>' +
           (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
-          (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join('') + '</p>' : '') +
-          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="' + open + '" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
-            '<span class="tl-label">' + (open ? 'Hide achievements' : 'Show ' + bullets.length + ' achievements') + '</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button>' +
-            '<div class="tl-body" id="tb-' + k + '"' + (open ? '' : ' inert') + '><div class="tl-inner"><ul class="exp-list">' +
-            bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
+          (rel.length ? '<span class="exp-rels">' + rel.join('') + '</span>' : '') +
+          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="false" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
+            '<span class="tl-label">Achievements ▾</span></button>' : '') +
         '</div>' +
+        (bullets.length ? '<div class="tl-body" id="tb-' + k + '" inert><div class="tl-inner"><ul class="exp-list">' +
+          bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
       '</li>';
     }).join(''));
   }
@@ -622,18 +645,30 @@
   function renderRest(p) {
     var s = p.skills || {}, links = p.links || {};
     set('skills-title', esc(s.title));
-    // Top skills first; the rest sit behind a "+N more" toggle so each group stays scannable.
-    var TOP = 6;
-    set('skills', arr(s.groups).map(function (g, gi) {
-      var items = arr(g.items), extra = items.length - TOP;
-      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills" id="sk-' + gi + '">' + items.map(function (t, i) {
+    // One compact row of ~10 chips; full groups behind All skills.
+    var flat = [];
+    arr(s.groups).forEach(function (g) {
+      arr(g.items).forEach(function (t) {
+        flat.push({ label: typeof t === 'object' && t ? (t.label || '') : t, href: typeof t === 'object' && t ? t.href : '', group: g.name });
+      });
+    });
+    var TOP = 10;
+    var topHtml = '<ul class="pills skills-top" id="sk-top">' + flat.slice(0, TOP).map(function (t) {
+      var inner = t.href ? '<a href="' + esc(safeUrl(t.href)) + '">' + esc(t.label) + '</a>' : esc(t.label);
+      return '<li class="pill">' + inner + '</li>';
+    }).join('') + '</ul>';
+    var fullHtml = '<div class="skills-full" id="sk-full" hidden>' + arr(s.groups).map(function (g, gi) {
+      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills">' + arr(g.items).map(function (t) {
         var label = typeof t === 'object' && t ? (t.label || '') : t;
         var href = typeof t === 'object' && t && t.href ? t.href : '';
         var inner = href ? '<a href="' + esc(safeUrl(href)) + '">' + esc(label) + '</a>' : esc(label);
-        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + inner + '</li>';
-      }).join('') + '</ul>' +
-      (extra > 0 ? '<button type="button" class="pill-more" aria-expanded="false" aria-controls="sk-' + gi + '" data-more="+' + extra + ' more">+' + extra + ' more</button>' : '') + '</div>';
-    }).join(''));
+        return '<li class="pill">' + inner + '</li>';
+      }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+    var moreBtn = flat.length > TOP
+      ? '<button type="button" class="pill-more skills-all" aria-expanded="false" aria-controls="sk-full" data-more="All skills ▾">All skills ▾</button>'
+      : '';
+    set('skills', topHtml + moreBtn + fullHtml);
 
     var w = p.writing || {};
     var wl = '';
@@ -684,8 +719,11 @@
         var prod = productIndex[slug(id)];
         return prod ? '<a href="#p-' + esc(slug(id)) + '">' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean).join('');
+      var cta = item.cta && item.cta.href
+        ? '<p class="tp-cta"><a href="' + esc(safeUrl(item.cta.href)) + '">' + esc(item.cta.label || 'Learn more') + '</a></p>'
+        : '';
       return '<article class="trust-pillar"><p class="tp-org">' + esc(item.org || '') + '</p><h3>' + esc(item.name) + '</h3><p>' + md(item.proof || '') + '</p>' +
-        (links ? '<p class="tp-links">' + links + '</p>' : '') + '</article>';
+        (links ? '<p class="tp-links">' + links + '</p>' : '') + cta + '</article>';
     }).join(''));
   }
 
@@ -731,13 +769,9 @@
     return '';
   }
 
-  function renderFlagship(d) {
-    var f = d.flagship || {}, panels = arr(f.panels);
-    var sec = document.getElementById('ellyra');
-    var el = slot('flagship');
-    if (!el) return;
-    if (!f.title || !panels.length) { if (sec) sec.hidden = true; el.innerHTML = ''; return; }
-    if (sec) sec.hidden = false;
+  function flagshipTeardownHtml(f) {
+    var panels = arr(f.panels);
+    if (!panels.length) return '';
     var tabs = panels.map(function (panel, i) {
       var selected = i === 0;
       return '<button type="button" class="tear-tab" role="tab" id="tab-' + esc(panel.id) + '" aria-controls="panel-' + esc(panel.id) + '" aria-selected="' + selected + '" tabindex="' + (selected ? '0' : '-1') + '">' + esc(panel.label) + '</button>';
@@ -749,12 +783,14 @@
         panelBody(panel) +
       '</div>';
     }).join('');
-    el.innerHTML =
-      '<p class="eyebrow">' + esc(f.eyebrow || 'Flagship') + '</p>' +
-      '<h2 class="s-title" id="ellyra-title">' + esc(f.title) + '</h2>' +
-      '<p class="s-sub">' + esc(f.subtitle || '') + '</p>' +
+    return '<div class="case-teardown">' +
+      '<h3 class="tear-in-case">Architecture teardown</h3>' +
       (f.thesis ? '<p class="flag-thesis">' + md(f.thesis) + '</p>' : '') +
-      '<div class="teardown"><div class="tear-tabs" role="tablist" aria-label="Ellyra Pulse architecture">' + tabs + '</div>' + bodies + '</div>';
+      '<div class="teardown"><div class="tear-tabs" role="tablist" aria-label="Ellyra Pulse architecture">' + tabs + '</div>' + bodies + '</div>' +
+    '</div>';
+  }
+  function renderFlagship() {
+    // Standalone #ellyra / flagship slot removed — teardown lives inside the Ellyra Pulse case.
   }
 
   function render(c) {
@@ -767,7 +803,7 @@
     renderFit(c.profile);
     renderPillars(c.profile, productIndex);
     renderSnapshot(c.profile);
-    renderFlagship(c.products);
+    renderFlagship();
     renderAbout(c.profile);
     renderApproach(c.profile);
     renderGlance(c.products);
@@ -1088,12 +1124,20 @@
         }
       });
     });
-    document.querySelectorAll('.tp-links a').forEach(function (a) {
+    document.querySelectorAll('.tp-links a, .tp-cta a').forEach(function (a) {
       a.addEventListener('click', function (e) {
-        var id = (a.getAttribute('href') || '').slice(1);
-        if (openProduct(id)) {
+        var raw = (a.getAttribute('href') || '').slice(1);
+        var wt = raw.match(/^(p-[\w-]+)-walkthrough$/);
+        if (wt) {
           e.preventDefault();
-          if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+          openProduct(wt[1], 'walkthrough');
+          if (location.hash !== '#' + raw) history.pushState(null, '', '#' + raw);
+          return;
+        }
+        var m = raw.match(/^(p-[\w-]+)(?:\/(metrics))?$/);
+        if (m && openProduct(m[1], m[2] || null)) {
+          e.preventDefault();
+          if (location.hash !== '#' + raw) history.pushState(null, '', '#' + raw);
         }
       });
     });
@@ -1175,19 +1219,22 @@
         var open = !item.classList.contains('open');
         item.classList.toggle('open', open);
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.querySelector('.tl-label').textContent = open ? 'Hide achievements' : 'Show ' + btn.dataset.n + ' achievements';
+        btn.querySelector('.tl-label').textContent = open ? 'Achievements ▴' : 'Achievements ▾';
         if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
       });
     });
 
-    // Skills: "+N more" reveals the rest of a group.
+    // Skills: All skills ▾ reveals the full groups.
     document.querySelectorAll('.pill-more').forEach(function (btn) {
-      var list = document.getElementById(btn.getAttribute('aria-controls'));
+      var target = document.getElementById(btn.getAttribute('aria-controls'));
       btn.addEventListener('click', function () {
         var open = btn.getAttribute('aria-expanded') !== 'true';
-        list.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.textContent = open ? 'Show fewer' : btn.dataset.more;
+        if (target) {
+          if (btn.classList.contains('skills-all')) target.hidden = !open;
+          else target.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
+        }
+        btn.textContent = open ? 'Show fewer' : (btn.dataset.more || 'All skills ▾');
       });
     });
 
@@ -1241,9 +1288,10 @@
     onScroll();
 
     var rv = document.querySelectorAll('.rv');
-    var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver;
+    var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver || window.matchMedia('print').matches;
     if (staticMode) {
       rv.forEach(function (el) { el.classList.add('in'); });
+      document.documentElement.classList.add('static-reveal');
     } else if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });

@@ -61,28 +61,40 @@
         "products": [
           "ellyra-pulse",
           "kyc"
-        ]
+        ],
+        "cta": {
+          "label": "Flagship teardown: Ellyra Pulse ▶",
+          "href": "#p-ellyra-pulse-walkthrough"
+        }
       },
       {
         "id": "enterprise",
         "name": "Enterprise trust",
         "org": "BP",
-        "proof": "$2M+ secured for enterprise AI. Policy review cut from 1–3 weeks to 30 minutes ($2.4M annual savings). SOC mean time to triage cut by more than 60%.",
+        "proof": "Standardised AI eval harnesses and end-to-end auditability across Prevent, Protect, and Detect & Respond.",
         "products": [
           "policy-foundry",
           "soc-portal",
           "ai-spm"
-        ]
+        ],
+        "cta": {
+          "label": "See the ecosystem tour ▶",
+          "href": "#ecosystem"
+        }
       },
       {
         "id": "agentic",
         "name": "Agentic tool safety",
         "org": "Qualys",
-        "proof": "$1.5M POC pipeline, with 40% of pilots becoming paid proofs of concept. Agents act only through governed MCP tools, with a human approving each fix.",
+        "proof": "Agents act only through governed MCP tools, with a human approving each fix.",
         "products": [
           "mcp",
           "copilot"
-        ]
+        ],
+        "cta": {
+          "label": "How Agent Val is measured →",
+          "href": "#p-mcp/metrics"
+        }
       }
     ]
   },
@@ -285,20 +297,7 @@
       }
     ],
     "throughline": "**The through-line:** I start from the customer's problem and use AI only where it beats a simpler option.",
-    "principles": [
-      {
-        "title": "Judgment over hype",
-        "text": "LLMs where reasoning matters, classic ML where it's cheaper, governance where users need to trust the output before they adopt it."
-      },
-      {
-        "title": "Value-obsessed",
-        "text": "Every product ties to business value (cost, risk, new channels) and user value (their own tools, hours-to-minutes, trust built in)."
-      },
-      {
-        "title": "Ship, don't slideware",
-        "text": "Every product has a working, zero-install way to see it run. Metrics that are modelled targets are labelled as such."
-      }
-    ]
+    "principles": []
   },
   "experience": {
     "title": "Experience",
@@ -338,12 +337,11 @@
         "metrics": [
           "15+ enterprise pilots",
           "40% pilot → paid PoC",
-          "$1.5M POC pipeline",
           "Shipped to GA"
         ],
         "bullets": [
           "Lead and coach a team of **3 Product Managers** owning vision and roadmap for the Agentic AI security platform, identifying high-value AI use cases and translating multi-agent and LLM capabilities into a GTM strategy.",
-          "Ran **15+ enterprise pilots** in the first two quarters against defined success criteria (agentic flow correctness, result accuracy); CXO-level evangelism converted **40%** into paid proof-of-concepts, building a **$1.5M POC pipeline**.",
+          "Ran **15+ enterprise pilots** in the first two quarters against defined success criteria (agentic flow correctness, result accuracy); CXO-level evangelism converted **40%** into paid proof-of-concepts.",
           "Exposed agentic capabilities through API-first, tool-based surfaces (**Model Context Protocol (MCP), CLI and Slack / Microsoft Teams**), so developers use security agents in their own workflows.",
           "Designed agent action interfaces and tool integrations so agents take real actions, such as exploit validation and remediation orchestration, instead of only answering in a chat.",
           "Built the requirements, evaluation and success metrics framework for multi-agent orchestration (accuracy criteria, response-safety guardrails and pass/fail thresholds) for features that shipped in the **GA release**.",
@@ -404,16 +402,13 @@
         ],
         "summary": "Product owner for enterprise GenAI and AI security, run as an internal platform serving 15+ global business units.",
         "metrics": [
-          "$2M+ AI investment",
-          "$2.4M annual savings",
-          "60%+ faster SOC triage",
           "20% faster time-to-market"
         ],
         "bullets": [
           "Owned GenAI and cloud security product strategy across 15+ business units, aligning Security, Engineering, Platform and Compliance stakeholders on a shared roadmap.",
-          "**AI Defense Ecosystem:** established standardised AI eval harnesses and end-to-end auditability on a unified Agentic AI trust platform (Prevent, Protect, Detect & Respond), securing **$2M+** in C-suite investment and mitigating **$10M+** risk exposure.",
-          "**AI Policy Foundry:** cut policy review cycles from 1–3 weeks to **30 minutes** with 95%+ policy accuracy and **$2.4M** annual savings, using a 5-agent GPT-4 product with full clause-level auditability.",
-          "**AI SOC Portal:** reduced Mean Time to Triage by **more than 60%** and executive reporting overhead by ~50%, sustaining an **85%+** analyst action rate (RAGAS groundedness above 0.90).",
+          "**AI Defense Ecosystem:** established standardised AI eval harnesses and end-to-end auditability on a unified Agentic AI trust platform (Prevent, Protect, Detect & Respond).",
+          "**AI Policy Foundry:** shipped a 5-agent GPT-4 product with 95%+ policy accuracy and full clause-level auditability.",
+          "**AI SOC Portal:** cut executive reporting overhead by ~50%, sustaining an **85%+** analyst action rate (RAGAS groundedness above 0.90).",
           "**AI-SPM:** delivered sub-second threat blocking and predictive drift and anomaly detection across 6 data quality dimensions, flagging issues before business impact and automating NIST & EU AI Act compliance evidence.",
           "Led a 25-person product team without direct reporting lines, setting its vision, goals and priorities; built organisational AI capability through the corporate **AI Maturity Index**, accelerating cloud time-to-market by **20%**."
         ],
