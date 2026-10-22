@@ -426,9 +426,6 @@
       var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
       var wt = WT_BY_PRODUCT[p.id];
-      var teardown = (d.flagship && d.flagship.productId === p.id)
-        ? '<a class="acc-tear" href="#p-' + esc(id) + '-walkthrough">Architecture teardown</a>'
-        : '';
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
       if (p.demo && !/\.mp4(\?|$)/i.test(p.demo)) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
@@ -465,20 +462,19 @@
       var hasTabs = !!(wt || mx);
       if (hasTabs) {
         var wtId = 'wt-' + id, caseId = 'case-' + id, mxId = 'mx-' + id;
-        var defaultTab = wt ? 'walkthrough' : 'case';
         var tabs = '';
-        if (wt) {
-          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + wtId + '" aria-controls="' + wtId + '" aria-selected="' + (defaultTab === 'walkthrough' ? 'true' : 'false') + '" tabindex="' + (defaultTab === 'walkthrough' ? '0' : '-1') + '" data-tab="walkthrough">Walkthrough</button>';
-        }
-        tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="' + (defaultTab === 'case' ? 'true' : 'false') + '" tabindex="' + (defaultTab === 'case' ? '0' : '-1') + '" data-tab="case">Case</button>';
+        tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="true" tabindex="0" data-tab="case">Case</button>';
         if (mx) {
           tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>';
         }
+        if (wt) {
+          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + wtId + '" aria-controls="' + wtId + '" aria-selected="false" tabindex="-1" data-tab="walkthrough">Walkthrough</button>';
+        }
         bodyInner =
-          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' walkthrough, case and metrics">' + tabs + '</div>' +
-          (wt ? '<div class="case-panel" role="tabpanel" id="' + wtId + '" aria-labelledby="tab-' + wtId + '"' + (defaultTab === 'walkthrough' ? '' : ' hidden') + '>' + walkthroughPanelHtml(p.id, wt) + '</div>' : '') +
-          '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '"' + (defaultTab === 'case' ? '' : ' hidden') + '>' + caseHtml + '</div>' +
-          (mx ? '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>' : '');
+          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' case, metrics and walkthrough">' + tabs + '</div>' +
+          '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '">' + caseHtml + '</div>' +
+          (mx ? '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>' : '') +
+          (wt ? '<div class="case-panel" role="tabpanel" id="' + wtId + '" aria-labelledby="tab-' + wtId + '" hidden>' + walkthroughPanelHtml(p.id, wt) + '</div>' : '');
       } else {
         bodyInner = caseHtml;
       }
@@ -488,7 +484,7 @@
       if (wt && wt.teaser) {
         thumbHtml = '<div class="tile-thumb tile-thumb-video">' +
           '<video class="tile-teaser" muted playsinline loop preload="none" poster="' + esc(safeUrl(wt.poster || thumbSrc || '')) + '" src="' + esc(safeUrl(wt.teaser)) + '" aria-hidden="true"></video>' +
-          '<span class="tile-wt-badge" aria-hidden="true">▶ Walkthrough · ' + esc(wt.duration || '') + '</span>' +
+          '<button type="button" class="tile-wt-badge" data-open-walkthrough="' + esc(id) + '" aria-label="Open ' + esc(p.name) + ' walkthrough, ' + esc(wt.duration || '') + '">▶ Walkthrough · ' + esc(wt.duration || '') + '</button>' +
         '</div>';
       } else if (thumbSrc) {
         thumbHtml = '<div class="tile-thumb"><img src="' + esc(safeUrl(thumbSrc)) + '" alt="" width="640" height="360" loading="lazy"></div>';
@@ -509,7 +505,6 @@
             (decisionClamp ? '<p class="tile-decision">' + md(decisionClamp) + '</p>' : '') +
             (p.client ? '<p class="tile-client"><span class="client">' + esc(p.client) + '</span></p>' : '') +
             '<div class="acc-links">' +
-              teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
                 '<span class="t-labels"><span class="t-open">' + openLabel + '</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
                 '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
@@ -831,6 +826,12 @@
     // card surface is a mouse/touch shortcut. Height animates in CSS (grid rows 0fr → 1fr).
     function setAcc(acc, open) {
       var btn = acc.querySelector('.acc-toggle'), body = acc.querySelector('.acc-body');
+      // One open product at a time so the expanded walkthrough/case can use the full grid width.
+      if (open) {
+        document.querySelectorAll('.acc.open').forEach(function (other) {
+          if (other !== acc) setAcc(other, false);
+        });
+      }
       acc.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       btn.querySelector('.t-open').setAttribute('aria-hidden', open ? 'true' : 'false');
@@ -895,10 +896,7 @@
       var which = tab || 'case';
       if (which === 'walkthrough' && !card.querySelector('.case-tab[data-tab="walkthrough"]')) which = 'case';
       if (which === 'metrics' && !card.querySelector('.case-tab[data-tab="metrics"]')) which = 'case';
-      if (card.querySelector('.case-tab')) {
-        if (which === 'case' && card.querySelector('.case-tab[data-tab="walkthrough"]') && !tab) which = 'walkthrough';
-        selectCaseTab(card, which);
-      }
+      if (card.querySelector('.case-tab')) selectCaseTab(card, which);
       var y = 0, el = card;
       while (el) { y += el.offsetTop; el = el.offsetParent; }
       window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
@@ -942,6 +940,14 @@
         var id = 'p-' + btn.getAttribute('data-open-metrics');
         openProduct(id, 'metrics');
         if (location.hash !== '#' + id + '/metrics') history.pushState(null, '', '#' + id + '/metrics');
+      });
+    });
+    document.querySelectorAll('[data-open-walkthrough]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = 'p-' + btn.getAttribute('data-open-walkthrough');
+        openProduct(id, 'walkthrough');
+        if (location.hash !== '#' + id + '-walkthrough') history.pushState(null, '', '#' + id + '-walkthrough');
       });
     });
     document.querySelectorAll('.m-open[data-product]').forEach(function (btn) {

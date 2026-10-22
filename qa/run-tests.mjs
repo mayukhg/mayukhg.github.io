@@ -1461,6 +1461,8 @@ await test('W. Walkthroughs', 'W4', 'metrics/ loads and ← Portfolio link resol
   await page.waitForSelector('.pf-bar', { timeout: 10000 });
   const href = await page.locator('.pf-links a').first().getAttribute('href');
   assert(/#metrics|\.\.\/#metrics|\.\.\//.test(href), `portfolio link: ${href}`);
+  assert(await page.locator('.section-crumbs .nav-links a[data-nav="home"]').count() === 1, 'right sticky Home pill');
+  assert(await page.locator('.section-crumbs .nav-links a[data-nav="metrics"][aria-current="true"]').count() === 1, 'Product Metrics pill current');
   const res = await page.request.get(BASE + '/metrics/');
   eq(res.status(), 200, 'metrics status');
   await shot(page, 'metrics-microsite', { fullPage: false });
