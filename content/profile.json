@@ -24,7 +24,7 @@
     "metrics": "assets/My_Product_Metrics.pdf"
   },
   "fit": {
-    "open": "Open to Director of Product Management and similar job roles",
+    "open": "Open to Director of Product Management roles",
     "level": "",
     "domains": [],
     "mode": "Remote / Hybrid",
@@ -35,15 +35,21 @@
     "traits": [
       {
         "label": "Judgment",
-        "text": "LLMs only for reasoning. Statistical detection and deterministic rules where they are cheaper and safer."
+        "text": "LLMs only for reasoning. Statistical detection and deterministic rules where they are cheaper and safer.",
+        "see": "the AI PM paradigm",
+        "href": "#paradigm"
       },
       {
         "label": "Cross-domain rigor",
-        "text": "$10M+ risk exposure at BP, MCP workflows at Qualys, and compliance across NIST, the EU AI Act, and clinical safety."
+        "text": "$10M+ risk exposure at BP, MCP workflows at Qualys, and compliance across NIST, the EU AI Act, and clinical safety.",
+        "see": "three pillars of trust",
+        "href": "#pillars"
       },
       {
         "label": "Shipping",
-        "text": "Golden datasets, RAGAS groundedness above 0.90, and zero-install builds. Compliance runs in the pipeline."
+        "text": "Golden datasets, RAGAS groundedness above 0.90, and zero-install builds. Compliance runs in the pipeline.",
+        "see": "the AI SOC Portal case",
+        "href": "#p-soc-portal"
       }
     ]
   },

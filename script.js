@@ -197,18 +197,29 @@
     if (thesisEl) thesisEl.hidden = !trust.line;
     var traits = arr(trust.traits);
     var traitsEl = set('traits', traits.map(function (t) {
-      return '<li><span>' + esc(t.label) + '</span><p>' + esc(t.text) + '</p></li>';
+      var see = t.see && t.href
+        ? '<a class="see-link" href="' + esc(safeUrl(t.href)) + '">See it in: ' + esc(t.see) + ' →</a>'
+        : '';
+      return '<li><span>' + esc(t.label) + '</span><p>' + esc(t.text) + '</p>' + see + '</li>';
     }).join(''));
     if (traitsEl) traitsEl.hidden = !traits.length;
 
-    // Amber = documents (résumé, portfolio) everywhere on the page, so recruiters can spot them at a glance.
-    var cta = '';
-    if (links.resume) cta += '<span class="btn-pair">' + docLink(links.resume, 'btn btn-doc', 'View Resume') +
-      '<a class="btn btn-doc btn-icon" href="' + esc(safeUrl(links.resume)) + '" download aria-label="Download Resume (PDF)" title="Download Resume (PDF)">' + icon('i-doc') + '</a></span>';
-    if (links.portfolio) cta += docLink(links.portfolio, 'btn btn-doc-ghost', 'Portfolio PDF');
-    set('hero-cta', cta);
-    set('cta-note', '').hidden = true;
-    set('nav-resume', '').hidden = true;
+    var portfolioLinks = '<a href="#products">Open the portfolio on this page</a>';
+    if (links.portfolio) portfolioLinks += docLink(links.portfolio, '', 'Portfolio PDF');
+    var actions =
+      '<details class="hero-drop">' +
+        '<summary class="btn">See how I fit your role</summary>' +
+        '<div class="drop-panel">' +
+          '<h3 class="sn-title" data-slot="snapshot-title"></h3>' +
+          '<div class="sn-grid" data-slot="snapshot"></div>' +
+        '</div>' +
+      '</details>' +
+      '<details class="hero-drop">' +
+        '<summary class="btn">View My Product Portfolio</summary>' +
+        '<div class="drop-panel drop-links">' + portfolioLinks + '</div>' +
+      '</details>' +
+      '<a class="btn btn-ghost" href="#metrics">How I measure products</a>';
+    set('hero-actions', actions);
 
     var portrait = slot('portrait');
     if (person.photo) {
@@ -216,18 +227,6 @@
       portrait.innerHTML = '<img class="portrait" src="' + esc(safeUrl(person.photo)) + '" width="640" height="640" alt="' + esc(person.photoAlt || name) + '" fetchpriority="high">' +
         (person.location || person.portraitCaption ? '<div class="portrait-tag"><span>' + esc(person.location) + '<small>' + esc(person.portraitCaption) + '</small></span></div>' : '');
     } else { portrait.hidden = true; }
-
-    var stats = arr(p.stats);
-    var st = set('stats', stats.map(function (s) {
-      var tags = '';
-      if (s.company) tags += '<span class="tag-co">' + esc(s.company) + '</span>';
-      if (s.statusLabel) tags += '<span class="tag-st tag-' + esc(s.status || 'direct') + '">' + esc(s.statusLabel) + '</span>';
-      return '<div class="stat"><dt class="sr-only">' + esc(s.label) + '</dt><dd><span class="n">' + esc(s.value) + '</span>' +
-        (tags ? '<span class="stat-tags">' + tags + '</span>' : '') +
-        '<span class="l">' + esc(s.label) + '</span></dd></div>';
-    }).join(''));
-    st.hidden = !stats.length;
-    st.style.setProperty('--cols', Math.min(stats.length || 1, 4));
   }
 
   function renderFit(p) {
@@ -235,21 +234,21 @@
     if (!el) return;
     if (!fit.open && !fit.level) { el.hidden = true; el.innerHTML = ''; return; }
     el.hidden = false;
-    var role = fit.level ? '<span class="fit-role">' + esc(fit.level) + '</span>' : '';
-    var meta = [fit.mode, (p.person || {}).location, fit.notice].filter(Boolean)
-      .map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="fit-dot" aria-hidden="true"></span>');
-    el.innerHTML = '<div class="fit-in">' +
-      (fit.open ? '<span class="fit-live"><i aria-hidden="true"></i>' + esc(fit.open) + '</span>' : '') +
-      role +
-      (meta ? '<span class="fit-meta">' + meta + '</span>' : '') +
-      '</div>';
+    var loc = String((p.person || {}).location || '').split(',')[0].trim();
+    var bits = [fit.open, fit.mode, loc, fit.notice].filter(Boolean);
+    el.innerHTML = '<p class="fit-line"><i aria-hidden="true"></i>' +
+      bits.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('<span class="fit-dot" aria-hidden="true">·</span>') +
+      '</p>';
   }
 
   function renderSnapshot(p) {
     var sn = p.snapshot || {}, groups = arr(sn.groups);
-    document.getElementById('snapshot').hidden = !groups.length;
-    set('snapshot-title', esc(sn.title || 'At a glance'));
-    set('snapshot', groups.map(function (g) {
+    var title = slot('snapshot-title');
+    if (title) {
+      title.textContent = sn.title || 'At a glance';
+      title.hidden = !groups.length;
+    }
+    var grid = set('snapshot', groups.map(function (g) {
       var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
       return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
         return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
@@ -665,7 +664,7 @@
     renderRest(c.profile);
     // Reveal-on-scroll targets
     document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
-      .forEach(function (el) { el.classList.add('rv'); });
+      .forEach(function (el) { if (!el.closest('.hero-drop')) el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
       bar.className = 'preview-bar';
@@ -1007,19 +1006,9 @@
 
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
-    var navMap = { top: 'products', snapshot: 'products', ecosystem: 'products', education: 'how', pillars: 'how', ellyra: 'products', metrics: 'metrics', how: 'how' };
-    var crumbs = document.querySelector('.section-crumbs');
-    var railMq = window.matchMedia('(min-width:1100px)');
-    function placeSectionRail() {
-      if (!crumbs || !railMq.matches) {
-        document.documentElement.style.removeProperty('--rail-top');
-        return;
-      }
-      var photo = document.querySelector('.portrait-wrap:not([hidden])');
-      if (!photo) return;
-      // Document Y of the portrait top == fixed top when the page is at scroll 0.
-      var top = Math.max(Math.round(photo.getBoundingClientRect().top + window.scrollY), nav.offsetHeight + 12);
-      document.documentElement.style.setProperty('--rail-top', top + 'px');
+    var navMap = { ecosystem: 'products', education: 'how', ellyra: 'products', metrics: 'metrics', how: 'how', paradigm: 'how' };
+    function syncNavHeight() {
+      document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
     }
     function onScroll() {
       nav.classList.toggle('scrolled', window.scrollY > 12);
@@ -1033,26 +1022,17 @@
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', placeSectionRail, { passive: true });
-    if (railMq.addEventListener) railMq.addEventListener('change', placeSectionRail);
-    function scheduleRail() {
-      placeSectionRail();
-      requestAnimationFrame(function () { requestAnimationFrame(placeSectionRail); });
-      setTimeout(placeSectionRail, 50);
-      setTimeout(placeSectionRail, 250);
-    }
-    scheduleRail();
-    var portraitImg = document.querySelector('.portrait-wrap img');
-    if (portraitImg) {
-      if (!portraitImg.complete) portraitImg.addEventListener('load', scheduleRail);
-    }
-    if (window.ResizeObserver) {
-      var ro = new ResizeObserver(placeSectionRail);
-      ro.observe(nav);
-      var photoEl = document.querySelector('.portrait-wrap');
-      if (photoEl) ro.observe(photoEl);
-    }
+    window.addEventListener('resize', syncNavHeight, { passive: true });
+    syncNavHeight();
+    if (window.ResizeObserver) new ResizeObserver(syncNavHeight).observe(nav);
     onScroll();
+
+    document.querySelectorAll('.hero-drop').forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (!d.open) return;
+        document.querySelectorAll('.hero-drop').forEach(function (o) { if (o !== d) o.open = false; });
+      });
+    });
 
     var rv = document.querySelectorAll('.rv');
     var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver;
