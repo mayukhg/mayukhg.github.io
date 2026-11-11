@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Proposed · Portfolio</title>
+<style>
+@font-face{font-family:'Plus Jakarta Sans';font-weight:400 700;src:url('../assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');}
+@font-face{font-family:'Space Grotesk';font-weight:500 700;src:url('../assets/fonts/space-grotesk-latin.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;}
+html,body{width:1280px;height:auto;background:#fff;font-family:'Plus Jakarta Sans',sans-serif;color:#3e4758;}
+.wrap{padding:28px 36px 32px;}
+h2{font-family:'Space Grotesk',sans-serif;font-size:32px;color:#0c1222;letter-spacing:-.03em;}
+.sub{margin:8px 0 16px;max-width:70ch;color:#5b6679;font-size:15px;line-height:1.45;}
+.filters{display:flex;gap:8px;align-items:center;margin-bottom:16px;}
+.f{height:36px;padding:0 12px;border-radius:6px;border:1px solid #e4e8ef;background:#fff;font:inherit;font-size:13px;font-weight:700;color:#5b6679;display:inline-flex;align-items:center;gap:8px;}
+.f.on{background:#4338ca;color:#fff;border-color:#4338ca;}
+.sw{width:8px;height:8px;border-radius:50%;}
+.ct{opacity:.7;font-weight:600;}
+.cards{display:flex;flex-direction:column;gap:12px;}
+.card{border:1px solid #e4e8ef;border-left:4px solid var(--c);border-radius:8px;padding:16px 18px 14px;display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:center;}
+.eyebrow{font-size:12px;font-weight:700;color:var(--c);margin-bottom:4px;}
+.name{font-family:'Space Grotesk',sans-serif;font-size:20px;color:#0c1222;letter-spacing:-.02em;}
+.decision{margin-top:6px;font-size:14px;line-height:1.45;max-width:68ch;}
+.decision b{color:#0c1222;}
+.out-l{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#5b6679;}
+.out{font-family:'Space Grotesk',sans-serif;font-size:22px;color:#0c1222;letter-spacing:-.02em;line-height:1.15;margin-top:2px;}
+.badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.b{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.co{background:#f5f7fb;color:#0c1222;border:1px solid #e4e8ef;}
+.prod{color:#166534;background:#f0fdf4;border:1px solid #16a34a;}
+.pipe{color:#1d4ed8;background:#eff6ff;border:1px solid #60a5fa;}
+.cur{color:#4338ca;background:#eef2ff;border:1px solid #c7d2fe;}
+.link{margin-top:8px;font-size:13px;font-weight:700;color:var(--c);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Product portfolio</h2>
+  <p class="sub">Filter by the domain on the requisition. Each card leads with the outcome and the decision. Stack and GitHub stay inside the case study.</p>
+  <div class="filters">
+    <button class="f">All <span class="ct">8</span></button>
+    <button class="f on"><i class="sw" style="background:#fff"></i>Security <span class="ct">5</span></button>
+    <button class="f"><i class="sw" style="background:#be123c"></i>Payments <span class="ct">2</span></button>
+    <button class="f"><i class="sw" style="background:#0f766e"></i>Healthcare <span class="ct">1</span></button>
+    <button class="f"><i class="sw" style="background:#a16207"></i>Trade <span class="ct">1</span></button>
+  </div>
+  <div class="cards">
+    <article class="card" style="--c:#4338ca">
+      <div>
+        <div class="eyebrow">Security · Current role</div>
+        <div class="name">Agentic AI security suite</div>
+        <p class="decision"><b>Decision:</b> Ship agents inside the engineer’s own tools (MCP, CLI, Slack) and keep approval human, so security teams will actually adopt them.</p>
+        <div class="link">Read the case →</div>
+      </div>
+      <div>
+        <div class="out-l">Outcome</div>
+        <div class="out">$1.5M POC pipeline</div>
+        <div class="badges"><span class="b co">Qualys</span><span class="b pipe">Pipeline</span><span class="b cur">Director</span></div>
+      </div>
+    </article>
+    <article class="card" style="--c:#4338ca">
+      <div>
+        <div class="eyebrow">Security · AI Defense · Prevent</div>
+        <div class="name">AI Policy Foundry</div>
+        <p class="decision"><b>Decision:</b> Ground policy in the company’s own risk register before adding multi-cloud breadth. Auditors will not trust a clause they cannot trace.</p>
+        <div class="link">Read the case →</div>
+      </div>
+      <div>
+        <div class="out-l">Outcome</div>
+        <div class="out">Weeks → 30 minutes</div>
+        <div class="badges"><span class="b co">BP</span><span class="b prod">In production</span></div>
+      </div>
+    </article>
+    <article class="card" style="--c:#4338ca">
+      <div>
+        <div class="eyebrow">Security · AI Defense · Detect</div>
+        <div class="name">AI SOC Portal</div>
+        <p class="decision"><b>Decision:</b> Spend the build on explainability and audit, not more detectors. In a regulated SOC, trust is what gates adoption.</p>
+        <div class="link">Read the case →</div>
+      </div>
+      <div>
+        <div class="out-l">Outcome</div>
+        <div class="out">Triage 60% faster</div>
+        <div class="badges"><span class="b co">BP</span><span class="b prod">In production</span></div>
+      </div>
+    </article>
+    <article class="card" style="--c:#4338ca">
+      <div>
+        <div class="eyebrow">Security · AI Defense · Protect</div>
+        <div class="name">AI Security Posture</div>
+        <p class="decision"><b>Decision:</b> Use statistics, not an LLM. Drift and adversarial detection do not get more accurate by adding a language model.</p>
+        <div class="link">Read the case →</div>
+      </div>
+      <div>
+        <div class="out-l">Outcome</div>
+        <div class="out">Sub-second blocking</div>
+        <div class="badges"><span class="b co">BP</span><span class="b prod">In production</span></div>
+      </div>
+    </article>
+  </div>
+</div>
+</body>
+</html>

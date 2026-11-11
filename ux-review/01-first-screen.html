@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Proposed · First screen</title>
+<style>
+@font-face{font-family:'Plus Jakarta Sans';font-weight:400 700;src:url('../assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');}
+@font-face{font-family:'Space Grotesk';font-weight:500 700;src:url('../assets/fonts/space-grotesk-latin.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;}
+html,body{width:1280px;height:auto;overflow:hidden;background:#0a0f1f;font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:#3e4758;}
+.nav{height:60px;display:flex;align-items:center;padding:0 28px;border-bottom:1px solid #e4e8ef;background:#fff;}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;color:#0c1222;font-size:16px;}
+.mark{width:34px;height:34px;border-radius:6px;background:#0c1222;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:0;white-space:nowrap;line-height:1;}
+.mark b{color:#fbbf24;font-weight:700;}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:4px;}
+.nav-links a{color:#5b6679;text-decoration:none;font-size:14px;font-weight:500;padding:8px 12px;}
+.btn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;}
+.btn-doc{background:#fbbf24;color:#0a0f1f;margin-left:8px;}
+.fit{height:48px;background:#f5f7fb;border-bottom:1px solid #e4e8ef;display:flex;align-items:center;gap:10px;padding:0 28px;font-size:13px;}
+.live{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:#166534;}
+.live i{width:8px;height:8px;border-radius:50%;background:#16a34a;display:block;}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:99px;font-weight:700;font-size:12px;border:1px solid transparent;}
+.c-sec{background:#eef2ff;color:#4338ca;}
+.c-pay{background:#fdf2f8;color:#be123c;}
+.c-an{background:#f1f5f9;color:#334155;}
+.meta{margin-left:auto;color:#3e4758;font-weight:600;display:flex;gap:14px;}
+.meta span{display:inline-flex;align-items:center;gap:6px;}
+.dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;}
+.hero{background:#0a0f1f;color:#c3cddc;padding:36px 28px 32px;}
+.hero-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.4fr .7fr;gap:40px;align-items:center;}
+.kicker{color:#86efac;font-size:13px;font-weight:700;letter-spacing:.02em;margin-bottom:10px;}
+h1{font-family:'Space Grotesk',sans-serif;color:#fff;font-size:52px;letter-spacing:-.03em;line-height:1;font-weight:700;}
+.role{margin-top:10px;color:#eef2f8;font-size:18px;font-weight:600;}
+.role em{font-style:normal;color:#9fb0c6;font-weight:500;}
+.lede{margin-top:16px;max-width:62ch;font-size:16px;line-height:1.55;color:#a3b1c4;}
+.lede strong{color:#f3f6fb;}
+.ctas{display:flex;gap:10px;margin-top:22px;align-items:center;}
+.btn-lg{height:46px;padding:0 18px;font-size:15px;}
+.btn-ghost{background:transparent;color:#fef3c7;border:1px solid #fbbf24;}
+.note{margin-top:10px;font-size:12px;color:#98a7bc;}
+.photo{width:250px;height:250px;object-fit:cover;border-radius:8px;justify-self:end;border:1px solid rgba(255,255,255,.14);}
+.stats{max-width:1180px;margin:28px auto 0;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.14);border-radius:8px;overflow:hidden;}
+.stat{padding:14px 16px 16px;border-right:1px solid rgba(255,255,255,.14);}
+.stat:last-child{border-right:0;}
+.stat .n{font-family:'Space Grotesk',sans-serif;color:#fff;font-size:28px;font-weight:700;letter-spacing:-.03em;}
+.row{display:flex;gap:6px;margin-top:6px;align-items:center;}
+.tag{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.tag-co{background:rgba(255,255,255,.08);color:#e2e8f0;}
+.tag-pipe{color:#bfdbfe;border:1px solid #60a5fa;}
+.tag-prod{color:#86efac;border:1px solid #16a34a;background:rgba(22,163,74,.12);}
+.tag-team{color:#e9d5ff;border:1px solid #a78bfa;}
+.stat .l{display:block;margin-top:6px;font-size:12px;color:#98a7bc;line-height:1.35;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand"><span class="mark">M<b>G</b></span> Mayukh Ghosh</div>
+  <div class="nav-links">
+    <a href="#">Portfolio</a>
+    <a href="#">Experience</a>
+    <a href="#">Contact</a>
+    <a class="btn btn-doc" href="#">Résumé PDF</a>
+  </div>
+</nav>
+<div class="fit">
+  <span class="live"><i></i> Open to</span>
+  <span class="chip c-an">Director of Product</span>
+  <span class="chip c-sec">Security</span>
+  <span class="chip c-pay">Payments</span>
+  <span class="chip c-an">Analytics</span>
+  <div class="meta">
+    <span>Remote / Hybrid</span>
+    <span class="dot"></span>
+    <span>Pune, India</span>
+    <span class="dot"></span>
+    <span>30-day notice</span>
+  </div>
+</div>
+<header class="hero">
+  <div class="hero-in">
+    <div>
+      <p class="kicker">Director-level AI product leadership</p>
+      <h1>Mayukh Ghosh</h1>
+      <p class="role">Director of Product Management <em>· Agentic AI · Cybersecurity</em></p>
+      <p class="lede">I take AI products from a customer problem to a number a hiring manager can defend. At <strong>Qualys</strong> I lead <strong>3 PMs</strong> and took agentic security from pilots to GA. At <strong>BP</strong> I won <strong>$2M+</strong> for enterprise AI used across <strong>15+ business units</strong>.</p>
+      <div class="ctas">
+        <a class="btn btn-doc btn-lg" href="#">View résumé</a>
+        <a class="btn btn-ghost btn-lg" href="#">Portfolio PDF</a>
+      </div>
+      <p class="note">Résumé updated Sep 2026 · both files are what to forward</p>
+    </div>
+    <img class="photo" src="../assets/mayukh.jpg" alt="Mayukh Ghosh">
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="n">3 PMs</span><div class="row"><span class="tag tag-co">Qualys</span><span class="tag tag-team">Direct</span></div><span class="l">Team led and coached now</span></div>
+    <div class="stat"><span class="n">$1.5M</span><div class="row"><span class="tag tag-co">Qualys</span><span class="tag tag-pipe">Pipeline</span></div><span class="l">POC pipeline, not booked revenue</span></div>
+    <div class="stat"><span class="n">$2.4M</span><div class="row"><span class="tag tag-co">BP</span><span class="tag tag-prod">In production</span></div><span class="l">Annual savings, policy automation</span></div>
+    <div class="stat"><span class="n">4.5 yrs</span><div class="row"><span class="tag tag-co">BP</span><span class="tag tag-team">Principal PM</span></div><span class="l">GenAI and cloud security depth</span></div>
+  </div>
+</header>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Proposed · Experience</title>
+<style>
+@font-face{font-family:'Plus Jakarta Sans';font-weight:400 700;src:url('../assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');}
+@font-face{font-family:'Space Grotesk';font-weight:500 700;src:url('../assets/fonts/space-grotesk-latin.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;}
+html,body{width:1280px;height:auto;background:#f5f7fb;font-family:'Plus Jakarta Sans',sans-serif;color:#3e4758;}
+.wrap{padding:28px 40px 36px;}
+h2{font-family:'Space Grotesk',sans-serif;font-size:32px;color:#0c1222;letter-spacing:-.03em;}
+.sub{margin:8px 0 14px;color:#5b6679;font-size:15px;max-width:78ch;line-height:1.45;}
+.legend{display:flex;gap:16px;font-size:13px;font-weight:700;margin-bottom:16px;}
+.sw{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;}
+.tl{display:flex;flex-direction:column;gap:12px;}
+.item{display:grid;grid-template-columns:150px 1fr;gap:16px;}
+.when{text-align:right;padding-top:16px;font-family:'Space Grotesk',sans-serif;color:#0c1222;}
+.when b{display:block;font-size:15px;}
+.when span{display:block;font-size:13px;color:#5b6679;font-weight:600;margin-top:2px;}
+.card{background:#fff;border:1px solid #e4e8ef;border-left:4px solid var(--t);border-radius:8px;padding:16px 18px;}
+.track{font-size:12px;font-weight:700;color:var(--t);margin-bottom:4px;}
+.head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;}
+h3{font-family:'Space Grotesk',sans-serif;font-size:18px;color:#0c1222;}
+h3 span{color:#5b6679;font-weight:500;}
+.dates{font-size:13px;color:#5b6679;font-weight:600;white-space:nowrap;}
+.sum{margin-top:6px;font-size:14px;line-height:1.45;}
+.metrics{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.m{font-size:12px;font-weight:700;color:#0c1222;background:#f5f7fb;border:1px solid #e4e8ef;border-radius:4px;padding:4px 8px;}
+.scope{font-size:12px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.direct{color:#6d28d9;background:#f5f3ff;border:1px solid #c4b5fd;}
+.matrix{color:#6d28d9;background:#f5f3ff;border:1px solid #c4b5fd;}
+.pipe{color:#1d4ed8;background:#eff6ff;border:1px solid #93c5fd;}
+.prod{color:#166534;background:#f0fdf4;border:1px solid #86efac;}
+.dom{font-size:12px;font-weight:700;padding:2px 7px;border-radius:99px;}
+.sec{background:#eef2ff;color:#4338ca;}
+.pay{background:#fdf2f8;color:#be123c;}
+.arch{color:#475569;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Experience</h2>
+  <p class="sub">Director seat is eight months. The four-and-a-half years at BP are the depth behind it. Scope is marked direct or matrix.</p>
+  <div class="legend">
+    <span><i class="sw" style="background:#6d28d9"></i>Product leadership</span>
+    <span><i class="sw" style="background:#475569"></i>Architecture</span>
+    <span><i class="sw" style="background:#a16207"></i>Quality foundation</span>
+    <span><i class="sw" style="background:#4338ca"></i>Security</span>
+    <span><i class="sw" style="background:#be123c"></i>Payments</span>
+  </div>
+  <div class="tl">
+    <div class="item">
+      <div class="when"><b>2026 – now</b><span>8 months</span></div>
+      <article class="card" style="--t:#6d28d9">
+        <div class="track">Product leadership</div>
+        <div class="head"><h3>Director of Product Management <span>· Qualys</span></h3><span class="dates">Feb 2026 – Present</span></div>
+        <p class="sum">Agentic security suite from pilots to general availability. Three PMs, enterprise customers, human-approved agent actions.</p>
+        <div class="metrics">
+          <span class="scope direct">Direct · 3 PMs</span>
+          <span class="dom sec">Security</span>
+          <span class="m pipe">$1.5M pipeline</span>
+          <span class="m">15+ pilots</span>
+          <span class="m">40% to paid POC</span>
+          <span class="m">Shipped to GA</span>
+        </div>
+      </article>
+    </div>
+    <div class="item">
+      <div class="when"><b>2021 – 2026</b><span>4.5 years</span></div>
+      <article class="card" style="--t:#6d28d9">
+        <div class="track">Product leadership</div>
+        <div class="head"><h3>Principal Product Manager <span>· BP</span></h3><span class="dates">Jul 2021 – Jan 2026</span></div>
+        <p class="sum">Enterprise GenAI and AI security for 15+ business units. This is the depth behind the Director title.</p>
+        <div class="metrics">
+          <span class="scope matrix">Matrix · 25 people</span>
+          <span class="dom sec">Security</span>
+          <span class="m prod">$2.4M savings</span>
+          <span class="m prod">$2M+ investment</span>
+          <span class="m">60% faster SOC triage</span>
+        </div>
+      </article>
+    </div>
+    <div class="item">
+      <div class="when"><b>2018 – 2020</b><span>2 years</span></div>
+      <article class="card" style="--t:#475569">
+        <div class="track">Architecture &amp; consulting</div>
+        <div class="head"><h3>Technical Architect, Payments <span>· Western Union</span></h3><span class="dates">Jan 2018 – Jan 2020</span></div>
+        <p class="sum">Voice payments and a 70% infrastructure cost cut. Payments proof for a requisition that is not security.</p>
+        <div class="metrics">
+          <span class="dom pay">Payments</span>
+          <span class="m">−70% infra cost</span>
+          <span class="m">NLP voice payments</span>
+          <span class="m">KYC platform</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+</body>
+</html>

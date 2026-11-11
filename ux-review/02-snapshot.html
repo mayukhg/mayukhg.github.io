@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Proposed · 60-second fit</title>
+<style>
+@font-face{font-family:'Plus Jakarta Sans';font-weight:400 700;src:url('../assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2');}
+@font-face{font-family:'Space Grotesk';font-weight:500 700;src:url('../assets/fonts/space-grotesk-latin.woff2') format('woff2');}
+*{box-sizing:border-box;margin:0;}
+html,body{width:1280px;height:auto;background:#f5f7fb;font-family:'Plus Jakarta Sans',sans-serif;color:#3e4758;}
+.wrap{padding:32px 40px 36px;}
+.legend{display:flex;gap:18px;align-items:center;margin-bottom:18px;font-size:13px;font-weight:600;color:#3e4758;}
+.sw{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;}
+h2{font-family:'Space Grotesk',sans-serif;font-size:28px;color:#0c1222;letter-spacing:-.02em;margin-bottom:6px;}
+.sub{color:#5b6679;font-size:15px;margin-bottom:22px;}
+.grid{display:grid;grid-template-columns:1.15fr 1.15fr .9fr;gap:14px;}
+.card{background:#fff;border:1px solid #e4e8ef;border-top:4px solid var(--tone);border-radius:8px;padding:18px 18px 8px;}
+.card h3{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--tone);margin-bottom:8px;}
+.row{display:grid;grid-template-columns:92px 1fr;gap:8px;padding:9px 0;border-top:1px solid #e4e8ef;align-items:center;}
+.row:first-of-type{border-top:0;}
+dt{font-size:12px;font-weight:700;color:#5b6679;}
+dd{font-size:14px;font-weight:600;color:#0c1222;line-height:1.35;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;}
+.sec{background:#eef2ff;color:#4338ca;}
+.pay{background:#fdf2f8;color:#be123c;}
+.an{background:#f1f5f9;color:#334155;}
+.hlth{background:#f0fdf4;color:#166534;}
+.badge{font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:1px;}
+.prod{color:#166534;background:#f0fdf4;border:1px solid #16a34a;}
+.pipe{color:#1d4ed8;background:#eff6ff;border:1px solid #60a5fa;}
+.docs{display:flex;flex-direction:column;gap:8px;margin:8px 0 14px;}
+.btn{display:flex;align-items:center;justify-content:center;height:40px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;}
+.amber{background:#fbbf24;color:#0a0f1f;}
+.amber-line{background:#fff;color:#0a0f1f;border:1px solid #fbbf24;}
+.hint{font-size:12px;color:#5b6679;padding-bottom:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="legend">
+    <span><i class="sw" style="background:#15803d"></i>Role fit</span>
+    <span><i class="sw" style="background:#6d28d9"></i>Proof</span>
+    <span><i class="sw" style="background:#475569"></i>Logistics</span>
+    <span><i class="sw" style="background:#fbbf24"></i>Documents</span>
+    <span><i class="sw" style="background:#16a34a"></i>In production</span>
+    <span><i class="sw" style="background:#2563eb"></i>Pipeline</span>
+  </div>
+  <h2>The 60-second fit</h2>
+  <p class="sub">Level, proof, and logistics. Enough to decide whether to open the résumé.</p>
+  <div class="grid">
+    <article class="card" style="--tone:#15803d">
+      <h3>Role fit</h3>
+      <div class="row"><dt>Now</dt><dd>Director of PM, Qualys</dd></div>
+      <div class="row"><dt>Open to</dt><dd>Director, AI product</dd></div>
+      <div class="row"><dt>Domains</dt><dd><div class="chips"><span class="chip sec">Security</span><span class="chip pay">Payments</span><span class="chip an">Analytics</span><span class="chip hlth">Healthcare</span></div></dd></div>
+      <div class="row"><dt>Markets</dt><dd>B2B enterprise and B2C</dd></div>
+      <div class="row"><dt>Edge</dt><dd>Architect who still prototypes. NIST and EU AI Act built in.</dd></div>
+    </article>
+    <article class="card" style="--tone:#6d28d9">
+      <h3>Proof</h3>
+      <div class="row"><dt>Savings</dt><dd>$2.4M / year <span class="badge prod">BP · In production</span></dd></div>
+      <div class="row"><dt>Pipeline</dt><dd>$1.5M POC <span class="badge pipe">Qualys · Pipeline</span></dd></div>
+      <div class="row"><dt>Traction</dt><dd>15+ pilots, 40% became paid POCs</dd></div>
+      <div class="row"><dt>Investment</dt><dd>$2M+ won from the C-suite at BP</dd></div>
+      <div class="row"><dt>Scope</dt><dd>3 PMs direct · 25 people matrix at BP</dd></div>
+    </article>
+    <article class="card" style="--tone:#475569">
+      <h3>Logistics</h3>
+      <div class="row"><dt>Based</dt><dd>Pune, India</dd></div>
+      <div class="row"><dt>Mode</dt><dd>Remote / Hybrid</dd></div>
+      <div class="row"><dt>Notice</dt><dd>30 days, negotiable</dd></div>
+      <div class="docs">
+        <a class="btn amber" href="#">Résumé PDF · Sep 2026</a>
+        <a class="btn amber-line" href="#">Portfolio PDF</a>
+      </div>
+      <p class="hint">Amber is only used for files to forward.</p>
+    </article>
+  </div>
+</div>
+</body>
+</html>
