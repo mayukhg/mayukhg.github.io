@@ -8,7 +8,6 @@
       "metrics",
       "experience",
       "how",
-      "ellyra",
       "pillars",
       "education",
       "contact"
@@ -26,7 +25,6 @@
       "portrait",
       "traits",
       "stats",
-      "snapshot-title",
       "snapshot",
       "products-title",
       "products-sub",
@@ -46,12 +44,11 @@
       "approach-title",
       "approach-sub",
       "paradigm",
-      "steps",
       "throughline",
       "principles",
+      "steps",
       "skills-title",
       "skills",
-      "flagship",
       "pillars-eyebrow",
       "pillars-title",
       "pillars-sub",
@@ -65,6 +62,7 @@
       "foot-name"
     ],
     "navLinks": [
+      "top",
       "products",
       "metrics",
       "experience",
@@ -86,7 +84,6 @@
       "portrait",
       "stats",
       "fit",
-      "snapshot-title",
       "snapshot",
       "how-quote",
       "about-body",
@@ -120,8 +117,7 @@
       "pillars-title",
       "pillars-sub",
       "moat",
-      "pillar-grid",
-      "flagship"
+      "pillar-grid"
     ],
     "icons": [
       "shield",
@@ -155,6 +151,10 @@
       {
         "tab": "tab-metrics",
         "panel": "panel-metrics"
+      },
+      {
+        "tab": "tab-walkthroughs",
+        "panel": "panel-walkthroughs"
       },
       {
         "tab": "tab-files",
@@ -326,8 +326,98 @@
         "type": "string"
       },
       {
+        "key": "subtitle",
+        "label": "Subtitle",
+        "type": "text"
+      },
+      {
+        "key": "chips",
+        "label": "Availability chips",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "tone",
+        "label": "Tone",
+        "type": "select"
+      },
+      {
+        "key": "columns",
+        "label": "Table column headers (4)",
+        "type": "lines"
+      },
+      {
+        "key": "rows",
+        "label": "Match rows",
+        "type": "array"
+      },
+      {
+        "key": "need",
+        "label": "You need",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "label": "Result value",
+        "type": "string"
+      },
+      {
+        "key": "unit",
+        "label": "Result unit",
+        "type": "string"
+      },
+      {
+        "key": "tone",
+        "label": "Result colour",
+        "type": "select"
+      },
+      {
+        "key": "proof",
+        "label": "Proof link",
+        "type": "object"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "href",
+        "label": "Href",
+        "type": "string"
+      },
+      {
+        "key": "footnote",
+        "label": "Footer note",
+        "type": "string"
+      },
+      {
+        "key": "docs",
+        "label": "Document buttons",
+        "type": "array"
+      },
+      {
+        "key": "label",
+        "label": "Label",
+        "type": "string"
+      },
+      {
+        "key": "href",
+        "label": "Href",
+        "type": "string"
+      },
+      {
+        "key": "style",
+        "label": "Style",
+        "type": "select"
+      },
+      {
         "key": "groups",
-        "label": "Groups (columns)",
+        "label": "Legacy groups (kept for older JSON; omit when empty)",
         "type": "array"
       },
       {
@@ -1074,6 +1164,101 @@
         "key": "h",
         "label": "Height",
         "type": "string"
+      },
+      {
+        "key": "disclaimer",
+        "label": "Demo / synthetic disclaimer",
+        "type": "text"
+      },
+      {
+        "key": "ecosystem",
+        "label": "Ecosystem tour",
+        "type": "object"
+      },
+      {
+        "key": "video",
+        "label": "Video path",
+        "type": "path"
+      },
+      {
+        "key": "poster",
+        "label": "Poster path",
+        "type": "path"
+      },
+      {
+        "key": "duration",
+        "label": "Duration",
+        "type": "string"
+      },
+      {
+        "key": "title",
+        "label": "Title",
+        "type": "string"
+      },
+      {
+        "key": "text",
+        "label": "Caption",
+        "type": "text"
+      },
+      {
+        "key": "products",
+        "label": "Product walkthroughs",
+        "type": "array"
+      },
+      {
+        "key": "id",
+        "label": "Product ID",
+        "type": "string"
+      },
+      {
+        "key": "video",
+        "label": "Full walkthrough video",
+        "type": "path"
+      },
+      {
+        "key": "teaser",
+        "label": "Hover teaser video",
+        "type": "path"
+      },
+      {
+        "key": "poster",
+        "label": "Poster image",
+        "type": "path"
+      },
+      {
+        "key": "duration",
+        "label": "Duration label",
+        "type": "string"
+      },
+      {
+        "key": "chapters",
+        "label": "Chapters",
+        "type": "array"
+      },
+      {
+        "key": "start",
+        "label": "Start (seconds)",
+        "type": "string"
+      },
+      {
+        "key": "time",
+        "label": "Time label",
+        "type": "string"
+      },
+      {
+        "key": "label",
+        "label": "Chapter label",
+        "type": "string"
+      },
+      {
+        "key": "decision",
+        "label": "Decision",
+        "type": "text"
+      },
+      {
+        "key": "metric",
+        "label": "Metric that watches this step",
+        "type": "text"
       }
     ],
     "uploads": [
@@ -1100,6 +1285,16 @@
         "arena": "defence"
       },
       {
+        "id": "ellyra-pulse",
+        "name": "Ellyra Pulse",
+        "arena": "applied"
+      },
+      {
+        "id": "cropguard",
+        "name": "CropGuard",
+        "arena": "applied"
+      },
+      {
         "id": "mcp",
         "name": "Exploit Validation & Remediation MCP Server",
         "arena": "agentic"
@@ -1117,16 +1312,6 @@
       {
         "id": "kyc",
         "name": "KYC-as-a-Service",
-        "arena": "applied"
-      },
-      {
-        "id": "ellyra-pulse",
-        "name": "Ellyra Pulse",
-        "arena": "applied"
-      },
-      {
-        "id": "cropguard",
-        "name": "CropGuard",
         "arena": "applied"
       }
     ],

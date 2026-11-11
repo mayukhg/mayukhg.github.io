@@ -1,48 +1,73 @@
 {
-  "date": "2026-10-21T11:19:29.628Z",
+  "date": "2026-10-22T06:08:11.005Z",
   "mode": "full",
-  "pass": 11,
+  "pass": 10,
   "fail": 0,
   "changes": {
     "added": [
-      "admin-field:demo:path"
+      "admin-field:chips:array",
+      "admin-field:columns:lines",
+      "admin-field:rows:array",
+      "admin-field:need:string",
+      "admin-field:unit:string",
+      "admin-field:proof:object",
+      "admin-field:href:string",
+      "admin-field:footnote:string",
+      "admin-field:docs:array",
+      "admin-field:style:select"
     ],
     "removed": [
-      "slot:metrics-section",
-      "admin-field:demo:url"
+      "slot:snapshot-title"
     ],
-    "total": 245
+    "total": 262
   },
   "results": [
     {
-      "group": "C. Interactions",
-      "id": "C5",
-      "name": "Deep links open products (URL hash, filtered state, experience “related product” links)",
+      "group": "B. Rendering",
+      "id": "B3",
+      "name": "Every section renders the expected number of items from content JSON",
       "status": "PASS",
-      "ms": 2510,
-      "notes": [],
+      "ms": 794,
+      "notes": [
+        "facts=8, steps=6, principles=0, products=9, glance=0, pillars=3, metrics=4, roles=7, legend=3, snapshot=6, snapItems=6, skills=10, edu=3, contact=5"
+      ],
       "shots": [],
       "error": ""
     },
     {
-      "group": "C. Interactions",
-      "id": "C6",
-      "name": "Nav links scroll to sections; active link and scrolled state update",
+      "group": "B. Rendering",
+      "id": "B5",
+      "name": "Section headings and sub-headings render exactly as written in the content files",
       "status": "PASS",
-      "ms": 5383,
-      "notes": [],
-      "shots": [],
-      "error": ""
-    },
-    {
-      "group": "D. Responsive",
-      "id": "D-1024",
-      "name": "No horizontal overflow and correct layout at 1024px (laptop)",
-      "status": "PASS",
-      "ms": 1526,
+      "ms": 762,
       "notes": [],
       "shots": [
-        "01-laptop-1024-full-page.jpg"
+        "01-products-heading.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C4",
+      "name": "Colour coding: career tracks, product arenas, snapshot groups and documents each use their own labelled colour",
+      "status": "PASS",
+      "ms": 964,
+      "notes": [],
+      "shots": [
+        "02-colour-coded-portfolio.png"
+      ],
+      "error": ""
+    },
+    {
+      "group": "C. Interactions",
+      "id": "C10",
+      "name": "Recruiter essentials: View Resume in hero; 60-second snapshot; skills “+N more”",
+      "status": "PASS",
+      "ms": 2907,
+      "notes": [],
+      "shots": [
+        "03-mobile-nav-resume.png",
+        "04-snapshot-panel.png"
       ],
       "error": ""
     },
@@ -51,89 +76,63 @@
       "id": "D-390",
       "name": "No horizontal overflow and correct layout at 390px (mobile)",
       "status": "PASS",
-      "ms": 1432,
+      "ms": 1418,
       "notes": [],
       "shots": [
-        "02-mobile-390-full-page.jpg"
+        "05-mobile-390-full-page.jpg"
       ],
       "error": ""
     },
     {
-      "group": "D. Responsive",
-      "id": "D-320",
-      "name": "No horizontal overflow and correct layout at 320px (small-mobile)",
+      "group": "S. Snapshot fit",
+      "id": "S1",
+      "name": "#snapshot table.sn-match has 6 body rows with values and resolving proof links",
       "status": "PASS",
-      "ms": 1375,
+      "ms": 795,
       "notes": [],
       "shots": [
-        "03-small-mobile-320-full-page.jpg"
+        "06-snapshot-fit-desktop.png"
       ],
       "error": ""
     },
     {
-      "group": "D. Responsive",
-      "id": "D-menu",
-      "name": "Section crumb pills are visible and clickable on mobile",
+      "group": "S. Snapshot fit",
+      "id": "S2",
+      "name": "Clicking the “MCP Server case” proof opens #p-mcp",
       "status": "PASS",
-      "ms": 1625,
-      "notes": [],
-      "shots": [
-        "04-mobile-menu-open.png"
-      ],
-      "error": ""
-    },
-    {
-      "group": "G. Admin editor",
-      "id": "G6",
-      "name": "Connect flow: bad token shows a friendly error; valid token connects",
-      "status": "PASS",
-      "ms": 964,
-      "notes": [],
-      "shots": [
-        "05-admin-connected.png"
-      ],
-      "error": ""
-    },
-    {
-      "group": "G. Admin editor",
-      "id": "G7",
-      "name": "Publish commits correct JSON to the right repo/branch with SHAs, clears dirty state",
-      "status": "PASS",
-      "ms": 914,
-      "notes": [],
-      "shots": [
-        "06-admin-published.png"
-      ],
-      "error": ""
-    },
-    {
-      "group": "G. Admin editor",
-      "id": "G8",
-      "name": "Publish detects a remote change and asks before overwriting (cancel = no commit)",
-      "status": "PASS",
-      "ms": 1337,
+      "ms": 2301,
       "notes": [],
       "shots": [],
       "error": ""
     },
     {
-      "group": "R. Auto-discovered regression",
-      "id": "R-code",
-      "name": "Code consistency: every slot rendered by script.js exists in index.html (and vice versa); icons match editor options",
+      "group": "S. Snapshot fit",
+      "id": "S3",
+      "name": "At 390px the snapshot has no horizontal overflow",
       "status": "PASS",
-      "ms": 2,
-      "notes": [
-        "49 slots, 16 icons, 14 editor icon options"
+      "ms": 888,
+      "notes": [],
+      "shots": [
+        "07-snapshot-fit-mobile.png"
       ],
+      "error": ""
+    },
+    {
+      "group": "S. Snapshot fit",
+      "id": "S4",
+      "name": "Page contains no 94% and no phone-number pattern",
+      "status": "PASS",
+      "ms": 681,
+      "notes": [],
       "shots": [],
       "error": ""
     },
     {
-      "group": "R. Auto-discovered regression",
-      "id": "R-product-cropguard",
-      "name": "Product “CropGuard”: the case opens with the right content and links",
+      "group": "S. Snapshot fit",
+      "id": "S5",
+      "name": "axe shows no serious or critical issues in #snapshot",
       "status": "PASS",
-      "ms": 2034,
+      "ms": 907,
       "notes": [],
       "shots": [],
       "error": ""

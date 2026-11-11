@@ -64,15 +64,34 @@
       try {
         var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
         if (d && d.profile && d.products) {
-          return Promise.resolve({ profile: d.profile, products: d.products, metrics: d.metrics || null, preview: true });
+          return Promise.resolve({
+            profile: d.profile,
+            products: d.products,
+            metrics: d.metrics || null,
+            walkthroughs: d.walkthroughs || null,
+            preview: true
+          });
         }
       } catch (e) { /* fall through to published content */ }
     }
     return Promise.all([
       loadJSON('content/profile.json'),
       loadJSON('content/products.json'),
-      loadJSON('content/metrics.json').catch(function () { return null; })
-    ]).then(function (r) { return { profile: r[0], products: r[1], metrics: r[2], preview: false }; });
+      loadJSON('content/metrics.json').catch(function () { return null; }),
+      loadJSON('content/walkthroughs.json').catch(function () { return null; })
+    ]).then(function (r) {
+      return { profile: r[0], products: r[1], metrics: r[2], walkthroughs: r[3], preview: false };
+    });
+  }
+
+  /* ---------- walkthrough helpers ---------- */
+  var WALKTHROUGHS = null;
+  var WT_BY_PRODUCT = {};
+  function indexWalkthroughs(w) {
+    WALKTHROUGHS = w;
+    WT_BY_PRODUCT = {};
+    if (!w || !w.products) return;
+    Object.keys(w.products).forEach(function (id) { WT_BY_PRODUCT[id] = w.products[id]; });
   }
 
   /* ---------- metrics helpers ---------- */
@@ -128,6 +147,15 @@
           '</button>';
         }).join('') + '</div></div>' : '');
   }
+  var METRICS_SITE_KEY = {
+    'agent-val': 'val',
+    'soc-portal': 'soc',
+    'ai-spm': 'spm',
+    'policy-foundry': 'pf',
+    'ellyra-pulse': 'ell',
+    'cropguard': 'agr',
+    'defence-ecosystem': 'def'
+  };
   function renderMetrics(m, products) {
     var el = slot('metrics');
     var sec = document.getElementById('metrics');
@@ -139,22 +167,30 @@
     var method = '<ol class="method-flow" aria-label="How I measure">' + arr(m.method).map(function (step, i) {
       return '<li><span class="m-step">Step ' + (i + 1) + '</span><span class="m-label">' + esc(step.label) + '</span><span class="m-text">' + esc(step.text) + '</span></li>';
     }).join('') + '</ol>';
-    var tiles = '<div class="metrics-grid">' + arr(m.apps).map(function (app) {
+    var tiles = '<div class="metrics-grid metrics-grid-compact">' + arr(m.apps).map(function (app) {
       var prod = productById[app.productId] || {};
       var arena = arenaById[prod.arena] || {};
       var color = colorVar('--arena', arena.color);
       var img = arr(app.images)[0];
-      var openTarget = app.umbrella ? 'data-umbrella="' + esc(app.id) + '"' : 'data-product="' + esc(app.productId || '') + '"';
-      return '<article class="m-tile' + (app.umbrella ? ' umbrella' : '') + '"' + color + '>' +
+      var siteKey = METRICS_SITE_KEY[app.id] || app.id;
+      var thr = arr(app.thresholds)[0];
+      var band = thr
+        ? '<div class="m-band-row" aria-label="' + esc(thr.metric) + ' thresholds">' +
+            '<span class="band band-good"><b>Good</b><span>' + esc(thr.green) + '</span></span>' +
+            '<span class="band band-watch"><b>Watch</b><span>' + esc(thr.amber) + '</span></span>' +
+            '<span class="band band-act"><b>Act</b><span>' + esc(thr.red) + '</span></span>' +
+          '</div>'
+        : '';
+      return '<a class="m-tile m-tile-compact' + (app.umbrella ? ' umbrella' : '') + '" href="metrics/#' + esc(siteKey) + '"' + color + '>' +
+        (img ? '<span class="m-thumb-sm"><img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy"></span>' : '') +
         '<h3>' + esc(app.name) + '</h3>' +
         '<p class="m-star">' + esc(app.northStar) + '</p>' +
-        (img ? '<button type="button" class="m-thumb mx-shot" data-app="' + esc(app.id) + '" data-i="0" aria-label="Enlarge ' + esc(app.name) + ' dashboard">' +
-          '<img src="' + esc(safeUrl(img.file)) + '" alt="' + esc(img.alt || app.name) + '" width="' + (img.w || 1440) + '" height="' + (img.h || 900) + '" loading="lazy">' +
-        '</button>' : '') +
-        thresholdLadder(app.thresholds, 3) +
-        '<button type="button" class="m-open" ' + openTarget + '>See how it\'s measured</button>' +
-      '</article>';
-    }).join('') + '</div>';
+        band +
+      '</a>';
+    }).join('') +
+      '<a class="m-tile m-tile-all" href="metrics/">All 38 metrics →</a>' +
+    '</div>';
+    var pdfHref = m.pdf || 'assets/My_Product_Metrics.pdf';
     el.innerHTML =
       '<div class="metrics-head">' +
         (m.eyebrow ? '<p class="eyebrow">' + esc(m.eyebrow) + '</p>' : '') +
@@ -163,7 +199,10 @@
         metricsDisclaimer(m.disclaimer) +
       '</div>' +
       method + tiles +
-      (m.pdf ? '<div class="metrics-deck">' + docLink(m.pdf, 'btn btn-doc', 'Download the full metrics deck (PDF)') + '</div>' : '') +
+      '<div class="metrics-cta">' +
+        '<a class="btn btn-doc" href="metrics/">Explore the full metrics site →</a>' +
+        '<p class="metrics-meta">7 chapters · 38 metrics · 29 dashboards · <a href="' + esc(safeUrl(pdfHref)) + '" target="_blank" rel="noopener">PDF</a></p>' +
+      '</div>' +
       '<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Dashboard image">' +
         '<div class="lightbox-dialog" tabindex="-1">' +
           '<button type="button" class="lightbox-close" aria-label="Close">×</button>' +
@@ -211,7 +250,7 @@
         '<summary class="btn">See how I fit your role</summary>' +
         '<div class="drop-panel">' +
           '<h3 class="sn-title" data-slot="snapshot-title"></h3>' +
-          '<div class="sn-grid" data-slot="snapshot"></div>' +
+          '<div class="sn-fit" data-slot="snapshot"></div>' +
         '</div>' +
       '</details>' +
       '<details class="hero-drop">' +
@@ -242,31 +281,105 @@
   }
 
   function renderSnapshot(p) {
-    var sn = p.snapshot || {}, groups = arr(sn.groups);
-    var title = slot('snapshot-title');
-    if (title) {
-      title.textContent = sn.title || 'At a glance';
-      title.hidden = !groups.length;
+    var sn = p.snapshot || {}, rows = arr(sn.rows), groups = arr(sn.groups);
+    var sec = document.getElementById('snapshot');
+    var outerTitle = slot('snapshot-title');
+    if (!rows.length && !groups.length) {
+      if (sec) sec.hidden = true;
+      if (outerTitle) outerTitle.hidden = true;
+      set('snapshot', '');
+      return;
     }
-    var grid = set('snapshot', groups.map(function (g) {
+    if (sec) sec.hidden = false;
+
+    // Requirements-match table. Fall back to the older cards when only groups exist.
+    if (rows.length) {
+      var chips = arr(sn.chips).map(function (c) {
+        var tone = /^[a-z0-9-]+$/.test(c.tone || '') ? ' data-tone="' + c.tone + '"' : '';
+        var bullet = c.tone === 'fit' ? '<span class="sn-chip-dot" aria-hidden="true">●</span>' : '';
+        return '<span class="sn-chip"' + tone + '>' + bullet + esc(c.label) + '</span>';
+      }).join('');
+      var cols = arr(sn.columns);
+      while (cols.length < 4) cols.push('');
+      var check = '<svg class="sn-check" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="currentColor" opacity=".18"/><path d="M4.6 8.2 7 10.6 11.5 5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var body = rows.map(function (r) {
+        var tone = /^[a-z0-9-]+$/.test(r.tone || '') ? r.tone : 'impact';
+        var proof = r.proof || {};
+        var href = safeUrl(proof.href);
+        return '<tr>' +
+          '<th scope="row"><span class="sn-need">' + check + '<span>' + esc(r.need) + '</span></span></th>' +
+          '<td>' + esc(r.done) + '</td>' +
+          '<td class="sn-val" data-tone="' + tone + '"><span class="sn-num">' + esc(r.value) + '</span><span class="sn-unit">' + esc(r.unit) + '</span></td>' +
+          '<td>' + (proof.label ? '<a class="sn-proof" href="' + esc(href) + '">' + esc(proof.label) + ' <span aria-hidden="true">→</span></a>' : '') + '</td>' +
+        '</tr>';
+      }).join('');
+      var docs = arr(sn.docs).map(function (d) {
+        var style = d.style || 'link';
+        var cls = style === 'primary' ? 'btn btn-doc' : style === 'doc' ? 'btn btn-doc-ghost' : 'btn btn-ghost';
+        if (style === 'primary' || style === 'doc') return docLink(d.href, cls, esc(d.label));
+        return '<a class="' + cls + '" href="' + esc(safeUrl(d.href)) + '"' + ext(d.href) + '>' + esc(d.label) + '</a>';
+      }).join('');
+      if (outerTitle && outerTitle.tagName === 'H3') outerTitle.hidden = true;
+      set('snapshot',
+        '<div class="sn-head">' +
+          '<div class="sn-head-copy">' +
+            '<h2 class="sn-title" id="snapshot-title">' + esc(sn.title || 'At a glance') + '</h2>' +
+            (sn.subtitle ? '<p class="sn-sub">' + esc(sn.subtitle) + '</p>' : '') +
+          '</div>' +
+          (chips ? '<div class="sn-chips" aria-label="Availability">' + chips + '</div>' : '') +
+        '</div>' +
+        '<table class="sn-match">' +
+          '<caption class="sr-only">How my experience matches a Director of Product role</caption>' +
+          '<thead><tr>' +
+            '<th scope="col">' + esc(cols[0]) + '</th>' +
+            '<th scope="col">' + esc(cols[1]) + '</th>' +
+            '<th scope="col">' + esc(cols[2]) + '</th>' +
+            '<th scope="col">' + esc(cols[3]) + '</th>' +
+          '</tr></thead>' +
+          '<tbody>' + body + '</tbody>' +
+        '</table>' +
+        '<div class="sn-foot">' +
+          (sn.footnote ? '<p class="sn-footnote">' + esc(sn.footnote) + '</p>' : '<span></span>') +
+          (docs ? '<div class="sn-docs">' + docs + '</div>' : '') +
+        '</div>');
+      return;
+    }
+
+    if (outerTitle) {
+      outerTitle.textContent = sn.title || 'At a glance';
+      outerTitle.hidden = false;
+    }
+    set('snapshot', '<div class="sn-grid">' + groups.map(function (g) {
       var tone = /^[a-z0-9-]+$/.test(g.tone || '') ? ' data-tone="' + g.tone + '"' : '';
       return '<div class="sn-card"' + tone + '><h3>' + esc(g.name) + '</h3><dl>' + arr(g.items).map(function (it) {
         return '<div class="sn-item"><dt>' + esc(it.label) + '</dt><dd>' + md(it.value) + '</dd></div>';
       }).join('') + '</dl></div>';
-    }).join(''));
+    }).join('') + '</div>');
   }
 
   function renderAbout(p) {
     var a = p.about || {};
     var paras = arr(a.paragraphs);
-    // Two-line pull quote from the first sentence of each paragraph.
-    var quotes = paras.map(function (t) {
+    // First two sentences visible; full about + facts behind Read more.
+    var preview = [];
+    paras.forEach(function (t) {
       var plain = String(t).replace(/\*\*/g, '');
-      var m = plain.match(/^[^.!?]+[.!?]/);
-      return m ? m[0].trim() : plain;
-    }).filter(Boolean).slice(0, 2);
-    set('how-quote', quotes.map(function (q) { return '<p>' + esc(q) + '</p>'; }).join(''));
-    set('about-body', paras.map(function (t) { return '<p>' + md(t) + '</p>'; }).join(''));
+      var parts = plain.match(/[^.!?]+[.!?]+/g) || [plain];
+      parts.forEach(function (s) { if (preview.length < 2) preview.push(s.trim()); });
+    });
+    set('how-quote', preview.map(function (q) { return '<p>' + esc(q) + '</p>'; }).join(''));
+    var factsHtml = arr(a.facts).length
+      ? '<dl class="facts how-facts-toggle">' + arr(a.facts).map(function (f) {
+          return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
+        }).join('') + '</dl>'
+      : '';
+    set('about-body', paras.map(function (t) { return '<p>' + md(t) + '</p>'; }).join('') + factsHtml);
+    set('facts', '');
+    var factsSlot = slot('facts');
+    if (factsSlot) {
+      var side = factsSlot.closest('.about-side');
+      if (side) side.hidden = true;
+    }
     var more = document.getElementById('how-more');
     var full = document.getElementById('how-about-full');
     if (more && full && paras.length) {
@@ -278,9 +391,6 @@
         more.textContent = open ? 'Show less' : 'Read more';
       };
     }
-    set('facts', arr(a.facts).map(function (f) {
-      return '<div class="fact"><dt>' + esc(f.label) + '</dt><dd>' + esc(f.value) + '</dd></div>';
-    }).join(''));
   }
 
   function renderApproach(p) {
@@ -301,9 +411,12 @@
     set('steps', arr(a.steps).map(function (st, i) {
       return '<li class="step"><span class="step-icon" aria-hidden="true"><svg><use href="#' + stepIcons[i % stepIcons.length] + '"/></svg></span><h3>' + esc(st.title) + '</h3><p>' + esc(st.text) + '</p></li>';
     }).join(''));
-    slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 6));
+    slot('steps').style.setProperty('--cols', Math.min(arr(a.steps).length || 1, 3));
     set('throughline', md(a.throughline)).hidden = !a.throughline;
-    set('principles', arr(a.principles).map(function (s) { return '<div class="principle"><h3>' + esc(s.title) + '</h3><p>' + md(s.text) + '</p></div>'; }).join(''));
+    // Principle cards removed — hero traits already cover this.
+    set('principles', '');
+    var prin = slot('principles');
+    if (prin) prin.hidden = true;
   }
 
   function domainFilters(d) {
@@ -315,6 +428,43 @@
       used.map(function (a) {
         return '<button type="button" class="chipbtn" data-f="' + esc(a.id) + '" aria-pressed="false"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(a.label) + ' <span class="ct">' + counts[a.id] + '</span></button>';
       }).join('');
+  }
+
+  function walkthroughPanelHtml(productId, wt) {
+    var chapters = arr(wt.chapters);
+    var disc = (WALKTHROUGHS && WALKTHROUGHS.disclaimer) || 'Demo environment · synthetic data';
+    var chBtns = chapters.map(function (ch, i) {
+      return '<button type="button" class="wt-chapter" data-start="' + esc(ch.start) + '" data-i="' + i + '"' +
+        ' data-label="' + esc(ch.label) + '" data-decision="' + esc(ch.decision) + '" data-metric="' + esc(ch.metric) + '"' +
+        (i === 0 ? ' aria-current="step"' : '') + '>' +
+        '<span class="wt-ch-time">' + esc(ch.time) + '</span>' +
+        '<span class="wt-ch-label">' + esc(ch.label) + '</span>' +
+        '<span class="wt-ch-decision"><b>Decision.</b> ' + esc(ch.decision) + '</span>' +
+        '<span class="wt-ch-metric"><b>Metric.</b> ' + esc(ch.metric) + '</span>' +
+      '</button>';
+    }).join('');
+    var first = chapters[0] || {};
+    return '<div class="wt-panel" data-wt-product="' + esc(productId) + '">' +
+      '<div class="wt-media">' +
+        '<div class="wt-video-wrap">' +
+          '<span class="wt-demo" role="note">' + esc(disc) + '</span>' +
+          '<video class="wt-video" controls playsinline preload="metadata" poster="' + esc(safeUrl(wt.poster)) + '">' +
+            '<source src="' + esc(safeUrl(wt.video)) + '" type="video/mp4">' +
+          '</video>' +
+        '</div>' +
+        '<div class="wt-now" aria-live="polite">' +
+          '<p class="wt-now-kicker">Now showing</p>' +
+          '<p class="wt-now-title"><span class="wt-now-n">1</span>. <span class="wt-now-label">' + esc(first.label || '') + '</span></p>' +
+          '<p class="wt-now-decision"><b>Decision.</b> <span>' + esc(first.decision || '') + '</span></p>' +
+          '<p class="wt-now-metric"><b>Metric that watches this step.</b> <span>' + esc(first.metric || '') + '</span></p>' +
+        '</div>' +
+        '<p class="wt-hint">Select a chapter to jump to that step. The chapter list is the text version of the video.</p>' +
+      '</div>' +
+      '<div class="wt-chapters">' +
+        '<h4 class="wt-ch-head">Chapters · user journey</h4>' +
+        '<div class="wt-ch-list">' + chBtns + '</div>' +
+      '</div>' +
+    '</div>';
   }
 
   function renderProducts(d) {
@@ -335,10 +485,9 @@
       var headline = p.headline || arr(p.outcomes)[0];
       var tags = arr(p.stack).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
       var links = '';
-      var teardown = (d.flagship && d.flagship.productId === p.id) ? '<a class="acc-tear" href="#ellyra">Architecture teardown</a>' : '';
+      var wt = WT_BY_PRODUCT[p.id];
       if (p.github) links += '<a class="acc-link" href="' + esc(safeUrl(p.github)) + '"' + ext(p.github) + '>' + icon('i-gh') + 'View on GitHub</a>';
-      var isVideo = p.demo && /\.mp4(\?|$)/i.test(p.demo);
-      if (p.demo && !isVideo) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
+      if (p.demo && !/\.mp4(\?|$)/i.test(p.demo)) links += '<a class="acc-link" href="' + esc(safeUrl(p.demo)) + '"' + ext(p.demo) + '>' + icon('i-arrow') + 'Live demo</a>';
       var snaps = [['Customer pain', p.pain], ['The product bet', p.bet], [p.whyLabel || 'Why AI is the right call', p.why]]
         .filter(function (x) { return x[1]; })
         .map(function (x, k) { return '<div class="snap" style="--i:' + k + '"><h4>' + esc(x[0]) + '</h4><p>' + md(x[1]) + '</p></div>'; }).join('');
@@ -356,44 +505,55 @@
         else noteBadge = '<p class="note">' + md(p.note) + '</p>';
       }
       var evidenceBadges = evBadge(p.evidence) + (noteKey === 'prototype' ? noteBadge : '');
-      var videoBlock = isVideo
-        ? '<figure class="acc-video"><video controls preload="none" poster="' + esc(safeUrl(p.poster || p.thumbnail || 'assets/cropguard/workflow.webp')) + '">' +
-            '<source src="' + esc(safeUrl(p.demo)) + '" type="video/mp4"></video>' +
-            '<figcaption>Walkthrough (click to play — does not autoplay)</figcaption></figure>'
-        : '';
-      var figure = (p.thumbnail || p.poster)
+      // Walkthrough tab replaces the old inline Case-tab video; keep workflow figure only.
+      var figure = (p.thumbnail || (!wt && p.poster))
         ? '<figure class="acc-figure"><img src="' + esc(safeUrl(p.thumbnail || p.poster)) + '" alt="' + esc(p.name) + ' architecture workflow" width="1200" height="675" loading="lazy"></figure>'
         : '';
+      var teardownBlock = (d.flagship && d.flagship.productId === p.id) ? flagshipTeardownHtml(d.flagship) : '';
       var caseHtml =
         (p.summary ? '<p class="acc-brief">' + md(p.summary) + '</p>' : '') +
-        figure + videoBlock +
+        figure +
         ((tags || links) ? '<div class="acc-tools">' + (tags ? '<div class="acc-meta">' + tags + '</div>' : '') + links + '</div>' : '') +
         (snaps ? '<div class="snapshot">' + snaps + '</div>' : '') +
         (decide ? '<div class="decide">' + decide + '</div>' : '') +
-        (noteBadge && noteKey !== 'prototype' ? noteBadge : '');
+        (noteBadge && noteKey !== 'prototype' ? noteBadge : '') +
+        teardownBlock;
       var bodyInner;
-      if (mx) {
-        var caseId = 'case-' + id, mxId = 'mx-' + id;
+      var hasTabs = !!(wt || mx);
+      if (hasTabs) {
+        var wtId = 'wt-' + id, caseId = 'case-' + id, mxId = 'mx-' + id;
+        var tabs = '';
+        tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="true" tabindex="0" data-tab="case">Case</button>';
+        if (mx) {
+          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>';
+        }
+        if (wt) {
+          tabs += '<button type="button" class="case-tab" role="tab" id="tab-' + wtId + '" aria-controls="' + wtId + '" aria-selected="false" tabindex="-1" data-tab="walkthrough">Walkthrough</button>';
+        }
         bodyInner =
-          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' case and metrics">' +
-            '<button type="button" class="case-tab" role="tab" id="tab-' + caseId + '" aria-controls="' + caseId + '" aria-selected="true" tabindex="0" data-tab="case">Case</button>' +
-            '<button type="button" class="case-tab" role="tab" id="tab-' + mxId + '" aria-controls="' + mxId + '" aria-selected="false" tabindex="-1" data-tab="metrics">Metrics</button>' +
-          '</div>' +
+          '<div class="case-tabs" role="tablist" aria-label="' + esc(p.name) + ' case, metrics and walkthrough">' + tabs + '</div>' +
           '<div class="case-panel" role="tabpanel" id="' + caseId + '" aria-labelledby="tab-' + caseId + '">' + caseHtml + '</div>' +
-          '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>';
+          (mx ? '<div class="case-panel" role="tabpanel" id="' + mxId + '" aria-labelledby="tab-' + mxId + '" hidden data-metrics-panel>' + metricsDetailHtml(mx) + '</div>' : '') +
+          (wt ? '<div class="case-panel" role="tabpanel" id="' + wtId + '" aria-labelledby="tab-' + wtId + '" hidden>' + walkthroughPanelHtml(p.id, wt) + '</div>' : '');
       } else {
         bodyInner = caseHtml;
       }
       var thumbSrc = p.thumbnail || p.poster || (mx && arr(mx.images)[0] && arr(mx.images)[0].file);
       var arenaCol = dom.color || a.color || '#9cc4ff';
       var thumbHtml;
-      if (thumbSrc) {
+      if (wt && wt.teaser) {
+        thumbHtml = '<div class="tile-thumb tile-thumb-video">' +
+          '<video class="tile-teaser" muted playsinline loop preload="none" poster="' + esc(safeUrl(wt.poster || thumbSrc || '')) + '" src="' + esc(safeUrl(wt.teaser)) + '" aria-hidden="true"></video>' +
+          '<button type="button" class="tile-wt-badge" data-open-walkthrough="' + esc(id) + '" aria-label="Open ' + esc(p.name) + ' walkthrough, ' + esc(wt.duration || '') + '">▶ Walkthrough · ' + esc(wt.duration || '') + '</button>' +
+        '</div>';
+      } else if (thumbSrc) {
         thumbHtml = '<div class="tile-thumb"><img src="' + esc(safeUrl(thumbSrc)) + '" alt="" width="640" height="360" loading="lazy"></div>';
       } else {
         var icn = (['shield','target','chip','wrench','grid','trend','alert','globe','bank','bolt','search','layers','heart','leaf'].indexOf(p.icon) > -1) ? p.icon : 'layers';
         thumbHtml = '<div class="tile-thumb tile-pattern" style="--arena:' + arenaCol + '" aria-hidden="true"><span class="tile-ico"><svg><use href="#g-' + icn + '"/></svg></span></div>';
       }
       var decisionClamp = p.tradeoff || p.summary || '';
+      var openLabel = wt ? 'Watch the case' : 'Read the case';
       return '<article class="acc tile" data-arena="' + esc(p.arena) + '" data-domain="' + esc(p.domain || '') + '" id="p-' + esc(id) + '"' + color + '>' +
         '<div class="acc-face">' +
           thumbHtml +
@@ -405,9 +565,8 @@
             (decisionClamp ? '<p class="tile-decision">' + md(decisionClamp) + '</p>' : '') +
             (p.client ? '<p class="tile-client"><span class="client">' + esc(p.client) + '</span></p>' : '') +
             '<div class="acc-links">' +
-              teardown +
               '<button class="acc-toggle" type="button" aria-expanded="false" aria-controls="b-' + esc(id) + '">' +
-                '<span class="t-labels"><span class="t-open">Read the case</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
+                '<span class="t-labels"><span class="t-open">' + openLabel + '</span><span class="t-close" aria-hidden="true">Hide details</span></span>' +
                 '<span class="t-arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
               '</button>' +
             '</div>' +
@@ -451,15 +610,38 @@
     function list(title, items) {
       return arr(items).length ? '<div class="eco-col"><h3>' + esc(title) + '</h3><ul>' + arr(items).map(function (t) { return '<li>' + md(t) + '</li>'; }).join('') + '</ul></div>' : '';
     }
+    var ecoWt = WALKTHROUGHS && WALKTHROUGHS.ecosystem;
+    var disc = (WALKTHROUGHS && WALKTHROUGHS.disclaimer) || 'Demo environment · synthetic data';
+    var tour = ecoWt
+      ? '<div class="eco-tour">' +
+          '<div class="eco-video-wrap">' +
+            '<span class="wt-demo" role="note">' + esc(disc) + '</span>' +
+            '<video class="eco-video" controls playsinline preload="none" poster="' + esc(safeUrl(ecoWt.poster)) + '">' +
+              '<source src="' + esc(safeUrl(ecoWt.video)) + '" type="video/mp4">' +
+            '</video>' +
+            (ecoWt.title ? '<p class="eco-video-title">' + esc(ecoWt.title) + (ecoWt.duration ? ' · ' + esc(ecoWt.duration) : '') + '</p>' : '') +
+            (ecoWt.text ? '<p class="eco-video-text">' + esc(ecoWt.text) + '</p>' : '') +
+          '</div>' +
+          '<div class="pillars">' + arr(e.pillars).map(function (x) {
+            return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
+          }).join('') + '</div>' +
+        '</div>' +
+        '<p class="eco-loop">One trust layer: Detect feeds Prevent; Protect is watched by Detect.</p>'
+      : '<div class="pillars">' + arr(e.pillars).map(function (x) {
+          return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
+        }).join('') + '</div>';
+    var why = (arr(e.opportunity).length || arr(e.differentiator).length)
+      ? '<details class="eco-why"><summary>Why this platform</summary><div class="eco-cols">' +
+          list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) +
+        '</div></details>'
+      : '';
     el.innerHTML = '<div class="wrap">' +
       '<p class="eyebrow">' + esc(e.eyebrow || 'Spotlight') + '</p>' +
       '<h2 class="s-title">' + esc(e.title) + '</h2>' +
       '<p class="s-sub">' + esc(e.subtitle) + '</p>' +
-      '<div class="pillars">' + arr(e.pillars).map(function (x) {
-        return '<div class="pillar"><span class="ph">' + esc(x.phase) + '</span><h3>' + esc(x.name) + '</h3><p>' + md(x.text) + '</p></div>';
-      }).join('') + '</div>' +
+      tour +
       (e.spine ? '<p class="spine">' + md(e.spine) + '</p>' : '') +
-      '<div class="eco-cols">' + list('The opportunity', e.opportunity) + list('The differentiator', e.differentiator) + '</div>' +
+      why +
       (EVIDENCE[e.evidence] && arr(e.metrics).length ? '<p class="metrics-ev">' + evBadge(e.evidence) + '</p>' : '') +
       '<div class="metrics">' + arr(e.metrics).map(function (m) {
         return '<div class="metric"><span class="n">' + esc(m.value) + '</span><span class="l">' + esc(m.label) + '</span><span class="c">' + esc(m.caption) + '</span></div>';
@@ -468,40 +650,49 @@
       '</div>';
   }
 
-  // Experience as a colour-coded timeline: every role's headline is visible at once (for scanning);
-  // the full achievements expand per role. All roles start collapsed for a shorter first skim.
+  // Compact experience: career bar + one row per role; achievements collapsed by default.
   function renderExperience(p, productIndex, arenaById) {
     var x = p.experience || {}, roles = arr(x.roles), trackById = {};
     arr(x.tracks).forEach(function (t) { trackById[t.id] = t; });
     set('exp-title', esc(x.title));
     set('exp-sub', esc(x.subtitle));
-    var used = arr(x.tracks).filter(function (t) { return roles.some(function (r) { return r.track === t.id; }); });
-    set('exp-legend', used.map(function (t) {
-      return '<li' + colorVar('--track', t.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(t.label) + '</li>';
-    }).join('')).hidden = !used.length;
+    var career = [
+      { label: 'Quality', span: '2005–13', years: 8, color: '#7dd3a7' },
+      { label: 'Architecture', span: '2013–21', years: 8, color: '#9cc4ff' },
+      { label: 'Product leadership', span: '2021–now', years: 5, color: '#fbbf24' }
+    ];
+    var totalYears = career.reduce(function (s, c) { return s + c.years; }, 0);
+    var legend = slot('exp-legend');
+    if (legend) {
+      legend.hidden = false;
+      legend.className = 'career-bar';
+      legend.setAttribute('aria-label', 'Career stages');
+      legend.innerHTML = career.map(function (c) {
+        return '<li style="--track:' + c.color + ';flex:' + c.years + '"><span class="cb-label">' + esc(c.label) + '</span><span class="cb-span">' + esc(c.span) + '</span></li>';
+      }).join('');
+    }
     set('exp-timeline', roles.map(function (r, i) {
       var k = slug(r.tab || r.company, i), t = trackById[r.track] || {}, open = false;
       var bullets = arr(r.bullets);
       var rel = arr(r.related).map(function (id) {
         var prod = productIndex[slug(id)], a = prod && arenaById[prod.arena] || {};
-        return prod ? '<a href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '><span class="swatch" aria-hidden="true"></span>' + esc(prod.name) + '</a>' : '';
+        return prod ? '<a class="exp-rel" href="#p-' + esc(slug(id)) + '"' + colorVar('--arena', a.color) + '>' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean);
-      return '<li class="tl-item' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
-        '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
-        '<div class="tl-card">' +
-          (t.label ? '<span class="tl-track">' + esc(t.label) + '</span>' : '') +
-          '<div class="exp-head"><div><h3>' + esc(r.title) + (r.company ? ' <span>@ ' + esc(r.company) + '</span>' : '') + '</h3>' +
-          (r.org ? '<p class="exp-org">' + esc(r.org) + '</p>' : '') + '</div>' +
-          (r.dates ? '<span class="pill-date">' + esc(r.dates) + '</span>' : '') + '</div>' +
-          (r.summary ? '<p class="exp-summary">' + md(r.summary) + '</p>' : '') +
-          (r.scope ? '<p class="scope-row"><span class="scope">' + esc(r.scope) + '</span></p>' : '') +
+      return '<li class="tl-item tl-row' + (open ? ' open' : '') + '" id="role-' + k + '" data-domains="' + esc(arr(r.domains).join(' ')) + '"' + colorVar('--track', t.color) + '>' +
+        '<div class="tl-row-main">' +
+          '<span class="tl-period">' + esc(r.period) + (r.duration ? '<span class="tl-dur">' + esc(r.duration) + '</span>' : '') + '</span>' +
+          '<span class="tl-role">' +
+            (t.label ? '<span class="tl-track">' + esc(t.label) + '</span> ' : '') +
+            '<strong class="exp-title">' + esc(r.title) + '</strong>' + (r.company ? ' <span class="tl-at">@ ' + esc(r.company) + '</span>' : '') +
+            (r.dates ? ' <span class="pill-date">' + esc(r.dates) + '</span>' : '') +
+          '</span>' +
           (arr(r.metrics).length ? '<ul class="exp-metrics" aria-label="Key metrics">' + arr(r.metrics).map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '') +
-          (rel.length ? '<p class="stackline"><b>Related product' + (rel.length > 1 ? 's' : '') + ':</b> ' + rel.join('') + '</p>' : '') +
-          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="' + open + '" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
-            '<span class="tl-label">' + (open ? 'Hide achievements' : 'Show ' + bullets.length + ' achievements') + '</span><svg aria-hidden="true"><use href="#i-chev"/></svg></button>' +
-            '<div class="tl-body" id="tb-' + k + '"' + (open ? '' : ' inert') + '><div class="tl-inner"><ul class="exp-list">' +
-            bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
+          (rel.length ? '<span class="exp-rels">' + rel.join('') + '</span>' : '') +
+          (bullets.length ? '<button class="tl-toggle" type="button" aria-expanded="false" aria-controls="tb-' + k + '" data-n="' + bullets.length + '">' +
+            '<span class="tl-label">Achievements ▾</span></button>' : '') +
         '</div>' +
+        (bullets.length ? '<div class="tl-body" id="tb-' + k + '" inert><div class="tl-inner"><ul class="exp-list">' +
+          bullets.map(function (b) { return '<li>' + md(b) + '</li>'; }).join('') + '</ul></div></div>' : '') +
       '</li>';
     }).join(''));
   }
@@ -509,18 +700,30 @@
   function renderRest(p) {
     var s = p.skills || {}, links = p.links || {};
     set('skills-title', esc(s.title));
-    // Top skills first; the rest sit behind a "+N more" toggle so each group stays scannable.
-    var TOP = 6;
-    set('skills', arr(s.groups).map(function (g, gi) {
-      var items = arr(g.items), extra = items.length - TOP;
-      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills" id="sk-' + gi + '">' + items.map(function (t, i) {
+    // One compact row of ~10 chips; full groups behind All skills.
+    var flat = [];
+    arr(s.groups).forEach(function (g) {
+      arr(g.items).forEach(function (t) {
+        flat.push({ label: typeof t === 'object' && t ? (t.label || '') : t, href: typeof t === 'object' && t ? t.href : '', group: g.name });
+      });
+    });
+    var TOP = 10;
+    var topHtml = '<ul class="pills skills-top" id="sk-top">' + flat.slice(0, TOP).map(function (t) {
+      var inner = t.href ? '<a href="' + esc(safeUrl(t.href)) + '">' + esc(t.label) + '</a>' : esc(t.label);
+      return '<li class="pill">' + inner + '</li>';
+    }).join('') + '</ul>';
+    var fullHtml = '<div class="skills-full" id="sk-full" hidden>' + arr(s.groups).map(function (g, gi) {
+      return '<div class="skill-card"><h3>' + esc(g.name) + '</h3><ul class="pills">' + arr(g.items).map(function (t) {
         var label = typeof t === 'object' && t ? (t.label || '') : t;
         var href = typeof t === 'object' && t && t.href ? t.href : '';
         var inner = href ? '<a href="' + esc(safeUrl(href)) + '">' + esc(label) + '</a>' : esc(label);
-        return '<li class="pill' + (i >= TOP ? ' pill-extra' : '') + '"' + (i >= TOP ? ' hidden' : '') + '>' + inner + '</li>';
-      }).join('') + '</ul>' +
-      (extra > 0 ? '<button type="button" class="pill-more" aria-expanded="false" aria-controls="sk-' + gi + '" data-more="+' + extra + ' more">+' + extra + ' more</button>' : '') + '</div>';
-    }).join(''));
+        return '<li class="pill">' + inner + '</li>';
+      }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+    var moreBtn = flat.length > TOP
+      ? '<button type="button" class="pill-more skills-all" aria-expanded="false" aria-controls="sk-full" data-more="All skills ▾">All skills ▾</button>'
+      : '';
+    set('skills', topHtml + moreBtn + fullHtml);
 
     var w = p.writing || {};
     var wl = '';
@@ -571,8 +774,11 @@
         var prod = productIndex[slug(id)];
         return prod ? '<a href="#p-' + esc(slug(id)) + '">' + esc(prod.name) + '</a>' : '';
       }).filter(Boolean).join('');
+      var cta = item.cta && item.cta.href
+        ? '<p class="tp-cta"><a href="' + esc(safeUrl(item.cta.href)) + '">' + esc(item.cta.label || 'Learn more') + '</a></p>'
+        : '';
       return '<article class="trust-pillar"><p class="tp-org">' + esc(item.org || '') + '</p><h3>' + esc(item.name) + '</h3><p>' + md(item.proof || '') + '</p>' +
-        (links ? '<p class="tp-links">' + links + '</p>' : '') + '</article>';
+        (links ? '<p class="tp-links">' + links + '</p>' : '') + cta + '</article>';
     }).join(''));
   }
 
@@ -618,13 +824,9 @@
     return '';
   }
 
-  function renderFlagship(d) {
-    var f = d.flagship || {}, panels = arr(f.panels);
-    var sec = document.getElementById('ellyra');
-    var el = slot('flagship');
-    if (!el) return;
-    if (!f.title || !panels.length) { if (sec) sec.hidden = true; el.innerHTML = ''; return; }
-    if (sec) sec.hidden = false;
+  function flagshipTeardownHtml(f) {
+    var panels = arr(f.panels);
+    if (!panels.length) return '';
     var tabs = panels.map(function (panel, i) {
       var selected = i === 0;
       return '<button type="button" class="tear-tab" role="tab" id="tab-' + esc(panel.id) + '" aria-controls="panel-' + esc(panel.id) + '" aria-selected="' + selected + '" tabindex="' + (selected ? '0' : '-1') + '">' + esc(panel.label) + '</button>';
@@ -636,12 +838,14 @@
         panelBody(panel) +
       '</div>';
     }).join('');
-    el.innerHTML =
-      '<p class="eyebrow">' + esc(f.eyebrow || 'Flagship') + '</p>' +
-      '<h2 class="s-title" id="ellyra-title">' + esc(f.title) + '</h2>' +
-      '<p class="s-sub">' + esc(f.subtitle || '') + '</p>' +
+    return '<div class="case-teardown">' +
+      '<h3 class="tear-in-case">Architecture teardown</h3>' +
       (f.thesis ? '<p class="flag-thesis">' + md(f.thesis) + '</p>' : '') +
-      '<div class="teardown"><div class="tear-tabs" role="tablist" aria-label="Ellyra Pulse architecture">' + tabs + '</div>' + bodies + '</div>';
+      '<div class="teardown"><div class="tear-tabs" role="tablist" aria-label="Ellyra Pulse architecture">' + tabs + '</div>' + bodies + '</div>' +
+    '</div>';
+  }
+  function renderFlagship() {
+    // Standalone #ellyra / flagship slot removed — teardown lives inside the Ellyra Pulse case.
   }
 
   function render(c) {
@@ -649,11 +853,12 @@
     arr(c.products.products).forEach(function (p) { productIndex[slug(p.id || p.name)] = p; });
     arr(c.products.arenas).forEach(function (a) { arenaById[a.id] = a; });
     indexMetrics(c.metrics);
+    indexWalkthroughs(c.walkthroughs);
     renderHero(c.profile, arr(c.products.products).length);
     renderFit(c.profile);
     renderPillars(c.profile, productIndex);
     renderSnapshot(c.profile);
-    renderFlagship(c.products);
+    renderFlagship();
     renderAbout(c.profile);
     renderApproach(c.profile);
     renderGlance(c.products);
@@ -663,7 +868,7 @@
     renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .sn-head, .sn-match, .sn-foot, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
       .forEach(function (el) { if (!el.closest('.hero-drop')) el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -681,6 +886,12 @@
     // card surface is a mouse/touch shortcut. Height animates in CSS (grid rows 0fr → 1fr).
     function setAcc(acc, open) {
       var btn = acc.querySelector('.acc-toggle'), body = acc.querySelector('.acc-body');
+      // One open product at a time so the expanded walkthrough/case can use the full grid width.
+      if (open) {
+        document.querySelectorAll('.acc.open').forEach(function (other) {
+          if (other !== acc) setAcc(other, false);
+        });
+      }
       acc.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       btn.querySelector('.t-open').setAttribute('aria-hidden', open ? 'true' : 'false');
@@ -742,19 +953,23 @@
       if (card.hidden) applyFilter('all');
       card.classList.add('in');
       setAcc(card, true);
-      if (tab === 'metrics') selectCaseTab(card, 'metrics');
-      else if (card.querySelector('.case-tab')) selectCaseTab(card, 'case');
+      var which = tab || 'case';
+      if (which === 'walkthrough' && !card.querySelector('.case-tab[data-tab="walkthrough"]')) which = 'case';
+      if (which === 'metrics' && !card.querySelector('.case-tab[data-tab="metrics"]')) which = 'case';
+      if (card.querySelector('.case-tab')) selectCaseTab(card, which);
       var y = 0, el = card;
       while (el) { y += el.offsetTop; el = el.offsetParent; }
       window.scrollTo({ top: Math.max(0, y - nav.offsetHeight - 16) });
-      var focusEl = tab === 'metrics' ? card.querySelector('.case-tab[data-tab="metrics"]') : card.querySelector('.acc-toggle');
+      var focusEl = card.querySelector('.case-tab[data-tab="' + which + '"]') || card.querySelector('.acc-toggle');
       if (focusEl) focusEl.focus({ preventScroll: true });
       return true;
     }
     function openFromHash() {
       var raw = decodeURIComponent(location.hash.slice(1));
+      var wt = raw.match(/^(p-[\w-]+)-walkthrough$/);
+      if (wt) { openProduct(wt[1], 'walkthrough'); return; }
       var m = raw.match(/^(p-[\w-]+)(?:\/(metrics))?$/);
-      if (m) openProduct(m[1], m[2] || 'case');
+      if (m) openProduct(m[1], m[2] || null);
     }
 
     /* Case / Metrics tabs */
@@ -787,12 +1002,86 @@
         if (location.hash !== '#' + id + '/metrics') history.pushState(null, '', '#' + id + '/metrics');
       });
     });
+    document.querySelectorAll('[data-open-walkthrough]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = 'p-' + btn.getAttribute('data-open-walkthrough');
+        openProduct(id, 'walkthrough');
+        if (location.hash !== '#' + id + '-walkthrough') history.pushState(null, '', '#' + id + '-walkthrough');
+      });
+    });
     document.querySelectorAll('.m-open[data-product]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var pid = btn.getAttribute('data-product');
         if (!pid) return;
         openProduct('p-' + slug(pid), 'metrics');
         history.pushState(null, '', '#p-' + slug(pid) + '/metrics');
+      });
+    });
+
+    /* Tile hover/focus teasers — never on load, touch, or reduced motion */
+    var canHoverTeaser = window.matchMedia('(hover: hover)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.acc.tile').forEach(function (tile) {
+      var teaser = tile.querySelector('.tile-teaser');
+      if (!teaser) return;
+      function playTeaser() {
+        if (!canHoverTeaser) return;
+        var p = teaser.play();
+        if (p && p.catch) p.catch(function () { /* autoplay policy */ });
+      }
+      function pauseTeaser() {
+        teaser.pause();
+        try { teaser.currentTime = 0; } catch (e) { /* ignore */ }
+      }
+      tile.addEventListener('mouseenter', playTeaser);
+      tile.addEventListener('mouseleave', pauseTeaser);
+      tile.addEventListener('focusin', playTeaser);
+      tile.addEventListener('focusout', function (e) {
+        if (!tile.contains(e.relatedTarget)) pauseTeaser();
+      });
+    });
+
+    /* Walkthrough chapters + Now showing */
+    document.querySelectorAll('.wt-panel').forEach(function (panel) {
+      var video = panel.querySelector('.wt-video');
+      var chapters = [].slice.call(panel.querySelectorAll('.wt-chapter'));
+      var nowN = panel.querySelector('.wt-now-n');
+      var nowLabel = panel.querySelector('.wt-now-label');
+      var nowDecision = panel.querySelector('.wt-now-decision span');
+      var nowMetric = panel.querySelector('.wt-now-metric span');
+      if (!video || !chapters.length) return;
+      function paintChapter(i) {
+        var ch = chapters[i];
+        if (!ch) return;
+        chapters.forEach(function (c, j) {
+          if (j === i) c.setAttribute('aria-current', 'step');
+          else c.removeAttribute('aria-current');
+        });
+        if (nowN) nowN.textContent = String(i + 1);
+        if (nowLabel) nowLabel.textContent = ch.getAttribute('data-label') || '';
+        if (nowDecision) nowDecision.textContent = ch.getAttribute('data-decision') || '';
+        if (nowMetric) nowMetric.textContent = ch.getAttribute('data-metric') || '';
+      }
+      function chapterIndexAt(t) {
+        var idx = 0;
+        for (var i = 0; i < chapters.length; i++) {
+          if (t + 0.05 >= parseFloat(chapters[i].getAttribute('data-start'))) idx = i;
+        }
+        return idx;
+      }
+      chapters.forEach(function (btn, i) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var start = parseFloat(btn.getAttribute('data-start')) || 0;
+          video.currentTime = start;
+          paintChapter(i);
+          var p = video.play();
+          if (p && p.catch) p.catch(function () { /* ignore */ });
+        });
+      });
+      video.addEventListener('timeupdate', function () {
+        paintChapter(chapterIndexAt(video.currentTime));
       });
     });
 
@@ -901,12 +1190,20 @@
         }
       });
     });
-    document.querySelectorAll('.tp-links a').forEach(function (a) {
+    document.querySelectorAll('.tp-links a, .tp-cta a').forEach(function (a) {
       a.addEventListener('click', function (e) {
-        var id = (a.getAttribute('href') || '').slice(1);
-        if (openProduct(id)) {
+        var raw = (a.getAttribute('href') || '').slice(1);
+        var wt = raw.match(/^(p-[\w-]+)-walkthrough$/);
+        if (wt) {
           e.preventDefault();
-          if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+          openProduct(wt[1], 'walkthrough');
+          if (location.hash !== '#' + raw) history.pushState(null, '', '#' + raw);
+          return;
+        }
+        var m = raw.match(/^(p-[\w-]+)(?:\/(metrics))?$/);
+        if (m && openProduct(m[1], m[2] || null)) {
+          e.preventDefault();
+          if (location.hash !== '#' + raw) history.pushState(null, '', '#' + raw);
         }
       });
     });
@@ -988,19 +1285,22 @@
         var open = !item.classList.contains('open');
         item.classList.toggle('open', open);
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.querySelector('.tl-label').textContent = open ? 'Hide achievements' : 'Show ' + btn.dataset.n + ' achievements';
+        btn.querySelector('.tl-label').textContent = open ? 'Achievements ▴' : 'Achievements ▾';
         if (open) body.removeAttribute('inert'); else body.setAttribute('inert', '');
       });
     });
 
-    // Skills: "+N more" reveals the rest of a group.
+    // Skills: All skills ▾ reveals the full groups.
     document.querySelectorAll('.pill-more').forEach(function (btn) {
-      var list = document.getElementById(btn.getAttribute('aria-controls'));
+      var target = document.getElementById(btn.getAttribute('aria-controls'));
       btn.addEventListener('click', function () {
         var open = btn.getAttribute('aria-expanded') !== 'true';
-        list.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.textContent = open ? 'Show fewer' : btn.dataset.more;
+        if (target) {
+          if (btn.classList.contains('skills-all')) target.hidden = !open;
+          else target.querySelectorAll('.pill-extra').forEach(function (p) { p.hidden = !open; });
+        }
+        btn.textContent = open ? 'Show fewer' : (btn.dataset.more || 'All skills ▾');
       });
     });
 
@@ -1035,9 +1335,10 @@
     });
 
     var rv = document.querySelectorAll('.rv');
-    var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver;
+    var staticMode = /[?&]static=1\b/.test(location.search) || navigator.webdriver || window.matchMedia('print').matches;
     if (staticMode) {
       rv.forEach(function (el) { el.classList.add('in'); });
+      document.documentElement.classList.add('static-reveal');
     } else if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });

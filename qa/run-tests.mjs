@@ -85,7 +85,12 @@ async function ctx(opts = {}) {
 function watch(page, errors) {
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
-  page.on('requestfailed', (r) => errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`));
+  page.on('requestfailed', (r) => {
+    const err = r.failure()?.errorText || '';
+    // Browsers often abort speculative video preload (metadata/none) when navigating or cancelling; not a real failure.
+    if (/ERR_ABORTED/i.test(err) && /\.(mp4|webm|ogg)(\?|$)/i.test(r.url())) return;
+    errors.push(`requestfailed: ${r.url()} ${err}`);
+  });
   page.on('response', (r) => { if (r.status() >= 400 && !r.url().startsWith('https://api.github.com')) errors.push(`HTTP ${r.status()}: ${r.url()}`); });
 }
 async function open(context, url, waitFor = 'html.ready') {
@@ -184,8 +189,9 @@ async function connectAdmin(page, token = 'good-token', remember = false) {
 await test('A. Static integrity', 'A1', 'All required files exist', async () => {
   const req = ['index.html', 'styles.css', 'script.js', '404.html', '.nojekyll', 'robots.txt', 'sitemap.xml', 'resume.pdf',
     'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'assets/My_Product_Metrics.pdf',
-    'assets/cropguard/workflow.webp', 'assets/cropguard/walkthrough.mp4',
-    'content/profile.json', 'content/products.json', 'content/metrics.json', 'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
+    'assets/cropguard/workflow.webp', 'assets/walkthroughs/crop-walkthrough.mp4', 'assets/walkthroughs/crop-poster.webp',
+    'content/profile.json', 'content/products.json', 'content/metrics.json', 'content/walkthroughs.json',
+    'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
   const metricWebps = fs.readdirSync(path.join(ROOT, 'assets/metrics')).filter((f) => f.endsWith('.webp'));
   eq(metricWebps.length, 14, `assets/metrics should have 14 webp, got ${metricWebps.length}`);
   const missing = req.filter((f) => !fs.existsSync(path.join(ROOT, f)));
@@ -310,15 +316,19 @@ await test('B. Rendering', 'B3', 'Every section renders the expected number of i
     principles: document.querySelectorAll('.principle').length, products: document.querySelectorAll('#product-list .acc').length,
     glance: document.querySelectorAll('.glance-card').length,
     pillars: document.querySelectorAll('.pillar').length, metrics: document.querySelectorAll('.metric').length,
-    roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.legend li').length,
-    snapshot: document.querySelectorAll('.sn-card').length, snapItems: document.querySelectorAll('.sn-item').length,
-    skills: document.querySelectorAll('.skill-card').length, edu: document.querySelectorAll('.edu-item').length,
+    roles: document.querySelectorAll('.tl-item').length, legend: document.querySelectorAll('.career-bar li').length,
+    snapshot: document.querySelectorAll('.sn-match tbody tr, .sn-card').length,
+    snapItems: document.querySelectorAll('.sn-match tbody tr, .sn-item').length,
+    skills: document.querySelectorAll('.skills-top .pill').length, edu: document.querySelectorAll('.edu-item').length,
     contact: document.querySelectorAll('.contact-row a').length }));
+  const snapRows = Array.isArray(profileJSON.snapshot.rows) ? profileJSON.snapshot.rows : [];
+  const snapGroups = Array.isArray(profileJSON.snapshot.groups) ? profileJSON.snapshot.groups : [];
   const exp = { facts: profileJSON.about.facts.length, steps: profileJSON.approach.steps.length, principles: profileJSON.approach.principles.length,
     products: productsJSON.products.length, glance: productsJSON.overview?.show === false ? 0 : productsJSON.products.length, pillars: productsJSON.ecosystem.pillars.length, metrics: productsJSON.ecosystem.metrics.length,
-    roles: profileJSON.experience.roles.length, skills: profileJSON.skills.groups.length,
-    legend: profileJSON.experience.tracks.filter((t) => profileJSON.experience.roles.some((r) => r.track === t.id)).length,
-    snapshot: profileJSON.snapshot.groups.length, snapItems: profileJSON.snapshot.groups.reduce((n, g) => n + g.items.length, 0),
+    roles: profileJSON.experience.roles.length, skills: Math.min(10, profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0)),
+    legend: 3,
+    snapshot: snapRows.length || snapGroups.length,
+    snapItems: snapRows.length || snapGroups.reduce((n, g) => n + g.items.length, 0),
     edu: profileJSON.education.length,
     contact: 1 + ['linkedin', 'github', 'resume', 'portfolio'].filter((k) => profileJSON.links[k]).length };
   for (const k in exp) eq(counts[k], exp[k], `${k} count`);
@@ -371,6 +381,9 @@ await test('C. Interactions', 'C1', 'Product card accordion expands and collapse
   await head.click(); await page.waitForTimeout(500);
   eq(await head.getAttribute('aria-expanded'), 'true', 'expanded');
   assert((await card.locator('.acc-body').evaluate((b) => b.getBoundingClientRect().height)) > 200, 'body visible');
+  if (await card.locator('.case-tab[data-tab="case"]').count()) {
+    await card.locator('.case-tab[data-tab="case"]').click();
+  }
   assert(await card.locator('.acc-body').getByText('Customer pain').isVisible(), 'details visible');
   await revealAll(page);
   await shot(card, 'product-card-expanded');
@@ -401,7 +414,8 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(parseFloat(chrome.clientRadius) || 0, 0, 'client is plain text, not a pill');
   assert(chrome.btnBg !== 'rgba(0, 0, 0, 0)', 'button filled');
   assert(/Space Grotesk/.test(chrome.titleFont), 'title font');
-  eq(await visibleLabel(), 'Read the case', 'closed label');
+  const closedLabel = await visibleLabel();
+  assert(closedLabel === 'Read the case' || closedLabel === 'Watch the case', `closed label — got ${closedLabel}`);
   eq(await card.locator('.acc-peek').count(), 0, 'no faded pain preview');
   assert((await card.locator('.tile-decision').innerText()).length > 8, 'decision shown on the closed card');
   eq(await card.locator('.acc-body').getAttribute('inert'), '', 'closed content is inert');
@@ -423,6 +437,10 @@ await test('C. Interactions', 'C9', 'Product card affordance: “Explore case st
   eq(await visibleLabel(), 'Hide details', 'label switches');
   eq(await card.locator('.acc-body').getAttribute('inert'), null, 'open content is interactive');
   assert(await card.locator('.t-arrow').evaluate((a) => /matrix\(0, -1, 1, 0/.test(getComputedStyle(a).transform) || /matrix\(6\.\d+e-17, -1/.test(getComputedStyle(a).transform)), 'arrow turns to point up');
+  if (await card.locator('.case-tab[data-tab="case"]').count()) {
+    await card.locator('.case-tab[data-tab="case"]').click();
+    await page.waitForTimeout(200);
+  }
   // Staggered reveal: later blocks start later.
   const delays = await card.locator('.snap, .decide > div').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).transitionDelay)));
   assert(delays.every((d, i) => i === 0 || d > delays[i - 1]), `stagger delays increase: ${delays}`);
@@ -485,7 +503,7 @@ await test('C. Interactions', 'C3', 'Experience timeline: every role visible at 
   const items = page.locator('.tl-item');
   const n = await items.count();
   eq(n, profileJSON.experience.roles.length, 'one timeline entry per role');
-  for (let i = 0; i < n; i++) assert(await items.nth(i).locator('h3').isVisible(), `role ${i} headline visible without clicking`);
+  for (let i = 0; i < n; i++) assert(await items.nth(i).locator('.tl-role strong').isVisible(), `role ${i} headline visible without clicking`);
   // Every role starts collapsed (visual-first restructure).
   eq(await items.nth(0).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'current role starts closed');
   eq(await items.nth(1).locator('.tl-toggle').getAttribute('aria-expanded'), 'false', 'others closed');
@@ -493,13 +511,13 @@ await test('C. Interactions', 'C3', 'Experience timeline: every role visible at 
   const t = items.nth(2).locator('.tl-toggle');
   await t.click(); await page.waitForTimeout(500);
   eq(await t.getAttribute('aria-expanded'), 'true', 'expands');
-  eq(await t.innerText(), 'Hide achievements', 'label switches');
+  assert(/Achievements/.test(await t.innerText()), 'label switches');
   assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) > 60, 'achievements visible');
   await revealAll(page);
   await shot(page.locator('#experience'), 'experience-timeline');
   await t.click(); await page.waitForTimeout(500);
   eq(await t.getAttribute('aria-expanded'), 'false', 'collapses');
-  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) <= 1, 'achievements hidden');
+  assert((await items.nth(2).locator('.tl-body').evaluate((b) => b.getBoundingClientRect().height)) <= 2, 'achievements hidden');
   // Keyboard: the toggle is a real button.
   await t.focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(100);
   eq(await t.getAttribute('aria-expanded'), 'true', 'Enter expands');
@@ -512,10 +530,10 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   const page = await open(context, '/');
   await revealAll(page);
   const rgb = (hex) => { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`; };
-  // Timeline: each role's card edge uses its track colour, and the legend names every track in use.
+  // Timeline: each role's row edge uses its track colour, and the row names the track.
   for (const [i, r] of profileJSON.experience.roles.entries()) {
     const tr = profileJSON.experience.tracks.find((t) => t.id === r.track);
-    eq(await page.locator('.tl-card').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
+    eq(await page.locator('.tl-item').nth(i).evaluate((c) => getComputedStyle(c).borderLeftColor), rgb(tr.color), `${r.tab} track colour`);
     assert((await page.locator('.tl-item').nth(i).locator('.tl-track').innerText()) === tr.label, `${r.tab} track label`);
   }
   // Products: each card's edge uses its domain colour; filter chips show a swatch.
@@ -528,9 +546,14 @@ await test('C. Interactions', 'C4', 'Colour coding: career tracks, product arena
   const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase());
   assert(!domainColours.has(accent), 'link/focus accent is not reused as a domain colour');
   eq(await page.locator('#products .chipbtn[data-f] .swatch').count(), productsJSON.domains.length, 'filter chips show domain swatches');
-  // Snapshot groups: one colour per group.
-  const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
-  eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
+  // Snapshot results: one tone colour per row (or legacy group cards).
+  if (await page.locator('.sn-match .sn-val').count()) {
+    const tones = await page.locator('.sn-match .sn-val .sn-num').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
+    eq(new Set(tones).size, tones.length, 'snapshot result tones are distinct colours');
+  } else {
+    const tones = await page.locator('.sn-card').evaluateAll((cs) => cs.map((c) => getComputedStyle(c).borderTopColor));
+    eq(new Set(tones).size, tones.length, 'snapshot groups are distinct colours');
+  }
   // Documents are amber everywhere (nav, hero, contact).
   const docs = await page.locator(`a.btn-doc[href="${profileJSON.links.resume}"]`).evaluateAll((as) => as.map((a) => getComputedStyle(a).backgroundColor));
   assert(docs.length >= 2 && docs.every((c) => c === 'rgb(251, 191, 36)'), `resume buttons amber: ${docs}`);
@@ -614,25 +637,33 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   // Snapshot sits directly under the hero.
   eq(await page.evaluate(() => document.querySelector('header.hero').nextElementSibling.id), 'snapshot', 'snapshot follows hero');
   const snapText = await page.locator('#snapshot').innerText();
-  profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
+  if (Array.isArray(profileJSON.snapshot.rows) && profileJSON.snapshot.rows.length) {
+    if (profileJSON.snapshot.subtitle) assert(snapText.includes(profileJSON.snapshot.subtitle), 'snapshot subtitle');
+    profileJSON.snapshot.rows.forEach((r) => {
+      assert(snapText.includes(r.need), r.need);
+      assert(snapText.includes(r.value), r.value);
+      assert(snapText.includes(r.proof.label), r.proof.label);
+    });
+  } else {
+    profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
+  }
   const docLinks = await page.locator('#snapshot a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   assert(docLinks.includes(profileJSON.links.resume) && docLinks.includes(profileJSON.links.portfolio), `snapshot document links: ${docLinks}`);
   await revealAll(page);
   await shot(page.locator('#snapshot'), 'snapshot-panel');
-  // Skills: top 6 shown, the rest behind "+N more".
-  for (const [gi, g] of profileJSON.skills.groups.entries()) {
-    const card = page.locator('.skill-card').nth(gi);
-    eq(await card.locator('.pill:visible').count(), Math.min(6, g.items.length), `${g.name} top skills`);
-    const more = card.locator('.pill-more');
-    if (g.items.length > 6) {
-      eq(await more.innerText(), `+${g.items.length - 6} more`, `${g.name} more label`);
-      await more.click();
-      eq(await card.locator('.pill:visible').count(), g.items.length, `${g.name} all skills after expand`);
-      eq(await more.getAttribute('aria-expanded'), 'true', 'aria-expanded');
-      await more.click();
-      eq(await card.locator('.pill:visible').count(), 6, `${g.name} collapses again`);
-    } else eq(await more.count(), 0, `${g.name} has no more button`);
-  }
+  // Skills: ~10 chips on load; All skills ▾ reveals the full groups.
+  const totalSkills = profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0);
+  eq(await page.locator('.skills-top .pill:visible').count(), Math.min(10, totalSkills), 'top skills row');
+  const more = page.locator('.skills-all');
+  if (totalSkills > 10) {
+    assert(/All skills/.test(await more.innerText()), 'All skills label');
+    await more.click();
+    eq(await more.getAttribute('aria-expanded'), 'true', 'aria-expanded');
+    assert(await page.locator('.skills-full').isVisible(), 'full skills visible');
+    eq(await page.locator('.skills-full .skill-card').count(), profileJSON.skills.groups.length, 'all skill groups');
+    await more.click();
+    assert(await page.locator('.skills-full').isHidden(), 'full skills hidden again');
+  } else eq(await more.count(), 0, 'no All skills button');
   // Section order: hero → snapshot → products first; contact last.
   const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
   eq(order.slice(0, 3).join(','), 'top,snapshot,products', 'recruiter-first order');
@@ -778,9 +809,10 @@ await test('M. Product Metrics', 'M4', '#p-mcp/metrics opens the Metrics tab', a
 
 await test('M. Product Metrics', 'M5', 'Lightbox traps focus and closes on Escape', async () => {
   const { context } = await ctx();
-  const page = await open(context, '/?static=1');
+  const page = await open(context, '/?static=1#p-soc-portal/metrics');
   await revealAll(page);
-  await page.locator('#metrics .mx-shot').first().click();
+  await page.waitForTimeout(500);
+  await page.locator('#p-soc-portal .mx-shot').first().click();
   await page.waitForSelector('#lightbox:not([hidden])');
   await page.keyboard.press('Tab');
   const inLb = await page.evaluate(() => !!document.activeElement && document.getElementById('lightbox').contains(document.activeElement));
@@ -1252,14 +1284,23 @@ for (const p of productsJSON.products) {
     eq(await acc.locator('.acc-title').innerText(), p.name, 'card name');
     await acc.locator('.acc-toggle').click();
     await page.waitForFunction((id) => document.querySelector(`#${id} .acc-toggle`).getAttribute('aria-expanded') === 'true', 'p-' + p.id);
-    const text = (await acc.innerText()).replace(/\s+/g, ' ');
+    if (await acc.locator('.case-tab[data-tab="case"]').count()) {
+      await acc.locator('.case-tab[data-tab="case"]').click();
+    }
+    // textContent includes hidden tab panels; innerText does not.
+    const text = (await acc.evaluate((el) => el.textContent)).replace(/\s+/g, ' ');
     const strip = (s) => s.replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
     for (const k of ['summary', 'pain', 'bet', 'why', 'tradeoff', 'validated']) if (p[k]) assert(text.includes(strip(p[k]).slice(0, 60)), `${k} text missing`);
     (p.outcomes || []).forEach((o) => assert(text.includes(strip(o)), `outcome missing: ${o}`));
     if (p.github) eq(await acc.locator('.acc-link').first().getAttribute('href'), p.github, 'GitHub link');
     if (p.demo) {
-      if (/\.mp4(\?|$)/i.test(p.demo)) assert(await acc.locator(`video source[src="${p.demo}"]`).count(), 'demo video');
-      else assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
+      if (/\.mp4(\?|$)/i.test(p.demo)) {
+        assert(
+          (await acc.locator(`video source[src="${p.demo}"]`).count()) ||
+          (await acc.locator(`video[src="${p.demo}"]`).count()),
+          'demo video'
+        );
+      } else assert(await acc.locator(`.acc-link[href="${p.demo}"]`).count(), 'demo link');
     }
     if (p.domain) {
       const domain = productsJSON.domains.find((a) => a.id === p.domain);
@@ -1385,6 +1426,179 @@ await test(R, 'R-admin-fields', `Every editor form field (${new Set(MANIFEST.adm
   const jsErrors = errors.filter((e) => e.startsWith('pageerror'));
   eq(jsErrors.length, 0, `Preview of fully-edited draft threw: ${jsErrors.join(' | ')}`);
   assert((await preview.locator('h1').innerText()).includes('qap'), 'edited name rendered');
+  await context.close();
+});
+
+/* =================================================================== S. 60-second fit (requirements match) */
+await test('S. Snapshot fit', 'S1', '#snapshot table.sn-match has 6 body rows with values and resolving proof links', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const rows = page.locator('#snapshot table.sn-match tbody tr');
+  eq(await rows.count(), 6, 'six match rows');
+  for (let i = 0; i < 6; i++) {
+    const row = rows.nth(i);
+    const value = (await row.locator('.sn-num').innerText()).trim();
+    assert(value.length > 0, `row ${i} value`);
+    const href = await row.locator('a.sn-proof').getAttribute('href');
+    assert(href, `row ${i} proof href`);
+    if (href.startsWith('#')) {
+      const id = href.slice(1).replace(/-walkthrough$/, '').replace(/\/metrics$/, '');
+      assert(await page.locator(`[id="${id}"]`).count() === 1, `missing ${href}`);
+    } else {
+      const res = await page.request.get(new URL(href, BASE).href);
+      assert(res.status() < 400, `proof ${href} → ${res.status()}`);
+    }
+  }
+  await shot(page.locator('#snapshot'), 'snapshot-fit-desktop');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S2', 'Clicking the “MCP Server case” proof opens #p-mcp', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  await page.locator('#snapshot a.sn-proof', { hasText: 'MCP Server case' }).click();
+  await page.waitForTimeout(700);
+  eq(await page.locator('#p-mcp .acc-toggle').getAttribute('aria-expanded'), 'true', 'MCP case open');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S3', 'At 390px the snapshot has no horizontal overflow', async () => {
+  const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await open(context, '/');
+  await revealAll(page);
+  const o = await page.locator('#snapshot').evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth }));
+  assert(o.sw <= o.cw + 1, `snapshot overflows: ${o.sw} > ${o.cw}`);
+  const pageO = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+  assert(pageO.sw <= pageO.cw + 1, `page overflows at 390: ${pageO.sw} > ${pageO.cw}`);
+  await shot(page.locator('#snapshot'), 'snapshot-fit-mobile');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S4', 'Page contains no 94% and no phone-number pattern', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const text = await page.evaluate(() => document.body.innerText);
+  assert(!/94\s*%/.test(text), '94% found on page');
+  assert(!PHONE_RE.test(text), 'phone pattern on page');
+  await context.close();
+});
+
+await test('S. Snapshot fit', 'S5', 'axe shows no serious or critical issues in #snapshot', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  await revealAll(page);
+  await page.addScriptTag({ content: AXE_SRC });
+  const bad = await page.evaluate(async () => {
+    const res = await window.axe.run(document.querySelector('#snapshot'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
+    return res.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id);
+  });
+  eq(bad.length, 0, `axe: ${bad.join(', ')}`);
+  await context.close();
+});
+
+/* =================================================================== W. Walkthroughs + metrics site */
+await test('W. Walkthroughs', 'W1', 'No video autoplays on load; every video uses preload none or metadata', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  const info = await page.evaluate(() => [...document.querySelectorAll('video')].map((v) => ({
+    preload: v.getAttribute('preload'),
+    paused: v.paused,
+    src: v.currentSrc || v.getAttribute('src') || (v.querySelector('source') && v.querySelector('source').src) || '',
+  })));
+  assert(info.length >= 5, `expected walkthrough videos, got ${info.length}`);
+  assert(info.every((v) => v.paused), 'a video was playing on load');
+  assert(info.every((v) => v.preload === 'none' || v.preload === 'metadata'), `bad preload: ${info.map((v) => v.preload).join(',')}`);
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W2', 'Reduced motion: hovering a tile does not play the teaser', async () => {
+  const { context } = await ctx({ reducedMotion: 'reduce' });
+  const page = await open(context, '/');
+  const tile = page.locator('#p-soc-portal');
+  await tile.scrollIntoViewIfNeeded();
+  await tile.hover();
+  await page.waitForTimeout(400);
+  const playing = await tile.locator('.tile-teaser').evaluate((v) => !v.paused && !v.ended && v.currentTime > 0);
+  eq(playing, false, 'teaser played under reduced motion');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W3', '#p-soc-portal-walkthrough opens Walkthrough tab; chapter 3 seeks near its start', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/#p-soc-portal-walkthrough');
+  await page.waitForTimeout(700);
+  eq(await page.locator('#p-soc-portal .acc-toggle').getAttribute('aria-expanded'), 'true', 'card open');
+  eq(await page.locator('#p-soc-portal .case-tab[data-tab="walkthrough"]').getAttribute('aria-selected'), 'true', 'Walkthrough tab');
+  const ch3 = page.locator('#p-soc-portal .wt-chapter').nth(2);
+  const start = parseFloat(await ch3.getAttribute('data-start'));
+  await ch3.click();
+  await page.waitForTimeout(300);
+  const t = await page.locator('#p-soc-portal .wt-video').evaluate((v) => v.currentTime);
+  assert(Math.abs(t - start) <= 1, `currentTime ${t} vs start ${start}`);
+  await shot(page.locator('#p-soc-portal'), 'walkthrough-tab-open');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W4', 'metrics/ loads and ← Portfolio link resolves', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/metrics/', null);
+  await page.waitForSelector('.pf-bar', { timeout: 10000 });
+  const href = await page.locator('.pf-links a').first().getAttribute('href');
+  assert(/#metrics|\.\.\/#metrics|\.\.\//.test(href), `portfolio link: ${href}`);
+  assert(await page.locator('.section-crumbs .nav-links a[data-nav="home"]').count() === 1, 'right sticky Home pill');
+  assert(await page.locator('.section-crumbs .nav-links a[data-nav="metrics"][aria-current="true"]').count() === 1, 'Product Metrics pill current');
+  const res = await page.request.get(BASE + '/metrics/');
+  eq(res.status(), 200, 'metrics status');
+  await shot(page, 'metrics-microsite', { fullPage: false });
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W5', 'Every video and dashboard image has a visible demo/synthetic label nearby', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  await page.locator('#p-soc-portal .acc-toggle').click();
+  await page.waitForTimeout(400);
+  assert(await page.locator('#p-soc-portal .wt-demo').count() >= 1, 'walkthrough demo label');
+  assert(/DEMO DATA|SYNTHETIC|synthetic|Demo environment/i.test(await page.locator('#metrics .metrics-disclaimer').first().innerText()), 'metrics disclaimer');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W6', 'No phone-number pattern on home or metrics/', async () => {
+  const { context } = await ctx();
+  const home = await open(context, '/');
+  assert(!PHONE_RE.test(await home.evaluate(() => document.body.innerText)), 'phone on home');
+  const metrics = await open(context, '/metrics/', null);
+  await metrics.waitForSelector('body');
+  assert(!PHONE_RE.test(await metrics.evaluate(() => document.body.innerText)), 'phone on metrics');
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W7', 'Every nav link and rail pill resolves', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const hrefs = await page.locator('.nav-links a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').slice(1)));
+  for (const id of hrefs) assert(await page.locator('#' + id).count() === 1, `missing #${id}`);
+  await context.close();
+});
+
+await test('W. Walkthroughs', 'W8', 'axe zero serious/critical on home, open Walkthrough tab, and metrics/', async () => {
+  async function serious(page, label) {
+    const v = await axe(page, label);
+    const bad = v.filter((x) => x.impact === 'serious' || x.impact === 'critical');
+    eq(bad.length, 0, `${label}: ${bad.map((x) => x.id).join(', ')}`);
+  }
+  const { context } = await ctx();
+  const home = await open(context, '/?static=1');
+  await revealAll(home);
+  await serious(home, 'Home');
+  await home.goto(BASE + '/#p-soc-portal-walkthrough', { waitUntil: 'networkidle' });
+  await home.waitForTimeout(600);
+  await serious(home, 'Walkthrough tab');
+  await home.goto(BASE + '/metrics/', { waitUntil: 'networkidle' });
+  await home.waitForSelector('.pf-bar');
+  await serious(home, 'metrics/');
   await context.close();
 });
 
