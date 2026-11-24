@@ -69,6 +69,7 @@
             products: d.products,
             metrics: d.metrics || null,
             walkthroughs: d.walkthroughs || null,
+            evals: d.evals || null,
             preview: true
           });
         }
@@ -78,9 +79,10 @@
       loadJSON('content/profile.json'),
       loadJSON('content/products.json'),
       loadJSON('content/metrics.json').catch(function () { return null; }),
-      loadJSON('content/walkthroughs.json').catch(function () { return null; })
+      loadJSON('content/walkthroughs.json').catch(function () { return null; }),
+      loadJSON('content/evals.json').catch(function () { return null; })
     ]).then(function (r) {
-      return { profile: r[0], products: r[1], metrics: r[2], walkthroughs: r[3], preview: false };
+      return { profile: r[0], products: r[1], metrics: r[2], walkthroughs: r[3], evals: r[4], preview: false };
     });
   }
 
@@ -156,6 +158,71 @@
     'cropguard': 'agr',
     'defence-ecosystem': 'def'
   };
+  /* ---------- evals ---------- */
+  // Before → after scores are 0–1 fractions; a label can override the shown text (e.g. "9/9").
+  function evalPct(v) { var n = Number(v); return isFinite(n) ? Math.round(Math.max(0, Math.min(1, n)) * 100) + '%' : ''; }
+  function renderEvals(e, products) {
+    var el = slot('evals');
+    var sec = document.getElementById('evals');
+    if (!el || !e || !arr(e.projects).length) { if (sec) sec.hidden = true; if (el) el.innerHTML = ''; return; }
+    if (sec) sec.hidden = false;
+    var productById = {};
+    arr(products && products.products).forEach(function (p) { productById[p.id] = p; });
+    var kpis = '<ul class="ev-kpis" aria-label="Headline results">' + arr(e.kpis).map(function (k) {
+      return '<li class="ev-kpi">' +
+        '<span class="ev-kpi-v">' + (k.before ? '<span class="ev-before">' + esc(k.before) + ' → </span>' : '') + esc(k.value) + '</span>' +
+        '<span class="ev-kpi-l">' + esc(k.label) + '</span>' +
+        (k.note ? '<span class="ev-kpi-n">' + esc(k.note) + '</span>' : '') +
+      '</li>';
+    }).join('') + '</ul>';
+    var cards = arr(e.projects).map(function (p, i) {
+      var prod = productById[p.productId] || {};
+      var name = p.name || prod.name || p.repo || '';
+      var bodyId = 'ev-more-' + slug(p.productId || name, i);
+      var hero = p.hero || {};
+      var bars = arr(p.metrics).map(function (m) {
+        var b = evalPct(m.before), a = evalPct(m.after);
+        return '<li class="ev-bar">' +
+          '<span class="ev-bar-top"><span>' + esc(m.label) + '</span><span class="ev-bar-v">' + esc(m.beforeText || b) + ' → <strong>' + esc(m.afterText || a) + '</strong></span></span>' +
+          '<span class="ev-track" aria-hidden="true"><span class="ev-fill-a" style="width:' + a + '"></span><span class="ev-fill-b" style="width:' + b + '"></span></span>' +
+        '</li>';
+      }).join('');
+      return '<article class="ev-card">' +
+        '<p class="ev-tag">' + esc(p.repo || p.productId) + '</p>' +
+        '<h3>' + esc(name) + '</h3>' +
+        '<p class="ev-does">' + esc(p.does) + '</p>' +
+        '<p class="ev-sub">What could go wrong</p>' +
+        '<ul class="ev-risks">' + arr(p.risks).map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>' +
+        '<div class="ev-hero"><span class="ev-hero-l">' + esc(hero.label) + '</span>' +
+          '<span class="ev-hero-v"><span class="ev-hero-b">' + esc(hero.before) + '</span><span class="ev-arrow" aria-hidden="true">→</span><span class="sr-only"> to </span><span class="ev-hero-a">' + esc(hero.after) + '</span></span></div>' +
+        (p.caught ? '<p class="ev-caught">' + icon('g-alert') + '<span><strong>Caught before customers did:</strong> ' + esc(p.caught) + '</span></p>' : '') +
+        '<div class="ev-more" id="' + bodyId + '" hidden>' +
+          '<ul class="ev-bars" aria-label="' + esc(name) + ' results before and after">' + bars + '</ul>' +
+          '<p class="ev-links">' +
+            (p.doc ? '<a href="' + esc(safeUrl(p.doc)) + '" target="_blank" rel="noopener">Read the eval write-up on GitHub →</a>' : '') +
+            (prod.id ? '<a href="#p-' + esc(prod.id) + '" data-ev-product="' + esc(prod.id) + '">See the product →</a>' : '') +
+          '</p>' +
+        '</div>' +
+        '<button type="button" class="ev-toggle" aria-expanded="false" aria-controls="' + bodyId + '">Show all results</button>' +
+      '</article>';
+    }).join('');
+    var method = '<ol class="method-flow ev-method" aria-label="How my evals work">' + arr(e.method).map(function (step, i) {
+      return '<li><span class="m-step">Step ' + (i + 1) + '</span><span class="m-label">' + esc(step.label) + '</span><span class="m-text">' + esc(step.text) + '</span></li>';
+    }).join('') + '</ol>';
+    el.innerHTML =
+      '<div class="ev-head">' +
+        (e.eyebrow ? '<p class="eyebrow">' + esc(e.eyebrow) + '</p>' : '') +
+        '<h2 class="s-title" id="evals-title">' + esc(e.title || 'Evals') + '</h2>' +
+        (e.subtitle ? '<p class="s-sub">' + esc(e.subtitle) + '</p>' : '') +
+        (e.disclaimer ? '<p class="metrics-disclaimer ev-disclaimer" role="note">' + icon('g-info') + '<span>' + md(e.disclaimer) + '</span></p>' : '') +
+      '</div>' +
+      kpis +
+      '<h3 class="ev-h">Three products, one method</h3>' +
+      '<div class="ev-cards">' + cards + '</div>' +
+      (arr(e.method).length ? '<h3 class="ev-h">How my evals work</h3>' + method : '') +
+      (arr(e.openItems).length ? '<div class="ev-open"><h3>Still open, on purpose</h3><ul>' + arr(e.openItems).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>' : '');
+  }
+
   function renderMetrics(m, products) {
     var el = slot('metrics');
     var sec = document.getElementById('metrics');
@@ -865,10 +932,11 @@
     renderProducts(c.products);
     renderEcosystem(c.products);
     renderMetrics(c.metrics, c.products);
+    renderEvals(c.evals, c.products);
     renderExperience(c.profile, productIndex, arenaById);
     renderRest(c.profile);
     // Reveal-on-scroll targets
-    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .sn-head, .sn-match, .sn-foot, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer')
+    document.querySelectorAll('.s-title, .s-sub, .glance, .about-body, .about-side, .step, .principle, .acc, .pillar, .eco-col, .metric, .sn-card, .sn-head, .sn-match, .sn-foot, .legend, .tl-item, .skill-card, .card, .contact h2, .contact-row, .moat, .trust-pillar, .teardown, .flag-thesis, .paradigm, .m-tile, .method-flow, .metrics-disclaimer, .ev-kpi, .ev-card, .ev-open')
       .forEach(function (el) { if (!el.closest('.hero-drop')) el.classList.add('rv'); });
     if (c.preview) {
       var bar = document.createElement('div');
@@ -994,6 +1062,17 @@
         });
       });
     });
+    /* Evals cards: Show all results ▾ */
+    document.querySelectorAll('.ev-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var body = document.getElementById(btn.getAttribute('aria-controls'));
+        var open = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.textContent = open ? 'Hide results' : 'Show all results';
+        if (body) body.hidden = !open;
+      });
+    });
+
     document.querySelectorAll('[data-open-metrics]').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -1306,7 +1385,7 @@
 
     var links = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.nav-cta)'));
     var secs = [].slice.call(document.querySelectorAll('main > section[id]:not([hidden]), main > header[id]'));
-    var navMap = { ecosystem: 'products', education: 'how', ellyra: 'products', metrics: 'metrics', how: 'how', paradigm: 'how' };
+    var navMap = { ecosystem: 'products', education: 'how', ellyra: 'products', metrics: 'metrics', evals: 'evals', how: 'how', paradigm: 'how' };
     function syncNavHeight() {
       document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
     }

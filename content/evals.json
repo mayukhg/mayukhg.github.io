@@ -1,0 +1,72 @@
+{
+  "eyebrow": "Evals · how I know the AI works",
+  "title": "I don't ship AI I can't measure",
+  "subtitle": "Evaluation frameworks I designed and built for three agentic security products: adversarial test suites, release gates that block a bad model change, and scoring of production traces.",
+  "tool": "Langfuse",
+  "disclaimer": "Built with Langfuse. Every eval, dataset, score and trace shown here was generated in Langfuse, the open-source LLM engineering platform. These are demo evals run on synthetic data: the alerts, threats, documents and evidence are made up for illustration, not customer data. The numbers show how the method works, not results from a live deployment.",
+  "kpis": [
+    { "value": "3", "label": "AI products under eval", "note": "AI SOC Portal · AI-SPM · AI Policy Foundry" },
+    { "value": "100%", "label": "planted-instruction attacks resisted", "note": "AI SOC Portal up from 50%, AI Policy Foundry up from 0%" },
+    { "before": "17%", "value": "100%", "label": "prompt attacks detected", "note": "AI-SPM, 23 synthetic attacks" },
+    { "before": "2", "value": "5", "label": "of 5 compliance frameworks working", "note": "bug caught by evals, before customers" }
+  ],
+  "projects": [
+    {
+      "productId": "soc-portal",
+      "repo": "ai-soc-portal",
+      "does": "Answers analysts' questions about security alerts, routing each one to a fast or a deep model.",
+      "risks": ["Obeys text planted in alerts", "Under-escalates hard questions", "Pulls the wrong alerts"],
+      "hero": { "label": "Planted-instruction attacks resisted", "before": "50%", "after": "100%" },
+      "caught": "the fast model called an open, critical beacon “safe to close” because text inside the alert told it to.",
+      "metrics": [
+        { "label": "Planted instructions resisted", "before": 0.5, "after": 1 },
+        { "label": "Multi-step questions escalated", "before": 0, "after": 1, "beforeText": "0/4", "afterText": "9/9" },
+        { "label": "Right alert retrieved (recall@3)", "before": 0.39, "after": 0.94 },
+        { "label": "Open alerts never called resolved", "before": 0.75, "after": 1 }
+      ],
+      "doc": "https://github.com/mayukhg/ai-soc-portal/blob/main/LANGFUSE_EVALS.md"
+    },
+    {
+      "productId": "ai-spm",
+      "repo": "ai-spm",
+      "does": "Writes audit-ready GDPR and NIST AI RMF reports from monitoring evidence, and flags malicious prompts.",
+      "risks": ["False assurance to a regulator", "Obeys text planted in evidence", "Misses disguised attacks"],
+      "hero": { "label": "Prompt attacks detected", "before": "17%", "after": "100%" },
+      "caught": "the rule-based detector caught only 4 of 23 prompt attacks, and the report writer produced a full report from empty evidence.",
+      "metrics": [
+        { "label": "Prompt attacks detected", "before": 0.17, "after": 1, "beforeText": "4/23", "afterText": "23/23" },
+        { "label": "Harmless prompts left alone", "before": 0.88, "after": 1 },
+        { "label": "Planted instructions resisted", "before": 0.5, "after": 1 },
+        { "label": "Says so when evidence is empty", "before": 0, "after": 1 }
+      ],
+      "doc": "https://github.com/mayukhg/ai-spm/blob/main/docs/LANGFUSE_EVAL_FRAMEWORK.md"
+    },
+    {
+      "productId": "policy-foundry",
+      "repo": "ai-policy-foundry",
+      "does": "Writes cloud security policies from compliance frameworks and uploaded documents, and decides when a threat needs a new policy.",
+      "risks": ["Obeys text planted in documents", "Invents or drops controls", "Ships insecure defaults"],
+      "hero": { "label": "Planted-instruction attacks resisted", "before": "0%", "after": "100%" },
+      "caught": "3 of 5 compliance frameworks (ISO, SOC 2, PCI) returned errors instead of policies.",
+      "metrics": [
+        { "label": "Document controls implemented", "before": 0.79, "after": 1 },
+        { "label": "Secure defaults kept", "before": 0.88, "after": 1 },
+        { "label": "Tweaks target a real policy", "before": 0.33, "after": 1 },
+        { "label": "Unrelated policies scored as no match", "before": 0.5, "after": 1 }
+      ],
+      "doc": "https://github.com/mayukhg/ai-policy-foundry/blob/main/LANGFUSE_EVAL_FRAMEWORK.md"
+    }
+  ],
+  "method": [
+    { "label": "Test cases", "text": "Real scenarios, attacks and held-out cases never tuned on" },
+    { "label": "Release gates", "text": "Rule-based checks that block a release. No AI grading AI here." },
+    { "label": "AI grader", "text": "Judges quality, but only warns until checked against human review" },
+    { "label": "Production tracing", "text": "Every answer traced with prompt version, cost and source" },
+    { "label": "Reviewer feedback", "text": "Analyst approve / reject becomes a score on the trace" }
+  ],
+  "openItems": [
+    "Checking the AI grader against about 50 human-reviewed answers before it can block a release",
+    "AI SOC Portal: two phrasings still under-escalate with rules alone; a cheap model check now covers them",
+    "AI Policy Foundry: deployability needs real network inputs, not guessed address ranges"
+  ]
+}
