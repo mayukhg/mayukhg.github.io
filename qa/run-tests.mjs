@@ -69,6 +69,7 @@ const PHONE_RE = /(\+?91[\s-]*)?9860[\s-]*345[\s-]*364/;
 const profileJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/profile.json'), 'utf8'));
 const productsJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/products.json'), 'utf8'));
 const metricsJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/metrics.json'), 'utf8'));
+const evalsJSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/evals.json'), 'utf8'));
 let shotNo = 0;
 
 class AssertionError extends Error {}
@@ -190,7 +191,7 @@ await test('A. Static integrity', 'A1', 'All required files exist', async () => 
   const req = ['index.html', 'styles.css', 'script.js', '404.html', '.nojekyll', 'robots.txt', 'sitemap.xml', 'resume.pdf',
     'assets/portfolio.pdf', 'assets/mayukh.jpg', 'assets/og-card.jpg', 'assets/My_Product_Metrics.pdf',
     'assets/cropguard/workflow.webp', 'assets/walkthroughs/crop-walkthrough.mp4', 'assets/walkthroughs/crop-poster.webp',
-    'content/profile.json', 'content/products.json', 'content/metrics.json', 'content/walkthroughs.json',
+    'content/profile.json', 'content/products.json', 'content/metrics.json', 'content/walkthroughs.json', 'content/evals.json',
     'admin/index.html', 'admin/admin.js', 'admin/admin.css'];
   const metricWebps = fs.readdirSync(path.join(ROOT, 'assets/metrics')).filter((f) => f.endsWith('.webp'));
   eq(metricWebps.length, 14, `assets/metrics should have 14 webp, got ${metricWebps.length}`);
@@ -745,7 +746,8 @@ await test('D. Responsive', 'D-menu', 'Section crumb pills are visible and click
   assert(await page.locator('#navlinks a[href="#experience"]').isVisible(), 'Experience pill visible');
   await shot(page, 'mobile-menu-open');
   await page.locator('#navlinks a[href="#experience"]').click();
-  await page.waitForTimeout(900);
+  // Smooth scrolling takes longer as the page grows, so wait for it to settle rather than a fixed delay.
+  await page.waitForFunction(() => Math.abs(document.querySelector('#experience').getBoundingClientRect().top) < 300, null, { timeout: 4000 }).catch(() => {});
   const top = await page.locator('#experience').evaluate((s) => s.getBoundingClientRect().top);
   assert(Math.abs(top) < 300, `Experience scrolled into view (top=${Math.round(top)})`);
   await context.close();
@@ -773,6 +775,44 @@ await test('M. Product Metrics', 'M1', 'Every metrics dashboard image renders wi
   assert(await disc.count() >= 1, 'disclaimer in metrics section');
   assert(/DEMO DATA|SYNTHETIC|synthetic/i.test(await disc.first().innerText()), 'disclaimer names synthetic data');
   await shot(page.locator('#metrics'), 'metrics-section');
+  await context.close();
+});
+
+await test('V. Evals', 'V1', 'Evals section names Langfuse and synthetic data, and shows every KPI and project', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/?static=1');
+  await revealAll(page);
+  const disc = await page.locator('#evals .ev-disclaimer').innerText();
+  assert(/Langfuse/.test(disc), 'disclaimer names Langfuse');
+  assert(/synthetic data/i.test(disc), 'disclaimer says synthetic data');
+  eq(await page.locator('#evals .ev-kpi').count(), evalsJSON.kpis.length, 'KPI tiles');
+  eq(await page.locator('#evals .ev-card').count(), evalsJSON.projects.length, 'project cards');
+  const names = await page.locator('#evals .ev-card h3').allInnerTexts();
+  evalsJSON.projects.forEach((p) => {
+    const prod = productsJSON.products.find((x) => x.id === p.productId);
+    assert(prod, `evals project ${p.productId} has no product`);
+    assert(names.includes(prod.name), `card for ${prod.name}`);
+  });
+  await shot(page.locator('#evals'), 'evals-section');
+  await context.close();
+});
+
+await test('V. Evals', 'V2', 'Show all results expands a card; See the product opens its case', async () => {
+  const { context } = await ctx();
+  const page = await open(context, '/');
+  const card = page.locator('#evals .ev-card').first();
+  const btn = card.locator('.ev-toggle');
+  eq(await btn.getAttribute('aria-expanded'), 'false', 'collapsed at start');
+  assert(await card.locator('.ev-more').isHidden(), 'results hidden at start');
+  await btn.click();
+  eq(await btn.getAttribute('aria-expanded'), 'true', 'expanded');
+  eq(await card.locator('.ev-bar').count(), evalsJSON.projects[0].metrics.length, 'result bars');
+  const link = card.locator('[data-ev-product]');
+  const id = await link.getAttribute('data-ev-product');
+  await link.click();
+  await page.waitForFunction((pid) => document.querySelector(`#p-${pid} .acc-toggle`).getAttribute('aria-expanded') === 'true', id);
+  await btn.click();
+  assert(await card.locator('.ev-more').isHidden(), 'collapses again');
   await context.close();
 });
 
