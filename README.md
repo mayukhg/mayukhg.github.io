@@ -44,6 +44,7 @@ Text fields marked **rich** support `**bold**` and `[link text](https://…)`. L
 │   ├── profile.json        # Hero, about, approach, experience, skills, education, contact
 │   ├── products.json       # Arenas, product case studies, ecosystem spotlight
 │   ├── metrics.json        # Product Metrics section (7 boards, threshold bands, images)
+│   ├── evals.json          # Evals section (Langfuse eval frameworks, synthetic demo data)
 │   └── walkthroughs.json   # Product + ecosystem walkthrough videos, teasers, chapters
 ├── metrics/                # Standalone metrics microsite (7 chapters, Mixpanel boards)
 ├── admin/                  # No-code editor (GitHub API, strict CSP, noindex)
@@ -81,7 +82,7 @@ The page loads its content with `fetch`, so open it through a local server rathe
 
 ## 📐 Page structure
 
-Section order: **Hero → 60-second fit → Portfolio → AI Defense Ecosystem → Product Metrics → Experience → How I work → Three pillars → Education → Contact**.
+Section order: **Hero (with the 60-second fit in its “See how I fit your role” panel) → Portfolio → AI Defense Ecosystem → Product Metrics → Evals → Experience → How I work → Three pillars → Education → Contact**.
 
 ### Walkthroughs (`content/walkthroughs.json`)
 

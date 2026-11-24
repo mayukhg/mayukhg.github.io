@@ -1391,7 +1391,8 @@
     }
     function onScroll() {
       nav.classList.toggle('scrolled', window.scrollY > 12);
-      var pos = window.scrollY + Math.max(nav.offsetHeight, 120) + 8, cur = '';
+      // Nav links land a section at nav height + 16px (scroll-padding-top), so look a little past that.
+      var pos = window.scrollY + nav.offsetHeight + 24, cur = '';
       secs.forEach(function (s) { if (s.offsetTop <= pos) cur = s.id; });
       cur = navMap[cur] || cur;
       links.forEach(function (l) {
