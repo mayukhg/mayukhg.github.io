@@ -75,6 +75,12 @@ let shotNo = 0;
 class AssertionError extends Error {}
 function assert(cond, msg) { if (!cond) throw new AssertionError(msg); }
 function eq(a, b, msg) { if (a !== b) throw new AssertionError(`${msg} — expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`); }
+// The 60-second fit lives in the hero's “See how I fit your role” panel; open it and return the panel.
+async function openFit(page) {
+  const drop = page.locator('.hero-actions details.hero-drop').filter({ has: page.locator('[data-slot="snapshot"]') });
+  if (!(await drop.evaluate((d) => d.open))) await drop.locator('summary').click();
+  return drop.locator('.drop-panel');
+}
 
 async function ctx(opts = {}) {
   // ignoreHTTPSErrors only matters for the Google Fonts request when running behind a TLS-inspecting proxy.
@@ -288,20 +294,23 @@ await test('B. Rendering', 'B1', 'Home page loads with zero console errors, page
   await context.close();
 });
 
-await test('B. Rendering', 'B2', 'Hero renders name, title, badge, intro (with bold), CTAs, photo and 4 stats', async () => {
+await test('B. Rendering', 'B2', 'Hero renders name, title, badge, intro (with bold), fit and portfolio panels, and photo', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
   eq(await page.locator('h1').innerText(), profileJSON.person.name, 'H1 name');
   assert((await page.locator('.hero-role').innerText()).includes(profileJSON.person.headline), 'headline');
   eq(await page.locator('.badge').innerText(), profileJSON.person.badge, 'badge');
   assert(await page.locator('.hero-lede strong').count() >= 3, 'bold markup in lede');
-  eq(await page.locator('.stat').count(), profileJSON.stats.length, 'stat count');
-  const ctas = await page.locator('.hero-cta a').evaluateAll((as) => as.map((a) => ({ h: a.getAttribute('href'), c: a.className, d: a.hasAttribute('download') })));
-  eq(ctas[0].h, profileJSON.links.resume, 'résumé is the first hero button');
-  assert(/btn-doc/.test(ctas[0].c), 'résumé button uses the document (amber) style');
-  assert(ctas.some((a) => a.h === profileJSON.links.resume && a.d), 'résumé download button');
-  assert(ctas.some((a) => a.h === profileJSON.links.portfolio), 'portfolio button');
-  assert(await page.locator('.cta-note').isHidden(), 'resume updated note is hidden');
+  const summaries = await page.locator('.hero-actions summary').allInnerTexts();
+  assert(summaries.some((t) => /fit your role/i.test(t)), `fit panel button: ${summaries}`);
+  assert(summaries.some((t) => /portfolio/i.test(t)), `portfolio panel button: ${summaries}`);
+  const panel = await openFit(page);
+  const ctas = await panel.locator('a').evaluateAll((as) => as.map((a) => ({ h: a.getAttribute('href'), c: a.className })));
+  const resume = ctas.find((a) => a.h === profileJSON.links.resume);
+  assert(resume, 'résumé link in the fit panel');
+  assert(/btn-doc/.test(resume.c), 'résumé button uses the document (amber) style');
+  const allLinks = await page.locator('.hero-actions a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  assert(allLinks.includes(profileJSON.links.portfolio), 'portfolio PDF in the hero panels');
   const img = await page.locator('img.portrait').evaluate((i) => ({ w: i.naturalWidth, alt: i.alt, ratio: i.getBoundingClientRect().width / i.getBoundingClientRect().height }));
   assert(img.w > 0, 'photo loaded'); assert(img.alt.length > 5, 'photo alt');
   assert(Math.abs(img.ratio - 1) < 0.02, `photo should be square, ratio ${img.ratio.toFixed(2)}`);
@@ -363,9 +372,9 @@ await test('B. Rendering', 'B5', 'Section headings and sub-headings render exact
     'approach-title': profileJSON.approach.title, 'approach-sub': profileJSON.approach.subtitle,
     'products-title': productsJSON.title, 'products-sub': productsJSON.subtitle, 'exp-title': profileJSON.experience.title,
     'exp-sub': profileJSON.experience.subtitle, 'skills-title': profileJSON.skills.title, 'contact-title': profileJSON.contact.title,
-    'snapshot-title': profileJSON.snapshot.title,
   };
   for (const [s, v] of Object.entries(expect)) eq((await page.locator(`[data-slot="${s}"]`).innerText()).trim(), v, `${s}`);
+  eq((await page.locator('#snapshot-title').textContent()).trim(), profileJSON.snapshot.title, 'snapshot-title');
   if (productsJSON.overview?.show !== false) eq(await page.locator('.glance-title').innerText(), productsJSON.overview.title, 'summary panel title');
   await revealAll(page);
   await shot(page.locator('#products .s-title'), 'products-heading');
@@ -612,7 +621,13 @@ await test('C. Interactions', 'C6', 'Nav links scroll to sections; active link a
   eq(await page.locator('#nav').evaluate((n) => n.classList.contains('scrolled')), false, 'not scrolled at top');
   for (const id of MANIFEST.site.navLinks.filter((x) => x !== 'top')) {
     await page.locator(`.nav-links a[href="#${id}"]`).click();
-    await page.waitForTimeout(900);
+    // Smooth scrolling takes longer as the page grows, so wait for it to settle rather than a fixed delay.
+    for (let i = 0, prev = -1; i < 30; i++) {
+      await page.waitForTimeout(200);
+      const y = await page.evaluate(() => window.scrollY);
+      if (y === prev) break;
+      prev = y;
+    }
     const top = await page.locator('#' + id).evaluate((s) => s.getBoundingClientRect().top);
     const atBottom = await page.evaluate(() => Math.ceil(window.scrollY + innerHeight) >= document.documentElement.scrollHeight - 2);
     assert(Math.abs(top) < 280 || (atBottom && top < 900), `#${id} not scrolled into view (top=${Math.round(top)})`);
@@ -628,16 +643,17 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
     const page = await open(context, '/');
     if (vp.width === 390) await shot(page, 'mobile-nav-resume', { clip: { x: 0, y: 0, width: 390, height: 80 } });
     assert(await page.locator('#nav .nav-resume').count() === 0 || await page.locator('#nav .nav-resume').isHidden(), `nav resume hidden at ${vp.width}px`);
-    const heroResume = page.locator('.hero-cta a.btn-doc').first();
-    assert(await heroResume.isVisible(), `hero View Resume visible at ${vp.width}px`);
+    const panel = await openFit(page);
+    const heroResume = panel.locator(`a.btn-doc[href="${profileJSON.links.resume}"]`).first();
+    assert(await heroResume.isVisible(), `résumé visible in the hero fit panel at ${vp.width}px`);
     eq(await heroResume.getAttribute('href'), profileJSON.links.resume, 'hero resume link');
     await context.close();
   }
   const { context } = await ctx();
   const page = await open(context, '/');
-  // Snapshot sits directly under the hero.
-  eq(await page.evaluate(() => document.querySelector('header.hero').nextElementSibling.id), 'snapshot', 'snapshot follows hero');
-  const snapText = await page.locator('#snapshot').innerText();
+  // The snapshot sits in the hero's “See how I fit your role” panel.
+  const fit = await openFit(page);
+  const snapText = await fit.innerText();
   if (Array.isArray(profileJSON.snapshot.rows) && profileJSON.snapshot.rows.length) {
     if (profileJSON.snapshot.subtitle) assert(snapText.includes(profileJSON.snapshot.subtitle), 'snapshot subtitle');
     profileJSON.snapshot.rows.forEach((r) => {
@@ -648,10 +664,10 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   } else {
     profileJSON.snapshot.groups.forEach((g) => { assert(snapText.includes(g.name), g.name); g.items.forEach((it) => assert(snapText.includes(it.label), it.label)); });
   }
-  const docLinks = await page.locator('#snapshot a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  const docLinks = await fit.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   assert(docLinks.includes(profileJSON.links.resume) && docLinks.includes(profileJSON.links.portfolio), `snapshot document links: ${docLinks}`);
   await revealAll(page);
-  await shot(page.locator('#snapshot'), 'snapshot-panel');
+  await shot(fit, 'snapshot-panel');
   // Skills: ~10 chips on load; All skills ▾ reveals the full groups.
   const totalSkills = profileJSON.skills.groups.reduce((n, g) => n + g.items.length, 0);
   eq(await page.locator('.skills-top .pill:visible').count(), Math.min(10, totalSkills), 'top skills row');
@@ -667,7 +683,7 @@ await test('C. Interactions', 'C10', 'Recruiter essentials: View Resume in hero;
   } else eq(await more.count(), 0, 'no All skills button');
   // Section order: hero → snapshot → products first; contact last.
   const order = await page.evaluate(() => [...document.querySelectorAll('main > header[id], main > section[id]')].map((s) => s.id));
-  eq(order.slice(0, 3).join(','), 'top,snapshot,products', 'recruiter-first order');
+  eq(order.slice(0, 2).join(','), 'top,products', 'recruiter-first order (the fit panel is in the hero)');
   eq(order[order.length - 1], 'contact', 'contact is last');
   await context.close();
 });
@@ -725,9 +741,11 @@ for (const [w, hgt, label] of VIEWPORTS) {
     await page.waitForTimeout(450);
     const o = await page.evaluate(() => {
       const vw = document.documentElement.clientWidth;
+      // Content inside a horizontally scrolling row (the section pills) may extend past the edge by design.
+      const inScroller = (el) => { for (let p = el.parentElement; p; p = p.parentElement) { if (/auto|scroll/.test(getComputedStyle(p).overflowX)) return true; } return false; };
       const wide = [...document.querySelectorAll('body *')].filter((el) => {
         const r = el.getBoundingClientRect();
-        return r.width && r.right > vw + 1 && getComputedStyle(el).position !== 'fixed';
+        return r.width && r.right > vw + 1 && getComputedStyle(el).position !== 'fixed' && !inScroller(el);
       }).slice(0, 3).map((el) => el.className || el.tagName);
       return { sw: document.documentElement.scrollWidth, vw, wide };
     });
@@ -1280,7 +1298,9 @@ const R = 'R. Auto-discovered regression';
 
 await test(R, 'R-code', 'Code consistency: every slot rendered by script.js exists in index.html (and vice versa); icons match editor options', async () => {
   const s = MANIFEST.site;
-  const missingInHtml = s.jsSlots.filter((x) => !s.slots.includes(x));
+  // Slots that script.js writes into its own markup (e.g. the snapshot inside the hero fit panel) count as present.
+  const jsMarkupSlots = [...fs.readFileSync(path.join(ROOT, 'script.js'), 'utf8').matchAll(/data-slot="([a-z0-9-]+)"/g)].map((m) => m[1]);
+  const missingInHtml = s.jsSlots.filter((x) => !s.slots.includes(x) && !jsMarkupSlots.includes(x));
   const unusedInJs = s.slots.filter((x) => !s.jsSlots.includes(x));
   eq(missingInHtml.length, 0, `script.js renders slots missing from index.html: ${missingInHtml}`);
   eq(unusedInJs.length, 0, `index.html slots never filled by script.js: ${unusedInJs}`);
@@ -1470,10 +1490,11 @@ await test(R, 'R-admin-fields', `Every editor form field (${new Set(MANIFEST.adm
 });
 
 /* =================================================================== S. 60-second fit (requirements match) */
-await test('S. Snapshot fit', 'S1', '#snapshot table.sn-match has 6 body rows with values and resolving proof links', async () => {
+await test('S. Snapshot fit', 'S1', 'The fit panel’s table.sn-match has 6 body rows with values and resolving proof links', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  const rows = page.locator('#snapshot table.sn-match tbody tr');
+  const fit = await openFit(page);
+  const rows = fit.locator('table.sn-match tbody tr');
   eq(await rows.count(), 6, 'six match rows');
   for (let i = 0; i < 6; i++) {
     const row = rows.nth(i);
@@ -1489,28 +1510,30 @@ await test('S. Snapshot fit', 'S1', '#snapshot table.sn-match has 6 body rows wi
       assert(res.status() < 400, `proof ${href} → ${res.status()}`);
     }
   }
-  await shot(page.locator('#snapshot'), 'snapshot-fit-desktop');
+  await shot(fit, 'snapshot-fit-desktop');
   await context.close();
 });
 
 await test('S. Snapshot fit', 'S2', 'Clicking the “MCP Server case” proof opens #p-mcp', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
-  await page.locator('#snapshot a.sn-proof', { hasText: 'MCP Server case' }).click();
+  const fit = await openFit(page);
+  await fit.locator('a.sn-proof', { hasText: 'MCP Server case' }).click();
   await page.waitForTimeout(700);
   eq(await page.locator('#p-mcp .acc-toggle').getAttribute('aria-expanded'), 'true', 'MCP case open');
   await context.close();
 });
 
-await test('S. Snapshot fit', 'S3', 'At 390px the snapshot has no horizontal overflow', async () => {
+await test('S. Snapshot fit', 'S3', 'At 390px the fit panel has no horizontal overflow', async () => {
   const { context } = await ctx({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await open(context, '/');
   await revealAll(page);
-  const o = await page.locator('#snapshot').evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth }));
+  const fit = await openFit(page);
+  const o = await fit.evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth }));
   assert(o.sw <= o.cw + 1, `snapshot overflows: ${o.sw} > ${o.cw}`);
   const pageO = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   assert(pageO.sw <= pageO.cw + 1, `page overflows at 390: ${pageO.sw} > ${pageO.cw}`);
-  await shot(page.locator('#snapshot'), 'snapshot-fit-mobile');
+  await shot(fit, 'snapshot-fit-mobile');
   await context.close();
 });
 
@@ -1523,13 +1546,14 @@ await test('S. Snapshot fit', 'S4', 'Page contains no 94% and no phone-number pa
   await context.close();
 });
 
-await test('S. Snapshot fit', 'S5', 'axe shows no serious or critical issues in #snapshot', async () => {
+await test('S. Snapshot fit', 'S5', 'axe shows no serious or critical issues in the fit panel', async () => {
   const { context } = await ctx();
   const page = await open(context, '/');
   await revealAll(page);
+  await openFit(page);
   await page.addScriptTag({ content: AXE_SRC });
   const bad = await page.evaluate(async () => {
-    const res = await window.axe.run(document.querySelector('#snapshot'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
+    const res = await window.axe.run(document.querySelector('.hero-actions [data-slot="snapshot"]'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
     return res.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => v.id);
   });
   eq(bad.length, 0, `axe: ${bad.join(', ')}`);
